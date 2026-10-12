@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/contact/Footer";
 import { PageScripts } from "@/components/pages/PageScripts";
-import { company, contact, principles, services } from "@/lib/content";
+import { branches, company, contact, principles, services } from "@/lib/content";
 import { ABOUT_CSS, aboutMarkup, type AboutData } from "@/lib/pages/about";
 import { KIT_CSS } from "@/lib/pages/kit";
 import { ldJson, pageMeta, siteUrl } from "@/lib/site";
@@ -20,6 +20,7 @@ const DATA: AboutData = {
   principles,
   services: services.map((s) => ({ title: s.title, line: s.line })),
   contact,
+  branches,
   founded: "2012",
 };
 

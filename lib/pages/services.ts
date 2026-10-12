@@ -2,9 +2,11 @@
  * Services page, kept to what we do and what search engines read.
  *
  *   opening        the page's heading: the services and the towns
- *   waterproofing  the eight waterproofing services from RPC's methods guide:
- *                  what each protects against, and a quote
- *   building       the six building services, each with its line and a quote
+ *   waterproofing  the eight waterproofing services from RPC's methods guide
+ *   building       the six building services
+ *                  both as the same card, four to a row: a photograph, a
+ *                  small icon on its lower edge, the name, one line on what
+ *                  it covers, and a quote
  *   questions      what people ask before they book (also set out for search
  *                  engines on the page)
  *   close          the ways to start
@@ -19,6 +21,8 @@ export interface ServiceData {
   id: string;
   title: string;
   short?: string;
+  /** one line on what it covers, for its card */
+  line?: string;
   body: string;
   image: string;
   deliverables: readonly string[];
@@ -60,8 +64,19 @@ const PLACE_ICON: Record<string, string> = {
   podium: `<path d="M3 16h18v4H3z"/><path d="M8 16c0-3 1.8-5 4-5s4 2 4 5"/><path d="M12 11V5M12 7c1.5-2 3.5-2 4.5-1M12 8c-1.5-2-3.5-2-4.5-1"/>`,
   cracks: `<path d="M4 4h16v16H4z"/><path d="M12 4l-2 4 3 3-2 4 2 2-1 3"/>`,
 };
-const placeIcon = (area: string) =>
-  `<span class="sv-wi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${PLACE_ICON[area] ?? ""}</svg></span>`;
+/** a photograph for each place a waterproofing service covers */
+const PLACE_PHOTO: Record<string, string> = {
+  terrace: "/images/waterproofing/terrace-slab-cutaway.jpg",
+  bathroom: "/images/waterproofing/bathroom-membrane-under-tiles.jpg",
+  tank: "/images/waterproofing/water-tank-cutaway.jpg",
+  basement: "/images/waterproofing/basement-wall-cutaway.jpg",
+  balcony: "/images/waterproofing/villa-upper-floors.jpg",
+  walls: "/images/detail-01.jpg",
+  podium: "/images/waterproofing/villa-pool-deck.jpg",
+  cracks: "/images/waterproofing/house-wet-zones.jpg",
+};
+const svg = (paths: string) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
 
 /** a small line drawing for each building service, by a word in its name */
 const BUILD_ICON: readonly (readonly [RegExp, string])[] = [
@@ -72,10 +87,8 @@ const BUILD_ICON: readonly (readonly [RegExp, string])[] = [
   [/interior/i, `<path d="M4 18v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5"/><path d="M6 11V8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/><path d="M3 18h18M6 18v2M18 18v2"/>`],
   [/project|management/i, `<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 10l1.5 1.5 3-3M8.5 16h7"/>`],
 ];
-const buildIcon = (title: string) =>
-  `<span class="sv-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${BUILD_ICON.find(([r]) => r.test(title))?.[1] ?? BUILD_ICON[0]![1]}</svg></span>`;
+const buildIcon = (title: string) => BUILD_ICON.find(([r]) => r.test(title))?.[1] ?? BUILD_ICON[0]![1];
 
-/** a small line drawing for each way to work with us, in their order */
 /** the questions people ask, answered from what the rest of the site already says (also set out for search engines on the page) */
 export function serviceFaq(d: Pick<ServicesData, "services" | "process" | "contact">): { q: string; a: string }[] {
   const c = d.contact;
@@ -95,26 +108,26 @@ export function serviceFaq(d: Pick<ServicesData, "services" | "process" | "conta
   ];
 }
 
-/** a waterproofing service as a card: its icon and name, what it protects against, the methods we use, and a quote */
-function wpRow(s: (typeof SERVICE_CATEGORIES)[number]) {
-  return `<li class="sv-card sv-w" id="${serviceSlug(s.title)}">
-  <span class="sv-icon">${placeIcon(s.area)}</span>
-  <h3 class="sv-ct">${esc(s.title)}</h3>
-  <p class="sv-cp">${esc(AREA_PURPOSE[s.area] ?? "")}</p>
-  <a class="sv-go" href="${esc(ask(s.title))}" data-internal>Get a quote<span class="pg-vh"> for ${esc(s.title.toLowerCase())}</span>${arrow}</a>
+/**
+ * A service as a card, the same for waterproofing and building: a photograph,
+ * a small icon for the kind of service sitting on its lower edge, the name,
+ * one line on what it covers, and a quote along the foot. The whole card
+ * opens the quote.
+ */
+function card(c: { title: string; text: string; icon: string; photo?: string }, i: number) {
+  const slug = serviceSlug(c.title);
+  return `<li class="sv-card" id="${slug}">
+  <figure class="sv-cimg">${c.photo ? `<img src="${esc(c.photo)}" alt="" width="1920" height="1080" loading="${i < 4 ? "eager" : "lazy"}" decoding="async">` : ""}</figure>
+  <div class="sv-cbody">
+    <span class="sv-icon" aria-hidden="true">${svg(c.icon)}</span>
+    <h3 class="sv-ct" id="sv-${slug}">${esc(c.title)}</h3>
+    <p class="sv-cp">${esc(c.text)}</p>
+    <a class="sv-go" href="${esc(ask(c.title))}" data-internal><span>Get a quote<span class="pg-vh"> for ${esc(c.title.toLowerCase())}</span></span><i aria-hidden="true">${arrow}</i></a>
+  </div>
 </li>`;
 }
-
-/** a building service as a card: its icon, name and line, its scale and programme, what's included, and a quote */
-function buildRow(s: ServiceData) {
-  const slug = serviceSlug(s.title);
-  return `<article class="sv-card sv-b" id="${slug}" aria-labelledby="sv-${slug}">
-  ${buildIcon(s.title)}
-  <h3 class="sv-ct" id="sv-${slug}">${esc(s.title)}</h3>
-  <p class="sv-cp">${esc(s.body)}</p>
-  <a class="sv-go" href="${esc(ask(s.title))}" data-internal>Get a quote<span class="pg-vh"> for ${esc(s.title.toLowerCase())}</span>${arrow}</a>
-</article>`;
-}
+/** "Leak-free houses, villas and apartments" → a sentence */
+const sentence = (t: string) => (/[.!?]$/.test(t) ? t : `${t}.`);
 
 export function servicesPageMarkup(d: ServicesData, o: PageOptions = {}) {
   void o;
@@ -133,16 +146,16 @@ export function servicesPageMarkup(d: ServicesData, o: PageOptions = {}) {
   const waterproofing = wp
     ? `<section class="pg-sec sv-wsec" id="${serviceSlug(wp.title)}" aria-labelledby="sv-w-h">
   <div class="pg-wrap">
-    ${secHead({ n: "02", label: "Waterproofing services", title: "From the terrace to the sump.", id: "sv-w-h" })}
-    <ul class="sv-wgrid">${SERVICE_CATEGORIES.map(wpRow).join("")}</ul>
+    ${secHead({ n: "02", label: "Waterproofing services", title: "From the terrace to the sump.", id: "sv-w-h", lede: "Eight places water gets into a building, and the waterproofing we use to keep it out of each." })}
+    <ul class="sv-grid">${SERVICE_CATEGORIES.map((x, i) => card({ title: x.title, text: AREA_PURPOSE[x.area] ?? "", icon: PLACE_ICON[x.area] ?? "", photo: PLACE_PHOTO[x.area] }, i)).join("")}</ul>
   </div>
 </section>`
     : "";
 
   const building = `<section class="pg-sec pg-sec--stone sv-bsec" id="building" aria-labelledby="sv-b-h">
   <div class="pg-wrap">
-    ${secHead({ n: "03", label: "Construction services", title: "Homes, offices and factories, built to stay dry.", id: "sv-b-h" })}
-    <div class="sv-blist">${build.map(buildRow).join("")}</div>
+    ${secHead({ n: "03", label: "Construction services", title: "Homes, offices and factories, built to stay dry.", id: "sv-b-h", lede: "New buildings and repairs, with every terrace, bathroom and sump sealed as the work goes up." })}
+    <ul class="sv-grid">${build.map((x, i) => card({ title: x.title, text: sentence(x.line ?? x.short ?? x.body), icon: buildIcon(x.title), photo: x.image }, i)).join("")}</ul>
   </div>
 </section>`;
 
@@ -173,39 +186,38 @@ export const SERVICES_CSS = `
 .sv-head{padding-bottom:clamp(1.4rem,3.5vh,2.2rem);border-bottom:0}
 .sv-wsec,.sv-bsec{scroll-margin-top:var(--nav-bar,80px)}
 
-/* the cards (waterproofing and building alike): an icon, the name, a line, the details, and a quote along the foot */
-.sv-wgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.8rem,1.3vw,1.1rem);margin:0;padding:0;list-style:none}
-.sv-blist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.8rem,1.3vw,1.1rem)}
-.sv-card{display:flex;flex-direction:column;padding:1.4rem 1.4rem 0;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);scroll-margin-top:calc(var(--nav-bar,80px) + 1rem);transition:box-shadow .3s,transform .3s}
-.sv-card:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(18,34,59,.28),0 24px 44px -34px rgba(18,34,59,.55)}
+/* the cards, waterproofing and building alike, four to a row: a photograph, the service's icon small on its lower edge at the left, the name, a line, and a quote under a hairline */
+.sv-wsec .pg-shead,.sv-bsec .pg-shead{margin-bottom:clamp(1.6rem,4vh,2.4rem)}
+.sv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.9rem,1.4vw,1.25rem);margin:0;padding:0;list-style:none}
+.sv-card{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;scroll-margin-top:calc(var(--nav-bar,80px) + 1rem);transition:box-shadow .35s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.sv-bsec .sv-card{background:#f3eee4}
+.sv-cimg{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;background:#ddd3c2}
+.sv-cimg img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform .9s cubic-bezier(.2,.7,.2,1)}
+.sv-cbody{display:flex;flex:1;flex-direction:column;padding:0 1.2rem 1.1rem}
+/* the icon sits half over the photograph's lower edge, ringed in the card's colour */
+.sv-icon{position:relative;z-index:1;display:grid;place-items:center;width:2.75rem;height:2.75rem;margin-top:-1.375rem;border-radius:12px;background:var(--navy);color:#f5f0e6;box-shadow:0 0 0 4px var(--card);transition:background-color .3s}
+.sv-bsec .sv-icon{box-shadow:0 0 0 4px #f3eee4}
+.sv-icon svg{width:1.3rem;height:1.3rem}
+.sv-ct{margin:.85rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.015em;color:var(--ink);text-wrap:balance;transition:color .3s}
+.sv-cp{margin:.45rem 0 1.1rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink2);text-wrap:pretty}
+.sv-go{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:.85rem;border-top:1px solid var(--line);font-size:var(--fs-body);font-weight:600;color:var(--accent);text-decoration:none}
+/* the whole card opens the quote */
+.sv-go::after{content:"";position:absolute;inset:0;border-radius:16px}
+.sv-go > span{background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;padding-bottom:2px;transition:background-size .3s}
+.sv-go > i{display:grid;place-items:center;flex:none;width:2.1rem;height:2.1rem;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);color:var(--ink);font-style:normal;transition:background-color .3s,color .3s,box-shadow .3s}
+.sv-go .pg-ar{width:.85rem;height:.85rem;transition:transform .3s}
+.sv-go:focus-visible{outline:none}
+.sv-go:focus-visible::after{box-shadow:inset 0 0 0 2px var(--accent)}
+.sv-card:hover,.sv-card:focus-within{transform:translateY(-3px);box-shadow:inset 0 0 0 1px rgba(18,34,59,.24),0 26px 44px -32px rgba(18,34,59,.55)}
+.sv-card:hover .sv-cimg img,.sv-card:focus-within .sv-cimg img{transform:scale(1.1)}
+.sv-card:hover .sv-ct,.sv-card:focus-within .sv-ct{color:var(--accent)}
+.sv-card:hover .sv-icon,.sv-card:focus-within .sv-icon{background:var(--accent)}
+.sv-card:hover .sv-go > span,.sv-card:focus-within .sv-go > span{background-size:100% 1.5px}
+.sv-card:hover .sv-go > i,.sv-card:focus-within .sv-go > i{background:var(--navy);color:#f5f0e6;box-shadow:none}
+.sv-card:hover .pg-ar{transform:translate(2px,-2px)}
 .sv-card:target{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 6px rgba(39,86,160,.1)}
-.sv-icon{display:grid;place-items:center;width:2.9rem;height:2.9rem;border-radius:14px;background:var(--navy);color:#f5f0e6}
-.sv-icon .sv-wi{display:contents}
-.sv-icon svg{width:1.4rem;height:1.4rem}
-.sv-ct{margin:1rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.015em;color:var(--ink)}
-.sv-cp{margin:.5rem 0 1.3rem;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
-.sv-b .sv-cp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.sv-card,.sv-card *{transition:none}.sv-card:hover,.sv-card:focus-within{transform:none}}
 .sv-wsec{padding-top:calc(var(--nav-room,80px) + clamp(1.5rem,4vh,2.5rem))}
-.sv-cm{margin:.8rem 0 1.2rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink2)}
-.sv-cm span{font-weight:600;color:var(--ink)}
-.sv-cm a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(39,86,160,.3)}
-.sv-cm a:hover{border-color:var(--accent)}
-.sv-cm em{font-style:normal;color:var(--mute)}
-.sv-go{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:auto -1.4rem 0;padding:.9rem 1.4rem;border-top:1px solid var(--line);font-size:var(--fs-body);font-weight:600;color:var(--accent);text-decoration:none;transition:background-color .2s,color .2s}
-.sv-go .pg-ar{width:1rem;height:1rem;transition:transform .2s}
-.sv-go:hover{background:var(--navy);color:#f5f0e6}
-.sv-go:hover .pg-ar{transform:translate(2px,-2px)}
-.sv-go:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.sv-btop{display:flex;align-items:center;gap:.8rem}
-.sv-bshort{margin:.2rem 0 0;font-size:var(--fs-body);font-weight:600;line-height:1.35;color:var(--accent)}
-.sv-bmeta{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.4rem 0 1.2rem}
-.sv-bmeta span{padding:.25rem .65rem;border-radius:999px;background:rgba(18,34,59,.06);font-size:var(--fs-body);font-weight:500;color:var(--ink)}
-.sv-bmeta dt{font-size:var(--fs-body);color:var(--mute)}
-.sv-bmeta dd{margin:.15rem 0 0;font-size:var(--fs-body);font-weight:600;line-height:1.35;color:var(--ink)}
-.sv-binc{display:flex;flex-direction:column;gap:.35rem;margin:1rem 0 1.3rem;padding:0;list-style:none}
-.sv-binc li{position:relative;padding-left:1.5rem;font-size:var(--fs-body);line-height:1.45;color:var(--ink)}
-.sv-binc li::before{content:"";position:absolute;left:0;top:.2rem;width:1rem;height:1rem;border-radius:50%;background:rgba(39,86,160,.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.3l2.3 2.3 4.7-5' fill='none' stroke='%232756a0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/.75rem no-repeat}
-.sv-wmore{margin:clamp(1.4rem,3vh,2rem) 0 0}
 
 /* how a job runs: six steps on one line, joined */
 
@@ -229,16 +241,11 @@ export const SERVICES_CSS = `
 .sv-q[open] .sv-qi::before,.sv-q[open] .sv-qi::after{background:#fff}
 .sv-q p{margin:0;padding:0 1.2rem 1.1rem;font-size:var(--fs-body);line-height:1.65;color:var(--ink2)}
 
-@media (max-width:1199px){
-  .sv-wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .sv-blist{grid-template-columns:repeat(2,minmax(0,1fr))}
-  /* the six steps keep to one line, which slides sideways */
-}
 @media (max-width:1023px){
   .sv-headgrid,.sv-fgrid{grid-template-columns:1fr}
+  .sv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media (max-width:699px){
-  .sv-wgrid,.sv-blist{grid-template-columns:minmax(0,1fr)}
-  .sv-wcov{grid-template-columns:1fr}
+@media (max-width:599px){
+  .sv-grid{grid-template-columns:minmax(0,1fr)}
 }
 `;

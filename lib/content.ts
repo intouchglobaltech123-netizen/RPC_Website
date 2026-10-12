@@ -45,6 +45,19 @@ export const contact = {
   regions: ["Erode", "Coimbatore", "Tiruppur", "Salem", "Chennai"],
 } as const;
 
+/**
+ * Our offices, one per town we work in, shown on the About page.
+ * PLACEHOLDER — fill in each branch's `address` (and `mapQuery`) when RPC sends them;
+ * a town left empty reads as served from the Erode head office.
+ */
+export const branches: readonly { city: string; kind: "Head office" | "Branch"; address: string; mapQuery: string }[] = [
+  { city: "Erode", kind: "Head office", address: "142 Perundurai Road, Erode, Tamil Nadu 638011", mapQuery: "142 Perundurai Road, Erode, Tamil Nadu 638011" },
+  { city: "Coimbatore", kind: "Branch", address: "", mapQuery: "" },
+  { city: "Tiruppur", kind: "Branch", address: "", mapQuery: "" },
+  { city: "Salem", kind: "Branch", address: "", mapQuery: "" },
+  { city: "Chennai", kind: "Branch", address: "", mapQuery: "" },
+];
+
 
 
 /** The seven chapters of the hero film. Narrative copy, no company claims. */

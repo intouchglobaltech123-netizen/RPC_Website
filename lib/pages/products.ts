@@ -176,7 +176,7 @@ export function productsPageMarkup(d: ProductsData) {
         <h1 class="pg-h1">Waterproofing products and construction chemicals, by&nbsp;brand.</h1>
       </div>
       <div class="pr-headside">
-        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#find">Find a product${arrow}</a><a class="pg-btn pg-btn--line" href="#brands">Brands</a><a class="pg-btn pg-btn--line" href="#by-job">Compare brands by job</a></div>
+        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#find">Find a product${arrow}</a><a class="pg-btn pg-btn--line" href="#by-job">Compare brands by job</a><a class="pg-btn pg-btn--line" href="#brands">Brands</a></div>
       </div>
     </div>
   </div>
@@ -188,9 +188,9 @@ export function productsPageMarkup(d: ProductsData) {
   </div>
 </section>`;
   return `${head}
-${brands}
 ${finderMarkup(bs, d.contact, js, PRODUCT_COUNT)}
 ${byJobMarkup(js, d.contact)}
+${brands}
 ${ctaBand(d.contact, {
   title: "Need a quantity or a rate?",
   steps: [

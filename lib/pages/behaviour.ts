@@ -1,7 +1,7 @@
 /**
  * The inner pages' behaviour in the browser, one small piece per page:
  *   services  (arrival motion only)
- *   projects  a status or a town narrows the cards (a project in the address is always shown)
+ *   projects  three buttons pick a stage, a list narrows by location (a project in the address is always shown)
  *   about     (arrival motion only)
  *   contact   the enquiry form, and whether the office is open right now
  *   blog      topics narrow the list
@@ -127,44 +127,82 @@ function mountSearch(bar: HTMLElement, offs: Off[], change: () => void) {
   };
 }
 
-/* projects: the search bar narrows the cards by words, status and town */
+/* projects: three buttons pick completed, ongoing or upcoming projects, and a list narrows them by location */
 function projects(root: HTMLElement, env: PageEnv): Off {
   void env;
   const list = root.querySelector<HTMLElement>(".pj-list");
-  const bar = root.querySelector<HTMLElement>(".pj-bar");
+  const bar = root.querySelector<HTMLElement>(".pj-filters");
   if (!list || !bar) return () => {};
   const offs: Off[] = [];
-  const items = Array.from(list.querySelectorAll<HTMLElement>(".pj-row"));
+  const on = (t: EventTarget, type: string, fn: (e: Event) => void, o?: AddEventListenerOptions) => {
+    t.addEventListener(type, fn, o);
+    offs.push(() => t.removeEventListener(type, fn, o));
+  };
+  const items = Array.from(list.querySelectorAll<HTMLElement>(".pj-card"));
+  const tabs = Array.from(bar.querySelectorAll<HTMLButtonElement>("[data-pj-status]"));
+  const sel = bar.querySelector<HTMLSelectElement>("select[data-pj-town]");
   const showing = root.querySelector<HTMLElement>(".pj-showing");
   const empty = root.querySelector<HTMLElement>(".pj-empty");
+  const stOf = (t: HTMLElement) => t.dataset.pjStatus ?? "";
+  let status = stOf(tabs.find((t) => t.getAttribute("aria-pressed") === "true") ?? tabs[0] ?? bar);
+  const where = () => sel?.value ?? "all";
+  const here = (it: HTMLElement) => where() === "all" || it.dataset.town === where();
   const apply = () => {
-    const st = s.value("status");
-    const tw = s.value("town");
-    let n = 0;
-    for (const it of items) {
-      const on = (st === "all" || it.dataset.status === st) && (tw === "all" || it.dataset.town === tw) && s.matches(it.dataset.text ?? "");
-      it.hidden = !on;
-      if (on) n++;
+    // each button counts its projects in the chosen location; if the chosen stage has none there, the first that has some is picked
+    const n = new Map(tabs.map((t) => [stOf(t), items.filter((it) => it.dataset.status === stOf(t) && here(it)).length]));
+    if (!n.get(status)) status = stOf(tabs.find((t) => n.get(stOf(t))) ?? tabs.find((t) => stOf(t) === status) ?? bar);
+    let shown = 0;
+    for (const t of tabs) {
+      const k = n.get(stOf(t)) ?? 0;
+      t.setAttribute("aria-pressed", String(stOf(t) === status));
+      t.toggleAttribute("data-empty", k === 0);
+      const c = t.querySelector(".pj-tn");
+      if (c) c.textContent = String(k);
     }
-    if (empty) empty.hidden = n > 0;
+    for (const it of items) {
+      const show = it.dataset.status === status && here(it);
+      it.hidden = !show;
+      if (show) shown++;
+    }
+    if (empty) empty.hidden = shown > 0;
     if (showing) {
-      const what = `${n} ${n === 1 ? "project" : "projects"}`;
-      const bits = [st !== "all" ? s.label("status").toLowerCase() : "", tw !== "all" ? `in ${tw}` : "", s.typed() ? `matching “${s.typed()}”` : ""].filter(Boolean);
-      showing.textContent = bits.length ? `Showing ${what}: ${bits.join(", ")}` : `Showing all ${n} projects`;
+      const name = tabs.find((t) => stOf(t) === status)?.dataset.pjName ?? "projects";
+      const what = name.replace(/projects$/, shown === 1 ? "project" : "projects");
+      showing.textContent = `Showing ${shown} ${what}${where() !== "all" ? ` in ${where()}` : ""}`;
     }
   };
-  const s = mountSearch(bar, offs, apply);
-  offs.push(listen(root, "click", (e) => (e.target as HTMLElement).closest("[data-reset]") && s.reset()));
-  // a project in the address is shown even if the search had hidden it
+  for (const t of tabs)
+    on(t, "click", () => {
+      status = stOf(t);
+      apply();
+    });
+  if (sel) {
+    fancySelect(sel, on, "fs--pj");
+    on(sel, "change", apply);
+  }
+  const everywhere = () => {
+    if (sel && sel.value !== "all") {
+      sel.value = "all";
+      sel.dispatchEvent(new Event("fs-sync"));
+    }
+  };
+  on(root, "click", (e) => {
+    if (!(e.target as HTMLElement).closest("[data-reset]")) return;
+    everywhere();
+    apply();
+  });
+  // a project in the address is shown, under its own button, wherever it is
   const fromHash = () => {
     const el = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-    if (el && items.includes(el) && el.hidden) {
-      s.reset();
-      el.scrollIntoView();
-    }
+    if (!el || !items.includes(el) || !el.hidden) return;
+    status = el.dataset.status ?? status;
+    if (!here(el)) everywhere();
+    apply();
+    el.scrollIntoView();
   };
-  offs.push(listen(window, "hashchange", fromHash));
+  on(window, "hashchange", fromHash);
   apply();
+  fromHash();
   return () => offs.forEach((f) => f());
 }
 
