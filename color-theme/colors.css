@@ -1,0 +1,80 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   RPC Constructions — colour theme
+   ───────────────────────────────────────────────────────────────────────────
+   Every colour on the site comes from this file.
+
+   1. BRAND PALETTE   the five colours. Change a value here and the whole site
+                      follows: buttons, text, backgrounds, cards, lines, the
+                      navigation, the footer and every page.
+   2. ROLES           what each colour is used for. Each role points at the
+                      palette (or a mix of it), so normally you only edit part 1.
+                      Point a role at another palette colour to move a colour
+                      to a different job (e.g. make buttons orange).
+   3. FIXED COLOURS   colours that belong to someone else or carry a meaning
+                      (WhatsApp green, success / warning / error). Not part of
+                      the brand theme, but kept here so they live in one place.
+
+   Shades and see-through tints are mixed from these colours where they are
+   used (color-mix), so they follow automatically when a colour changes.
+
+   Not covered (they draw their own artwork, not interface colour): the rain /
+   house illustrations of the home page hero (lib/monsoon/scene.ts), the 3D
+   scenes (components/three), product pack drawings (lib/products/pack-art.ts),
+   the waterproofing guide's diagrams, and blog topic tags.
+   Also set by hand: the browser address-bar colour in app/layout.tsx
+   (viewport.themeColor) and app/manifest.ts — keep them in step with
+   --brand-blue / --brand-grey-light.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── 1. BRAND PALETTE ─────────────────────────────────────────────────── */
+  --brand-blue: #1565b1;        /* primary   — buttons, links, active states, navigation */
+  --brand-orange: #f29c1f;      /* secondary — highlights, section labels, key accents */
+  --brand-grey-dark: #282828;   /* dark grey — text, headings, dark panels */
+  --brand-grey-light: #eef0f3;  /* light grey — page background */
+  --brand-white: #ffffff;       /* white — cards, panels, text on dark */
+
+  /* ── 2. ROLES ─────────────────────────────────────────────────────────── */
+  /* primary (blue) */
+  --theme-primary: var(--brand-blue);                                               /* links, accents, focus */
+  --theme-primary-dark: color-mix(in srgb, var(--brand-blue) 72%, #000);            /* buttons, nav bar, icon tiles, dark panels */
+  --theme-primary-soft: color-mix(in srgb, var(--brand-blue) 14%, var(--brand-white)); /* pale blue panels */
+  --theme-focus-on-dark: color-mix(in srgb, var(--brand-blue) 45%, var(--brand-white)); /* focus ring on dark panels */
+
+  /* secondary (orange) */
+  --theme-secondary: var(--brand-orange);                                           /* highlight fills, lines, active tabs */
+  --theme-secondary-text: color-mix(in srgb, var(--brand-orange) 62%, #000);        /* orange as small text on light (readable) */
+  --theme-on-secondary: var(--brand-grey-dark);                                     /* text on an orange fill */
+
+  /* text */
+  --theme-ink: var(--brand-grey-dark);                                              /* headings and main text */
+  --theme-ink-2: color-mix(in srgb, var(--brand-grey-dark) 85%, var(--brand-white)); /* secondary headings */
+  --theme-muted: color-mix(in srgb, var(--brand-grey-dark) 70%, var(--brand-white)); /* labels, meta text */
+  --theme-on-dark: var(--brand-white);                                              /* text and icons on blue / dark panels */
+
+  /* surfaces */
+  --theme-bg: var(--brand-grey-light);                                              /* page background */
+  --theme-bg-alt: color-mix(in srgb, var(--brand-grey-light) 94%, var(--brand-grey-dark)); /* alternate sections */
+  --theme-surface: var(--brand-white);                                              /* cards and panels */
+  --theme-surface-2: color-mix(in srgb, var(--brand-grey-light) 45%, var(--brand-white)); /* raised / hover surfaces */
+  --theme-placeholder: color-mix(in srgb, var(--brand-grey-light) 88%, var(--brand-grey-dark)); /* empty photo frames */
+  --theme-dark: var(--brand-grey-dark);                                             /* dark sections and chips */
+  --theme-white: var(--brand-white);
+  --theme-water: var(--brand-blue);                                                 /* water-related highlights */
+
+  /* lines and shadows (used as see-through mixes where they appear) */
+  --theme-line: color-mix(in srgb, var(--theme-ink) 14%, transparent);
+  --theme-shadow: var(--brand-grey-dark);
+
+  /* ── 3. FIXED COLOURS ─────────────────────────────────────────────────── */
+  --theme-whatsapp: #25d366;
+  --theme-whatsapp-dark: #128c4b;
+  --theme-whatsapp-hover: #1fbd5a;
+  --theme-on-whatsapp: #06301a;
+  --theme-success: #2f9e6b;
+  --theme-success-bright: #45c486;
+  --theme-success-text: #1f7a4f;
+  --theme-warning-text: #a35f10;
+  --theme-error: #8a2a22;
+  --theme-error-bg: #fdf0ef;
+}

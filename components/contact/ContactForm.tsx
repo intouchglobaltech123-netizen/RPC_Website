@@ -119,7 +119,7 @@ export function ContactForm() {
   }
 
   const input =
-    "h-12 w-full rounded-xl border border-ink/12 bg-white/80 pl-11 pr-3.5 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]";
+    "h-12 w-full rounded-xl border border-ink/12 bg-white/80 pl-11 pr-3.5 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--theme-primary)_12%,transparent)]";
   return (
     <form ref={form} onSubmit={onSubmit} className="flex flex-col gap-7">
       {/* spam trap */}
@@ -171,7 +171,7 @@ export function ContactForm() {
           <textarea
             name="message"
             rows={3}
-            className="w-full resize-none rounded-xl border border-ink/12 bg-white/80 px-3.5 py-3 text-[15px] outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]"
+            className="w-full resize-none rounded-xl border border-ink/12 bg-white/80 px-3.5 py-3 text-[15px] outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--theme-primary)_12%,transparent)]"
             placeholder="Plot size, number of floors, approval status, when you would like to start…"
           />
         </label>
@@ -195,7 +195,7 @@ export function ContactForm() {
         <button
           type="button"
           onClick={openWhatsApp}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#25D366]/50 bg-[#25D366]/10 px-6 text-[14px] font-semibold text-[#128C4B] transition-colors hover:bg-[#25D366] hover:text-white"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[var(--theme-whatsapp)]/50 bg-[var(--theme-whatsapp)]/10 px-6 text-[14px] font-semibold text-[var(--theme-whatsapp-dark)] transition-colors hover:bg-[var(--theme-whatsapp)] hover:text-white"
         >
           <MessageCircle size={16} /> Send on WhatsApp
         </button>

@@ -212,28 +212,28 @@ export function fancySelect(sel: HTMLSelectElement, on: On, cls = ""): () => voi
 /** the look of the button and the list; the page adds its own sizes */
 export const FANCY_SELECT_CSS = `
 .fs{position:relative;min-width:0}
-.fs-btn{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;min-height:2.9rem;margin:0;padding:.45rem .9rem .45rem 1rem;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.22),0 1px 2px rgba(18,34,59,.06);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1.3;color:var(--ink);text-align:left;cursor:pointer;transition:box-shadow .2s}
-.fs-btn:hover{box-shadow:inset 0 0 0 1px rgba(18,34,59,.45),0 1px 2px rgba(18,34,59,.06)}
-.fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 1.5px var(--navy),0 0 0 4px rgba(39,86,160,.12)}
+.fs-btn{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;min-height:2.9rem;margin:0;padding:.45rem .9rem .45rem 1rem;border:0;border-radius:12px;background:var(--theme-white);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 22%,transparent),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1.3;color:var(--ink);text-align:left;cursor:pointer;transition:box-shadow .2s}
+.fs-btn:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 45%,transparent),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent)}
+.fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 1.5px var(--navy),0 0 0 4px color-mix(in srgb,var(--theme-primary) 12%,transparent)}
 .fs-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fs-val{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fs-chev{flex:none;width:15px;height:15px;color:var(--mute);transition:transform .25s}
 .fs-btn[aria-expanded=true] .fs-chev{transform:rotate(180deg);color:var(--ink)}
-.fs-n{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;margin-left:.15rem;padding:0 .35rem;border-radius:999px;background:rgba(39,86,160,.1);font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--accent);vertical-align:1px;font-variant-numeric:tabular-nums}
-.fs-list{position:fixed;inset:auto;z-index:80;margin:0;padding:.4rem;border:0;border-radius:14px;background:#fff;box-shadow:0 0 0 1px rgba(18,34,59,.1),0 24px 48px -18px rgba(18,34,59,.35);overflow-y:auto;overscroll-behavior:contain;color:var(--ink,#12223b);font-family:var(--sans);opacity:0;transform:translateY(-4px);transition:opacity .16s,transform .16s}
+.fs-n{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;margin-left:.15rem;padding:0 .35rem;border-radius:999px;background:color-mix(in srgb,var(--theme-primary) 10%,transparent);font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--accent);vertical-align:1px;font-variant-numeric:tabular-nums}
+.fs-list{position:fixed;inset:auto;z-index:80;margin:0;padding:.4rem;border:0;border-radius:14px;background:var(--theme-white);box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-ink) 10%,transparent),0 24px 48px -18px color-mix(in srgb,var(--theme-ink) 35%,transparent);overflow-y:auto;overscroll-behavior:contain;color:var(--ink,var(--theme-ink));font-family:var(--sans);opacity:0;transform:translateY(-4px);transition:opacity .16s,transform .16s}
 .fs-list.is-up{transform:translateY(4px)}
 .fs-list.is-open{opacity:1;transform:none}
 @starting-style{.fs-list.is-open{opacity:0;transform:translateY(-4px)}}
 .fs-list:focus{outline:none}
 .fs-list:focus-visible{outline:none}
-.fs-g + .fs-g{margin-top:.3rem;padding-top:.3rem;border-top:1px solid rgba(18,34,59,.08)}
-.fs-gh{position:sticky;top:-.4rem;z-index:1;margin:0;padding:.55rem .7rem .3rem;background:#fff;font-size:var(--fs-body);font-weight:600;color:var(--mute,#6b7280)}
+.fs-g + .fs-g{margin-top:.3rem;padding-top:.3rem;border-top:1px solid color-mix(in srgb,var(--theme-ink) 8%,transparent)}
+.fs-gh{position:sticky;top:-.4rem;z-index:1;margin:0;padding:.55rem .7rem .3rem;background:var(--theme-white);font-size:var(--fs-body);font-weight:600;color:var(--mute,var(--theme-muted))}
 .fs-opt{display:grid;grid-template-columns:1rem minmax(0,1fr) auto;align-items:center;gap:.55rem;padding:.5rem .7rem;border-radius:9px;font-size:var(--fs-body);line-height:1.35;cursor:pointer}
-.fs-opt.is-active{background:rgba(39,86,160,.08)}
+.fs-opt.is-active{background:color-mix(in srgb,var(--theme-primary) 8%,transparent)}
 .fs-tick{width:1rem;height:1rem;color:var(--accent);opacity:0}
 .fs-opt[aria-selected=true]{font-weight:600}
 .fs-opt[aria-selected=true] .fs-tick{opacity:1}
-.fs-opt .fs-n{background:rgba(18,34,59,.06);color:var(--ink2,#3b4658)}
-.fs-opt[aria-selected=true] .fs-n{background:var(--navy,#12223b);color:#fff}
+.fs-opt .fs-n{background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--ink2,var(--theme-ink-2))}
+.fs-opt[aria-selected=true] .fs-n{background:var(--navy,var(--theme-ink));color:var(--theme-white)}
 @media (prefers-reduced-motion:reduce){.fs-list,.fs-chev{transition:none}}
 `;

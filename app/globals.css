@@ -1,25 +1,28 @@
 @import "tailwindcss";
 
 /* ───────────────────────── RPC design tokens ───────────────────────── */
-@theme {
-  /* dry sand and stone grounds (no white anywhere), the logo's deep blue for the
-     nav bar and footer only, navy ink, the logo blue for actions, water teal for
-     water, and an amber kept for small highlights */
-  --color-paper: #ece6da;
-  --color-paper-2: #e2d9c9;
-  --color-card: #f5f0e6;
-  --color-stone: #d3c8b5;
-  --color-ink: #12223b;
-  --color-ink-2: #2a3a52;
-  --color-mute: #5e6472;
-  --color-rpc: #2756a0;
-  --color-rpc-deep: #0b2350;
-  --color-night: #0b2350;
-  --color-water: #0b6e80;
-  --color-water-2: #f5f0e6;
-  --color-amber: #e8a215;
-  --color-bronze: #8a6a4c;
+@theme inline {
+  /* every colour comes from the colour theme (color-theme/colors.css); these are
+     the Tailwind names the components use, each pointed at a role there */
+  --color-paper: var(--theme-bg);
+  --color-paper-2: var(--theme-bg-alt);
+  --color-card: var(--theme-surface);
+  --color-stone: var(--theme-placeholder);
+  --color-ink: var(--theme-ink);
+  --color-ink-2: var(--theme-ink-2);
+  --color-mute: var(--theme-muted);
+  --color-rpc: var(--theme-primary);
+  --color-rpc-deep: var(--theme-primary-dark);
+  --color-night: var(--theme-primary-dark);
+  --color-water: var(--theme-water);
+  --color-water-2: var(--theme-on-dark);
+  --color-amber: var(--theme-secondary);
+  --color-orange: var(--theme-secondary);
+  --color-bronze: var(--theme-secondary-text);
+  --color-white: var(--theme-white);
+}
 
+@theme {
   /* three sizes only: a title, a subtitle and the paragraph size */
   --text-title: clamp(1.9rem, 1.3rem + 1.9vw, 3rem);
   --text-sub: clamp(1.2rem, 1.08rem + 0.4vw, 1.5rem);
@@ -81,7 +84,7 @@
   }
   ::selection {
     background: var(--color-rpc);
-    color: #f5f0e6;
+    color: var(--theme-on-dark);
   }
   :focus-visible {
     outline: 1px solid currentColor;
@@ -168,7 +171,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-body);
     letter-spacing: 0.18em;
-    color: #eaf0ff;
+    color: var(--theme-on-dark);
     white-space: nowrap;
     transition: none;
   }
@@ -176,7 +179,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #101a22;
+    color: var(--theme-dark);
     transform: translateY(-50%);
   }
   .anatomy-line {
@@ -222,7 +225,7 @@
     color: var(--color-ink);
   }
   .btn-light:hover {
-    background: #fff;
+    background: var(--theme-white);
   }
   .btn-ghost {
     border: 1px solid color-mix(in oklab, currentColor 35%, transparent);
@@ -271,7 +274,7 @@
     inset: 0;
     pointer-events: none;
     opacity: calc(var(--tz) * 1);
-    background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05) 28%, transparent 52%);
+    background: radial-gradient(circle at var(--mx) var(--my), color-mix(in srgb,var(--theme-white) 22%,transparent), color-mix(in srgb,var(--theme-white) 5%,transparent) 28%, transparent 52%);
     mix-blend-mode: soft-light;
     transition: opacity 0.6s var(--ease-film);
   }
@@ -279,7 +282,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.16) 45%, transparent 60%);
+    background: linear-gradient(115deg, transparent 30%, color-mix(in srgb,var(--theme-white) 16%,transparent) 45%, transparent 60%);
     transform: translateX(calc((var(--mx) - 50%) * 1.4));
     mix-blend-mode: screen;
   }
@@ -365,7 +368,7 @@
 .pre-turn {
   animation: pre-turn 4.8s ease-in-out infinite;
   transform-style: preserve-3d;
-  filter: drop-shadow(0 18px 24px rgba(17, 19, 22, 0.18));
+  filter: drop-shadow(0 18px 24px color-mix(in srgb,var(--theme-shadow) 18%,transparent));
 }
 
 /* realistic hero stage: the source frame (16:9) covering the viewport */

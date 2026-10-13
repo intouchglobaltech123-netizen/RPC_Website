@@ -109,13 +109,13 @@ export function LeakHelper() {
             ref={card}
             role="dialog"
             aria-labelledby={titleId}
-            className="pointer-events-auto w-[min(21.5rem,calc(100vw_-_2*var(--gutter)))] origin-bottom-right overflow-hidden rounded-[18px] bg-[#f5f0e6] text-ink shadow-[0_30px_60px_-28px_rgba(4,12,30,0.65),0_0_0_1px_rgba(18,34,59,0.1)]"
+            className="pointer-events-auto w-[min(21.5rem,calc(100vw_-_2*var(--gutter)))] origin-bottom-right overflow-hidden rounded-[18px] bg-[var(--theme-surface)] text-ink shadow-[0_30px_60px_-28px_color-mix(in_srgb,var(--theme-shadow)_65%,transparent),0_0_0_1px_color-mix(in_srgb,var(--theme-ink)_10%,transparent)]"
             initial={{ opacity: 0, scale: 0.92, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ duration: 0.35, ease }}
           >
-            <div className="flex items-start justify-between gap-3 bg-night px-5 pb-4 pt-[1.1rem] text-[#f5f0e6]">
+            <div className="flex items-start justify-between gap-3 bg-night px-5 pb-4 pt-[1.1rem] text-[var(--theme-on-dark)]">
               <div>
                 <p id={titleId} className="m-0 font-display text-sub font-semibold leading-tight">
                   What are you seeing?
@@ -140,7 +140,7 @@ export function LeakHelper() {
                 {SIGNS.map((s) => (
                   <label key={s} className="cursor-pointer">
                     <input type="radio" name="leak-sign" value={s} checked={sign === s} onChange={() => setSign(s)} className="peer sr-only" />
-                    <span className="inline-flex h-9 items-center rounded-[9px] bg-[#ece6da] px-3 text-body font-medium shadow-[inset_0_0_0_1px_rgba(18,34,59,0.14)] transition-colors peer-checked:bg-night peer-checked:text-[#f5f0e6] peer-checked:shadow-none peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-water hover:bg-[#e2d9c9]">
+                    <span className="inline-flex h-9 items-center rounded-[9px] bg-[var(--theme-bg)] px-3 text-body font-medium shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--theme-ink)_14%,transparent)] transition-colors peer-checked:bg-night peer-checked:text-[var(--theme-on-dark)] peer-checked:shadow-none peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-water hover:bg-[var(--theme-bg-alt)]">
                       {s}
                     </span>
                   </label>
@@ -152,12 +152,12 @@ export function LeakHelper() {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex h-11 items-center justify-center gap-2 rounded-[11px] bg-[#25d366] px-4 text-body font-semibold text-[#06301a] transition-colors hover:bg-[#1fbd5a] ${focus}`}
+                className={`inline-flex h-11 items-center justify-center gap-2 rounded-[11px] bg-[var(--theme-whatsapp)] px-4 text-body font-semibold text-[var(--theme-on-whatsapp)] transition-colors hover:bg-[var(--theme-whatsapp-hover)] ${focus}`}
               >
                 <WhatsApp className="h-[18px] w-[18px]" />
                 Send on WhatsApp
               </a>
-              <a href={tel} className={`inline-flex h-10 items-center justify-center gap-2 rounded-[11px] text-body font-semibold text-ink transition-colors hover:bg-[#ece6da] ${focus}`}>
+              <a href={tel} className={`inline-flex h-10 items-center justify-center gap-2 rounded-[11px] text-body font-semibold text-ink transition-colors hover:bg-[var(--theme-bg)] ${focus}`}>
                 <Phone size={15} aria-hidden className="text-water" />
                 Or call {contact.phone}
               </a>
@@ -173,7 +173,7 @@ export function LeakHelper() {
         aria-haspopup="dialog"
         tabIndex={visible ? 0 : -1}
         onClick={() => setOpen((o) => !o)}
-        className={`pointer-events-auto inline-flex h-11 items-center rounded-full bg-night px-5 text-body font-semibold text-[#f5f0e6] shadow-[0_18px_36px_-16px_rgba(4,12,30,0.75)] ring-1 ring-white/[0.08] transition-colors hover:bg-[#12306b] sm:h-12 sm:px-6 ${focus}`}
+        className={`pointer-events-auto inline-flex h-11 items-center rounded-full bg-night px-5 text-body font-semibold text-[var(--theme-on-dark)] shadow-[0_18px_36px_-16px_color-mix(in_srgb,var(--theme-shadow)_75%,transparent)] ring-1 ring-white/[0.08] transition-colors hover:bg-[var(--theme-primary)] sm:h-12 sm:px-6 ${focus}`}
         style={{ pointerEvents: visible ? "auto" : "none" }}
       >
         {open ? "Close" : "Ask an engineer"}

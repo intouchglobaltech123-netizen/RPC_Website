@@ -14,15 +14,15 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const links = nav.filter((n) => n.href !== "/contact");
 const tel = `tel:${contact.phone.replace(/[^0-9+]/g, "")}`;
 /** the page's sand, for the pill behind the page you are on */
-const SAND = "#ece6da";
+const SAND = "var(--theme-bg)";
 /** pages that open on a dark picture, where the logo's name is drawn in white */
 const DARK_TOP = new Set(["/", "/classic"]);
 /** the bars' material: the logo's dark blue, a little lighter at the top, with a fine light edge and a soft shadow */
 const BAR = {
-  background: "linear-gradient(180deg, rgba(19,49,108,0.94), rgba(11,35,80,0.94) 60%)",
+  background: "linear-gradient(180deg, color-mix(in srgb,var(--theme-primary-dark) 94%,transparent), color-mix(in srgb,var(--theme-primary-dark) 94%,transparent) 60%)",
   WebkitBackdropFilter: "blur(14px) saturate(150%)",
   backdropFilter: "blur(14px) saturate(150%)",
-  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(255,255,255,0.06), 0 18px 36px -18px rgba(4,12,30,0.7), 0 3px 8px -3px rgba(4,12,30,0.3)",
+  boxShadow: "inset 0 1px 0 color-mix(in srgb,var(--theme-white) 12%,transparent), inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 6%,transparent), 0 18px 36px -18px color-mix(in srgb,var(--theme-shadow) 70%,transparent), 0 3px 8px -3px color-mix(in srgb,var(--theme-shadow) 30%,transparent)",
 } as const;
 /** the header's layout and shapes (kept here rather than in utility classes, so they never depend on a stylesheet rebuild) */
 const NAV_CSS = `
@@ -30,8 +30,8 @@ const NAV_CSS = `
 .rn-mini{display:flex;align-items:center;gap:4px;height:48px;padding:0 6px;border-radius:999px}
 .rn-sq{display:grid;place-items:center;width:36px;height:36px;border-radius:999px}
 .rn-link{display:inline-flex;align-items:center;height:42px;padding:0 11px;border-radius:999px;letter-spacing:.005em}
-.rn-pill{border-radius:999px;box-shadow:inset 0 -1px 0 rgba(18,34,59,.1),0 1px 2px rgba(4,12,30,.25)}
-.rn-cta{display:inline-flex;align-items:center;gap:12px;height:52px;padding:0 6px 0 22px;border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.06),0 18px 36px -18px rgba(4,12,30,.7),0 3px 8px -3px rgba(4,12,30,.3)}
+.rn-pill{border-radius:999px;box-shadow:inset 0 -1px 0 color-mix(in srgb,var(--theme-ink) 10%,transparent),0 1px 2px color-mix(in srgb,var(--theme-shadow) 25%,transparent)}
+.rn-cta{display:inline-flex;align-items:center;gap:12px;height:52px;padding:0 6px 0 22px;border-radius:999px;box-shadow:inset 0 1px 0 color-mix(in srgb,var(--theme-white) 12%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 6%,transparent),0 18px 36px -18px color-mix(in srgb,var(--theme-shadow) 70%,transparent),0 3px 8px -3px color-mix(in srgb,var(--theme-shadow) 30%,transparent)}
 .rn-ctai{display:grid;place-items:center;width:40px;height:40px;border-radius:999px}
 .rn-cta--sm{display:none;gap:8px;height:36px;padding:0 4px 0 14px;box-shadow:none}
 .rn-cta--sm .rn-ctai{width:28px;height:28px}

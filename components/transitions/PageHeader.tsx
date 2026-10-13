@@ -48,7 +48,7 @@ export function PageHeader({
             {aside && <div className="mt-6">{aside}</div>}
           </div>
           <div className="relative lg:col-span-6">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-stone shadow-[0_40px_70px_-40px_rgba(17,19,22,0.5)] lg:aspect-auto lg:h-[42svh]">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-stone shadow-[0_40px_70px_-40px_color-mix(in_srgb,var(--theme-shadow)_50%,transparent)] lg:aspect-auto lg:h-[42svh]">
               <Image src={image} alt={imageAlt} fill priority sizes="(min-width:1024px) 48vw, 92vw" className="object-cover" />
             </div>
             {badge && (
@@ -69,7 +69,7 @@ export function PageHeader({
           className="absolute inset-0 opacity-[0.12]"
           style={{
             backgroundImage:
-              "linear-gradient(to right, rgba(140,170,230,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(140,170,230,0.6) 1px, transparent 1px)",
+              "linear-gradient(to right, color-mix(in srgb,var(--theme-primary-soft) 60%,transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb,var(--theme-primary-soft) 60%,transparent) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
             backgroundPosition: "center",
             maskImage: "radial-gradient(ellipse at center, black 25%, transparent 75%)",
@@ -108,8 +108,8 @@ export function PageHeader({
       {!plain && (
         <>
           <Image src={image} alt={imageAlt} fill priority sizes="100vw" className="object-cover" />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#0b111c]/95 via-[#0b111c]/75 to-[#0b111c]/35" />
-          <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0b111c]/80 to-transparent" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[var(--theme-dark)]/95 via-[var(--theme-dark)]/75 to-[var(--theme-dark)]/35" />
+          <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[var(--theme-dark)]/80 to-transparent" />
         </>
       )}
 

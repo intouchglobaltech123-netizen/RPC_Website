@@ -63,10 +63,10 @@ function houseDrawing() {
   return `<svg class="wpx-draw" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-labelledby="wpx-dt">
   <title id="wpx-dt">A section through a house with a terrace, a balcony, a bathroom, an outside wall, a garden podium over the basement, a crack in the basement wall, and water tanks on the roof and under the drive</title>
   <defs>
-    <pattern id="wpx-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#e7dfcf"/><line x1="0" y1="0" x2="0" y2="6" stroke="#12223b" stroke-opacity=".22" stroke-width="1"/></pattern>
-    <pattern id="wpx-earth" width="16" height="12" patternUnits="userSpaceOnUse"><rect width="16" height="12" fill="#ece4d3"/><circle cx="3" cy="3" r="1" fill="#12223b" fill-opacity=".16"/><circle cx="11" cy="9" r=".85" fill="#12223b" fill-opacity=".12"/></pattern>
-    <linearGradient id="wpx-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5f0e6" stop-opacity="0"/><stop offset="1" stop-color="#f5f0e6"/></linearGradient>
-    <pattern id="wpx-fill" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="#ebe3d3"/><circle cx="2" cy="2.5" r="1.1" fill="#12223b" fill-opacity=".15"/><circle cx="6.5" cy="6.5" r="1.3" fill="#12223b" fill-opacity=".1"/></pattern>
+    <pattern id="wpx-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--theme-surface-2)"/><line x1="0" y1="0" x2="0" y2="6" stroke="var(--theme-ink)" stroke-opacity=".22" stroke-width="1"/></pattern>
+    <pattern id="wpx-earth" width="16" height="12" patternUnits="userSpaceOnUse"><rect width="16" height="12" fill="var(--theme-surface-2)"/><circle cx="3" cy="3" r="1" fill="var(--theme-ink)" fill-opacity=".16"/><circle cx="11" cy="9" r=".85" fill="var(--theme-ink)" fill-opacity=".12"/></pattern>
+    <linearGradient id="wpx-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--theme-on-dark)" stop-opacity="0"/><stop offset="1" stop-color="var(--theme-on-dark)"/></linearGradient>
+    <pattern id="wpx-fill" width="9" height="9" patternUnits="userSpaceOnUse"><rect width="9" height="9" fill="var(--theme-surface-2)"/><circle cx="2" cy="2.5" r="1.1" fill="var(--theme-ink)" fill-opacity=".15"/><circle cx="6.5" cy="6.5" r="1.3" fill="var(--theme-ink)" fill-opacity=".1"/></pattern>
   </defs>
 
   <rect x="0" y="380" width="760" height="150" fill="url(#wpx-earth)"/>
@@ -267,40 +267,40 @@ export const METHODS_TOOLS_CSS = `
 .wpx-frame{padding:clamp(.6rem,1.4vw,1.1rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
 .wpx-art{position:relative}
 .wpx-draw{display:block;width:100%;height:auto;overflow:visible}
-.wpx-cut{fill:url(#wpx-hatch);stroke:#12223b;stroke-width:1.2;stroke-linejoin:round}
-.wpx-fine{fill:none;stroke:#12223b;stroke-opacity:.34;stroke-width:1}
+.wpx-cut{fill:url(#wpx-hatch);stroke:var(--theme-ink);stroke-width:1.2;stroke-linejoin:round}
+.wpx-fine{fill:none;stroke:var(--theme-ink);stroke-opacity:.34;stroke-width:1}
 .wpx-void{fill:var(--card)}
 .wpx-fade{fill:url(#wpx-fade)}
-.wpx-gl{fill:none;stroke:#12223b;stroke-width:1.2}
-.wpx-planter{fill:#efe8da;stroke:#12223b;stroke-width:1.1}
+.wpx-gl{fill:none;stroke:var(--theme-ink);stroke-width:1.2}
+.wpx-planter{fill:var(--theme-surface-2);stroke:var(--theme-ink);stroke-width:1.1}
 .wpx-bfill{fill:url(#wpx-fill)}
-.wpx-tiles{stroke:#12223b;stroke-width:1.1;stroke-dasharray:7 3}
-.wpx-screed{fill:#efe8da;stroke:#12223b;stroke-width:.9}
-.wpx-water{fill:#3d7cc9;fill-opacity:.2}
-.wpx-lid{fill:#26313f}
-.wpx-crack{fill:none;stroke:#12223b;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.wpx-coat{fill:none;stroke:#0b6e80;stroke-opacity:.28;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .25s,stroke-width .25s}
-.wpx-flow{fill:none;stroke:#2756a0;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .25s}
+.wpx-tiles{stroke:var(--theme-ink);stroke-width:1.1;stroke-dasharray:7 3}
+.wpx-screed{fill:var(--theme-surface-2);stroke:var(--theme-ink);stroke-width:.9}
+.wpx-water{fill:var(--theme-water);fill-opacity:.2}
+.wpx-lid{fill:var(--theme-ink-2)}
+.wpx-crack{fill:none;stroke:var(--theme-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.wpx-coat{fill:none;stroke:var(--theme-water);stroke-opacity:.28;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .25s,stroke-width .25s}
+.wpx-flow{fill:none;stroke:var(--theme-primary);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .25s}
 .wpx-part.is-on .wpx-coat{stroke-opacity:1;stroke-width:5.5}
 .wpx-part.is-on .wpx-flow{opacity:1}
-.wpx-spot{position:absolute;display:grid;place-items:center;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;padding:0;border:0;border-radius:50%;background:var(--card);box-shadow:0 0 0 1.5px var(--navy),0 6px 14px -6px rgba(11,35,80,.55);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .2s}
+.wpx-spot{position:absolute;display:grid;place-items:center;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;padding:0;border:0;border-radius:50%;background:var(--card);box-shadow:0 0 0 1.5px var(--navy),0 6px 14px -6px color-mix(in srgb,var(--theme-primary-dark) 55%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .2s}
 .wpx-spot:hover{transform:scale(1.08)}
-.wpx-spot.is-on{background:var(--navy);color:#f5f0e6}
+.wpx-spot.is-on{background:var(--navy);color:var(--theme-on-dark)}
 .wpx-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem}
 .wpx-tab{display:inline-flex;align-items:center;gap:.5rem;height:2.4rem;padding:0 .95rem 0 .35rem;border:0;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);font-weight:500;color:var(--ink);white-space:nowrap;cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
 .wpx-tab span{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--sand-2);font-weight:600;font-variant-numeric:tabular-nums}
-.wpx-tab:hover{box-shadow:inset 0 0 0 1px rgba(18,34,59,.45)}
-.wpx-tab[aria-selected="true"]{background:var(--navy);box-shadow:none;color:#f5f0e6}
-.wpx-tab[aria-selected="true"] span{background:#f5f0e6;color:var(--navy)}
+.wpx-tab:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 45%,transparent)}
+.wpx-tab[aria-selected="true"]{background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
+.wpx-tab[aria-selected="true"] span{background:var(--theme-surface);color:var(--navy)}
 .wpx-tab:focus-visible,.wpx-panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wpx-panel{padding:clamp(1.3rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -48px rgba(18,34,59,.5)}
+.wpx-panel{padding:clamp(1.3rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -48px color-mix(in srgb,var(--theme-ink) 50%,transparent)}
 .wpx-ph{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.01em}
 .wpx-why{margin:.5rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
 .wpx-ml{margin:1.2rem 0 .4rem;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .wpx-ms{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
 .wpx-ms li{border-bottom:1px solid var(--line)}
 .wpx-ms a{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;column-gap:.8rem;padding:.65rem .1rem;color:var(--ink);text-decoration:none}
-.wpx-mi{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:4px;background:rgba(18,34,59,.05);color:var(--ink2)}
+.wpx-mi{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:4px;background:color-mix(in srgb,var(--theme-ink) 5%,transparent);color:var(--ink2)}
 .wpx-mi svg{width:1.25rem;height:1.25rem}
 .wpx-mt{display:flex;flex-direction:column;min-width:0}
 .wpx-mn{font-size:var(--fs-body);font-weight:600;line-height:1.35}
@@ -318,81 +318,81 @@ export const METHODS_TOOLS_CSS = `
 .wpx-cell{min-width:0;font-size:var(--fs-body);line-height:1.55;color:var(--ink)}
 .wpx-cell--both{grid-column:2 / -1}
 .wpx-both{display:inline-flex;align-items:center;height:1.6rem;margin-right:.55rem;padding:0 .5rem;border-radius:6px;background:var(--sky);font-weight:600;color:var(--water)}
-.wpx-pick{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.7rem;min-height:3.1rem;padding:.55rem 1rem;border-radius:6px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:#f5f0e6;cursor:pointer;transition:background-color .2s,box-shadow .3s}
-.wpx-pick:hover{background:rgba(255,255,255,.14)}
-.wpx-pick.is-new{box-shadow:inset 0 0 0 2px #fff}
-.wpx-pick:has(select:focus-visible){outline:2px solid #fff;outline-offset:2px}
+.wpx-pick{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.7rem;min-height:3.1rem;padding:.55rem 1rem;border-radius:6px;background:color-mix(in srgb,var(--theme-white) 8%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 16%,transparent);color:var(--theme-on-dark);cursor:pointer;transition:background-color .2s,box-shadow .3s}
+.wpx-pick:hover{background:color-mix(in srgb,var(--theme-white) 14%,transparent)}
+.wpx-pick.is-new{box-shadow:inset 0 0 0 2px var(--theme-white)}
+.wpx-pick:has(select:focus-visible){outline:2px solid var(--theme-white);outline-offset:2px}
 .wpx-pickname{min-width:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .wpx-pick svg{flex:none;width:15px;height:15px}
-.wpx-pick select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;font-size:16px;color:#121314;background:#fff;cursor:pointer;appearance:none}
-.wpx-swap{display:inline-flex;align-items:center;gap:.5rem;height:3.1rem;padding:0 1rem 0 .85rem;border:0;border-radius:6px;background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:inherit;font-size:var(--fs-body);font-weight:600;color:#f5f0e6;cursor:pointer;transition:background-color .2s}
+.wpx-pick select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;font-size:16px;color:var(--theme-dark);background:var(--theme-white);cursor:pointer;appearance:none}
+.wpx-swap{display:inline-flex;align-items:center;gap:.5rem;height:3.1rem;padding:0 1rem 0 .85rem;border:0;border-radius:6px;background:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 16%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--theme-on-dark);cursor:pointer;transition:background-color .2s}
 .wpx-swap svg{width:20px;height:20px;transition:transform .3s}
-.wpx-swap:hover{background:rgba(255,255,255,.1)}
+.wpx-swap:hover{background:color-mix(in srgb,var(--theme-white) 10%,transparent)}
 .wpx-swap:hover svg{transform:rotate(180deg)}
-.wpx-swap:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.wpx-swap:focus-visible{outline:2px solid var(--theme-white);outline-offset:2px}
 /* the method picker: a panel of the twelve, grouped by kind (with scripts; the plain select without) */
 .wpx-js .wpx-pick select{display:none}
-.wpx-js .wpx-pick:focus-visible{outline:2px solid #fff;outline-offset:2px}
-.wpx-js .wpx-pick[aria-expanded=true]{background:#f5f0e6;box-shadow:none;color:var(--navy)}
+.wpx-js .wpx-pick:focus-visible{outline:2px solid var(--theme-white);outline-offset:2px}
+.wpx-js .wpx-pick[aria-expanded=true]{background:var(--theme-surface);box-shadow:none;color:var(--navy)}
 .wpx-js .wpx-pick[aria-expanded=true] svg{transform:rotate(180deg)}
 .wpx-pick svg{transition:transform .25s}
 .wpx-row--head .wpx-cell{position:relative}
-.wpx-menu{position:absolute;top:calc(100% + .55rem);left:0;z-index:30;width:min(40rem,calc(100vw - 2rem));padding:.6rem;border-radius:14px;background:var(--card);box-shadow:0 0 0 1px rgba(18,34,59,.12),0 30px 60px -24px rgba(4,12,30,.55),0 8px 18px -10px rgba(4,12,30,.3);color:var(--ink)}
+.wpx-menu{position:absolute;top:calc(100% + .55rem);left:0;z-index:30;width:min(40rem,calc(100vw - 2rem));padding:.6rem;border-radius:14px;background:var(--card);box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-ink) 12%,transparent),0 30px 60px -24px color-mix(in srgb,var(--theme-shadow) 55%,transparent),0 8px 18px -10px color-mix(in srgb,var(--theme-shadow) 30%,transparent);color:var(--ink)}
 .wpx-menu--b{left:auto;right:0}
 .wpx-menu[hidden]{display:none}
 .wpx-mcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}
 .wpx-mcol{display:flex;flex-direction:column;gap:.4rem}
-.wpx-mgroup{display:flex;flex-direction:column;gap:2px;padding:.45rem;border-radius:10px;background:rgba(18,34,59,.035)}
+.wpx-mgroup{display:flex;flex-direction:column;gap:2px;padding:.45rem;border-radius:10px;background:color-mix(in srgb,var(--theme-ink) 3.5%,transparent)}
 .wpx-mg{margin:0 0 .25rem;padding:.1rem .55rem 0;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .wpx-opt{display:grid;grid-template-columns:minmax(0,1fr) auto 1.1rem;align-items:center;gap:.6rem;width:100%;min-height:3.1rem;padding:.45rem .6rem;border:0;border-radius:8px;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer;transition:background-color .15s,color .15s}
-.wpx-opt:hover,.wpx-opt:focus-visible{background:var(--card);box-shadow:inset 0 0 0 1px rgba(18,34,59,.14);outline:none}
+.wpx-opt:hover,.wpx-opt:focus-visible{background:var(--card);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 14%,transparent);outline:none}
 .wpx-opt:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
 .wpx-otx{display:flex;flex-direction:column;min-width:0}
 .wpx-on{font-size:var(--fs-body);font-weight:600;line-height:1.3}
 .wpx-oa{font-size:var(--fs-body);line-height:1.35;color:var(--mute)}
-.wpx-otag{display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(18,34,59,.3);font-size:var(--fs-body);font-weight:700;line-height:1;color:var(--ink2)}
+.wpx-otag{display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 30%,transparent);font-size:var(--fs-body);font-weight:700;line-height:1;color:var(--ink2)}
 .wpx-otag:empty{visibility:hidden}
 .wpx-otick{display:grid;place-items:center;color:transparent}
 .wpx-otick svg{width:16px;height:16px}
-.wpx-opt[aria-selected=true]{background:var(--navy);box-shadow:none;color:#fff}
-.wpx-opt[aria-selected=true] .wpx-oa{color:rgba(255,255,255,.7)}
-.wpx-opt[aria-selected=true] .wpx-otick{color:#f5f0e6}
+.wpx-opt[aria-selected=true]{background:var(--navy);box-shadow:none;color:var(--theme-white)}
+.wpx-opt[aria-selected=true] .wpx-oa{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
+.wpx-opt[aria-selected=true] .wpx-otick{color:var(--theme-on-dark)}
 
 /* the rows: what each row is about on a quiet band, the two methods on either side */
 .wpx-row:not(.wpx-row--head){align-items:start}
 .wpx-row:not(.wpx-row--head) .wpx-rh{font-weight:600;color:var(--ink2)}
-.wpx-row:not(.wpx-row--head):nth-child(even){background:rgba(18,34,59,.025)}
-.wpx-row:not(.wpx-row--head):hover{background:rgba(39,86,160,.05)}
+.wpx-row:not(.wpx-row--head):nth-child(even){background:color-mix(in srgb,var(--theme-ink) 2.5%,transparent)}
+.wpx-row:not(.wpx-row--head):hover{background:color-mix(in srgb,var(--theme-primary) 5%,transparent)}
 [data-cmp-rows] .wpx-row:last-child{border-radius:0 0 8px 8px}
 /* the place's box, simple: its name on a dark band, its methods as plain rows with a line between, then the booking button and a link */
 .wpx-panel{padding:0;overflow:hidden;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
-.wpx-phead{padding:1.1rem 1.3rem 1.15rem;background:var(--navy);color:#f5f0e6}
-.wpx-panel .wpx-ph{margin:0;padding:0;background:none;color:#f5f0e6}
-.wpx-panel .wpx-why{margin:.3rem 0 0;padding:0;background:none;font-size:var(--fs-body);line-height:1.45;color:rgba(245,240,230,.75)}
+.wpx-phead{padding:1.1rem 1.3rem 1.15rem;background:var(--navy);color:var(--theme-on-dark)}
+.wpx-panel .wpx-ph{margin:0;padding:0;background:none;color:var(--theme-on-dark)}
+.wpx-panel .wpx-why{margin:.3rem 0 0;padding:0;background:none;font-size:var(--fs-body);line-height:1.45;color:color-mix(in srgb,var(--theme-on-dark) 75%,transparent)}
 .wpx-panel .wpx-ml{margin:0;padding:1rem 1.3rem .25rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .wpx-panel .wpx-ms{display:block;margin:0 1.3rem;padding:0;border:0;background:none;box-shadow:none}
 .wpx-panel .wpx-ms li{border:0;border-bottom:1px solid var(--line);box-shadow:none}
 .wpx-panel .wpx-ms li:last-child{border-bottom:0}
-.wpx-panel .wpx-ms a{--k:#2756a0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-radius:0;background:none;box-shadow:none}
+.wpx-panel .wpx-ms a{--k:var(--theme-primary);display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-radius:0;background:none;box-shadow:none}
 .wpx-panel .wpx-ms a[data-k=sheet]{--k:#a35f10}
 .wpx-panel .wpx-ms a[data-k=concrete]{--k:#1f7a4f}
 .wpx-panel .wpx-ms a[data-k=joint]{--k:#6a4c9c}
 .wpx-panel .wpx-ms a:hover{background:none;box-shadow:none}
-.wpx-panel .wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(18,34,59,.35)}
+.wpx-panel .wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--theme-ink) 35%,transparent)}
 .wpx-panel .wpx-ms a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .wpx-panel .wpx-mt{min-width:0}
 .wpx-panel .wpx-mn{font-weight:600;line-height:1.3;color:var(--ink)}
 .wpx-panel .wpx-ma{overflow:hidden;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
 .wpx-mk{flex:none;display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-body);color:var(--mute);white-space:nowrap}
-.wpx-mk::before{content:"";width:.4rem;height:.4rem;border-radius:50%;background:var(--k,#2756a0)}
+.wpx-mk::before{content:"";width:.4rem;height:.4rem;border-radius:50%;background:var(--k,var(--theme-primary))}
 .wpx-panel .wpx-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem 1rem;margin:.4rem 0 0;padding:.9rem 1.3rem 1rem;border-top:1px solid var(--line)}
 .wpx-panel .wpx-acts .pg-btn{height:2.6rem;padding:0 1.1rem}
-.wpx-more{display:inline-flex;align-items:center;gap:.3rem;font-size:var(--fs-body);font-weight:600;color:var(--ink);text-decoration:underline;text-decoration-color:rgba(18,34,59,.25);text-underline-offset:4px;transition:text-decoration-color .2s}
+.wpx-more{display:inline-flex;align-items:center;gap:.3rem;font-size:var(--fs-body);font-weight:600;color:var(--ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--theme-ink) 25%,transparent);text-underline-offset:4px;transition:text-decoration-color .2s}
 .wpx-more:hover{text-decoration-color:currentColor}
 .wpx-more .pg-ar{width:.9rem;height:.9rem}
 @media (max-width:479px){.wpx-mk{display:none}.wpx-panel .wpx-ma{white-space:normal}.wpx-panel .wpx-acts .pg-btn{width:100%}.wpx-more{margin-inline:auto}}
 .wpx-prods{display:flex;flex-wrap:wrap;gap:.35rem}
-.wpx-prods a{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;line-height:1.3;border-radius:8px;background:var(--navy);color:#f5f0e6;font-weight:600;text-decoration:none}
+.wpx-prods a{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;line-height:1.3;border-radius:8px;background:var(--navy);color:var(--theme-on-dark);font-weight:600;text-decoration:none}
 .wpx-prods a:hover{background:var(--accent)}
 .wpx-none{color:var(--mute)}
 

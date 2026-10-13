@@ -45,7 +45,7 @@ const TOPIC: Record<string, { bg: string; ink: string }> = {
   "Tanks & basements": { bg: "#dcdcec", ink: "#4b4a8f" },
   Maintenance: { bg: "#e4e0cc", ink: "#5f6b1f" },
 };
-const topic = (c: string) => TOPIC[c] ?? { bg: "#e2d9c9", ink: "#12223b" };
+const topic = (c: string) => TOPIC[c] ?? { bg: "var(--theme-bg-alt)", ink: "var(--theme-ink)" };
 const tone = (c: string) => `--tbg:${topic(c).bg};--tink:${topic(c).ink}`;
 const when = (p: PostData) => `<time datetime="${esc(p.date)}">${shortDate(p.date)}</time><span>${p.readMinutes} min read</span>`;
 const bulb = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></svg>`;
@@ -231,11 +231,11 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 .bl-sec{padding-top:clamp(2rem,5vh,3rem)}
 
 /* covers: empty frames in the topic's colour */
-.bl-cover{border-radius:6px;background:var(--tbg,#e2d9c9);box-shadow:inset 0 0 0 1px rgba(18,34,59,.06);color:color-mix(in srgb,var(--tink,#12223b) 55%,transparent)}
+.bl-cover{border-radius:6px;background:var(--tbg,var(--theme-bg-alt));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 6%,transparent);color:color-mix(in srgb,var(--tink,var(--theme-ink)) 55%,transparent)}
 
 /* topic, excerpt and date, shared */
 .bl-cat{display:flex;align-items:center;gap:.6rem;margin:0;font-size:var(--fs-body);font-weight:600;color:var(--tink,var(--accent))}
-.bl-new{display:inline-flex;align-items:center;height:1.6rem;padding:0 .6rem;border-radius:6px;background:var(--navy);font-size:var(--fs-body);color:#f5f0e6}
+.bl-new{display:inline-flex;align-items:center;height:1.6rem;padding:0 .6rem;border-radius:6px;background:var(--navy);font-size:var(--fs-body);color:var(--theme-on-dark)}
 .bl-ex{margin:.7rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink2);text-wrap:pretty}
 .bl-when{display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;margin:.9rem 0 0;font-size:var(--fs-body);color:var(--mute)}
 
@@ -268,7 +268,7 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 
 /* reading progress, along the very top */
 .po-progress{position:fixed;inset:0 0 auto;z-index:60;height:3px;pointer-events:none}
-.po-progress i{position:absolute;inset:0;background:var(--water,#0b6e80);transform-origin:left;transform:scaleX(0)}
+.po-progress i{position:absolute;inset:0;background:var(--water,var(--theme-water));transform-origin:left;transform:scaleX(0)}
 
 /* the article */
 .po-head{border-bottom:0;padding-bottom:clamp(1.6rem,4vh,2.4rem)}
@@ -287,7 +287,7 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 .po-body p{margin:.95rem 0 0;font-size:var(--fs-body);line-height:1.78;color:var(--ink2)}
 .po-body ul{margin:1.1rem 0 0;padding:0;list-style:none}
 .po-body li{position:relative;margin-top:.7rem;padding-left:1.9rem;font-size:var(--fs-body);line-height:1.65;color:var(--ink2)}
-.po-body li::before{content:"";position:absolute;left:0;top:.28em;width:18px;height:18px;border-radius:6px;background:rgba(39,86,160,.1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.5 7 11l4.5-5' fill='none' stroke='%232756a0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+.po-body li::before{content:"";position:absolute;left:0;top:.28em;width:18px;height:18px;border-radius:6px;background:color-mix(in srgb,var(--theme-primary) 10%,transparent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.5 7 11l4.5-5' fill='none' stroke='%232756a0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
 .po-tip{display:flex;gap:.9rem;align-items:flex-start;margin-top:1.6rem;padding:1.1rem 1.3rem;border-radius:8px;background:var(--sky)}
 .po-tip svg{flex:none;width:22px;height:22px;margin-top:.1rem;color:var(--accent)}
 .po-tip p{display:flex;flex-direction:column;gap:.3rem;margin:0;font-size:var(--fs-body);line-height:1.6;color:var(--ink)}
@@ -307,7 +307,7 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 .po-help p:not(.po-helph){margin:.5rem 0 0;font-size:var(--fs-body);line-height:1.55;color:var(--ink2)}
 .po-help .pg-btn{width:100%;margin-top:1rem}
 .po-quick{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
-.po-quick a{display:grid;place-items:center;height:2.6rem;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px rgba(39,86,160,.18);font-size:var(--fs-body);font-weight:600;text-decoration:none}
+.po-quick a{display:grid;place-items:center;height:2.6rem;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-primary) 18%,transparent);font-size:var(--fs-body);font-weight:600;text-decoration:none}
 .po-quick a:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
 .po-relhead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem 2rem;margin-bottom:clamp(1.6rem,4vh,2.4rem)}
 .po-relhead .pg-h2{margin:0}

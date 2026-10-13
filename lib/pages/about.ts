@@ -152,7 +152,7 @@ export const ABOUT_CSS = `
 /* vision and mission: the vision across the panel, the mission's four promises under it */
 .ab-vh{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .ab-vtext{margin:.9rem 0 0;max-width:30ch;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.35;letter-spacing:-.01em;text-wrap:balance}
-.ab-mission{margin-top:clamp(2.4rem,6vh,3.6rem);padding-top:clamp(1.4rem,3vh,2rem);border-top:1px solid rgba(39,86,160,.22)}
+.ab-mission{margin-top:clamp(2.4rem,6vh,3.6rem);padding-top:clamp(1.4rem,3vh,2rem);border-top:1px solid color-mix(in srgb,var(--theme-primary) 22%,transparent)}
 .ab-mission ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem clamp(1rem,2vw,2rem);margin:1.2rem 0 0;padding:0;list-style:none}
 .ab-mission li{display:flex;flex-direction:column;gap:.5rem;padding-top:1rem;border-top:2px solid var(--navy);font-size:var(--fs-body);line-height:1.55}
 .ab-mission .pg-tick{display:none}
@@ -184,22 +184,22 @@ export const ABOUT_CSS = `
 .ab-city:last-child .ab-cdrop{left:auto;right:0}
 /* room under the strip for the drop-down, so it opens inside this section and never over the next one */
 .ab-cities{margin-bottom:9rem}
-.ab-cin{padding:1rem 1.1rem;border-radius:12px;background:var(--navy);color:#f5f0e6;box-shadow:0 22px 40px -22px rgba(11,35,80,.6)}
+.ab-cin{padding:1rem 1.1rem;border-radius:12px;background:var(--navy);color:var(--theme-on-dark);box-shadow:0 22px 40px -22px color-mix(in srgb,var(--theme-primary-dark) 60%,transparent)}
 .ab-caddr{display:flex;gap:.55rem;margin:0;font-size:var(--fs-body);line-height:1.5}
-.ab-cpin{flex:none;width:1.1rem;height:1.1rem;margin-top:.15rem;color:rgba(245,240,230,.7)}
+.ab-cpin{flex:none;width:1.1rem;height:1.1rem;margin-top:.15rem;color:color-mix(in srgb,var(--theme-on-dark) 70%,transparent)}
 .ab-cacts{display:flex;gap:.5rem;margin:.85rem 0 0}
-.ab-cacts a{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:999px;font-size:.9rem;font-weight:600;text-decoration:none;color:#f5f0e6;box-shadow:inset 0 0 0 1px rgba(245,240,230,.3);transition:background-color .2s,color .2s}
-.ab-cacts a:first-child{background:#f5f0e6;color:var(--navy);box-shadow:none}
-.ab-cacts a:hover{background:#fff;color:var(--navy)}
+.ab-cacts a{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:999px;font-size:.9rem;font-weight:600;text-decoration:none;color:var(--theme-on-dark);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-on-dark) 30%,transparent);transition:background-color .2s,color .2s}
+.ab-cacts a:first-child{background:var(--theme-surface);color:var(--navy);box-shadow:none}
+.ab-cacts a:hover{background:var(--theme-white);color:var(--navy)}
 .ab-cacts svg{width:.8rem;height:.8rem}
-.ab-city:hover,.ab-city:focus-within{background:#fbf8f2}
+.ab-city:hover,.ab-city:focus-within{background:var(--theme-surface-2)}
 .ab-city:hover .ab-cname,.ab-city:focus-within .ab-cname{color:var(--accent)}
 .ab-city:hover .ab-cchev,.ab-city:focus-within .ab-cchev{transform:rotate(180deg);color:var(--accent)}
 .ab-city:hover .ab-cdrop,.ab-city:focus-within .ab-cdrop{opacity:1;visibility:visible;transform:none;transition:opacity .22s,transform .28s cubic-bezier(.2,.7,.2,1),visibility 0s}
 .ab-city:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
 @media (prefers-reduced-motion:reduce){.ab-cdrop,.ab-cchev{transition:none}}
 .ab-svc{margin:clamp(2.4rem,6vh,3.6rem) 0 0;padding-top:1.3rem;border-top:1px solid var(--line);font-size:var(--fs-body);line-height:1.7;color:var(--mute)}
-.ab-svc a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(18,34,59,.25)}
+.ab-svc a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--theme-ink) 25%,transparent)}
 .ab-svc a:hover{border-color:var(--ink)}
 
 @media (max-width:1023px){

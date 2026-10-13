@@ -79,7 +79,7 @@ export function rainMarkup() {
           <defs>
             <pattern id="rt-conc" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#b9b3a8"/><circle cx="4" cy="5" r="1.2" fill="#9d978c"/><circle cx="15" cy="9" r=".9" fill="#a8a296"/><circle cx="9" cy="17" r="1.4" fill="#cfc9be"/><circle cx="19" cy="19" r=".8" fill="#948e83"/></pattern>
             <pattern id="rt-soil" width="26" height="26" patternUnits="userSpaceOnUse"><rect width="26" height="26" fill="#b49a76"/><circle cx="6" cy="6" r="1.6" fill="#9c8261"/><circle cx="18" cy="14" r="1.1" fill="#c8b18f"/><circle cx="10" cy="21" r="1.3" fill="#8f7655"/></pattern>
-            <pattern id="rt-xtal" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M7 2l2 5-2 5-2-5z" fill="#ffffff" fill-opacity=".75"/></pattern>
+            <pattern id="rt-xtal" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M7 2l2 5-2 5-2-5z" fill="var(--theme-white)" fill-opacity=".75"/></pattern>
             <linearGradient id="rt-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9d6e6"/><stop offset="1" stop-color="#e4eaf1"/></linearGradient>
           </defs>
           <g class="rt-scene">
@@ -129,7 +129,7 @@ export const RAIN_CSS = `
 .rt-chip{display:inline-flex;align-items:center;height:2.4rem;padding:0 .85rem;border:0;border-radius:999px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);font-weight:500;color:var(--ink);cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
 .rt-chip:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
 .rt-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.rt-chip[aria-pressed=true]{background:var(--navy);box-shadow:none;color:#f5f0e6}
+.rt-chip[aria-pressed=true]{background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
 .rt-group--none .rt-chip[aria-pressed=true]{background:#a2452c}
 .rt:not(.is-live) .rt-pick{display:none}
 .rt-stage{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);margin:0;overflow:hidden;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
@@ -138,7 +138,7 @@ export const RAIN_CSS = `
 .rt-kind{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .rt-name{margin:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .rt-where{margin:.3rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink)}
-.rt-mind{margin:.2rem 0 0;padding:.7rem .85rem;border-radius:10px;background:rgba(18,34,59,.05);font-size:var(--fs-body);line-height:1.5;color:var(--ink2)}
+.rt-mind{margin:.2rem 0 0;padding:.7rem .85rem;border-radius:10px;background:color-mix(in srgb,var(--theme-ink) 5%,transparent);font-size:var(--fs-body);line-height:1.5;color:var(--ink2)}
 .rt-mind[hidden],.rt-more[hidden]{display:none}
 .rt-more{align-self:flex-start;margin-top:auto;padding-top:.8rem}
 .rt[data-leak] .rt-kind{color:#a2452c}
@@ -147,13 +147,13 @@ export const RAIN_CSS = `
 .rt-room{fill:#efe9de}
 .rt-crack{fill:none;stroke:#4d4a45;stroke-width:2.2;stroke-linejoin:round}
 .rt-crack-x{fill:none;stroke:url(#rt-xtal);stroke-width:7;opacity:0}
-.rt-resin{fill:none;stroke:#e8a215;stroke-width:4.5;stroke-linejoin:round;opacity:0}
+.rt-resin{fill:none;stroke:var(--theme-secondary);stroke-width:4.5;stroke-linejoin:round;opacity:0}
 .rt-joint{fill:#6f6a61}
-.rt-stop{fill:#2756a0;stroke:#f5f0e6;stroke-width:1.5}
-.rt-coat{fill:#2756a0}
+.rt-stop{fill:var(--theme-primary);stroke:var(--theme-on-dark);stroke-width:1.5}
+.rt-coat{fill:var(--theme-primary)}
 .rt-sheet rect{fill:#2f3338;stroke:#555b63;stroke-width:1}
 .rt-outerl{fill:#1f2328}
-.rt-integral{fill:#2756a0;opacity:0}
+.rt-integral{fill:var(--theme-primary);opacity:0}
 .rt-crystal{opacity:0}
 .rt-stain{fill:#7a6a52;opacity:0;transition:opacity .8s}
 .rt-out--soil,.rt-jointg,.rt-coat,.rt-sheet,.rt-outerl{display:none}
@@ -166,7 +166,7 @@ export const RAIN_CSS = `
 .rt[data-leak]:not([data-from=ground]) .rt-drips{display:inline}
 .rt-drip{fill:#3f78c0;animation:rt-drip 1.8s cubic-bezier(.5,0,1,.7) infinite;animation-delay:var(--delay);transform-box:fill-box;transform-origin:50% 0}
 @keyframes rt-drip{0%{transform:translateY(0) scale(.4);opacity:0}30%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(120px) scale(.9,1.2);opacity:0}}
-.rt-lab{font-family:var(--sans);font-size:16px;font-weight:600;fill:#12223b;paint-order:stroke;stroke:rgba(245,240,230,.85);stroke-width:4px;stroke-linejoin:round}
+.rt-lab{font-family:var(--sans);font-size:16px;font-weight:600;fill:var(--theme-ink);paint-order:stroke;stroke:color-mix(in srgb,var(--theme-on-dark) 85%,transparent);stroke-width:4px;stroke-linejoin:round}
 .rt-lab--crack{font-weight:500}
 
 /* each state */

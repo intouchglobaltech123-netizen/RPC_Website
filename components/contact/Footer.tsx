@@ -30,11 +30,11 @@ export function Footer() {
   const socials = contact.socials.filter((s) => s.label !== "WhatsApp");
 
   return (
-    <footer data-site-footer className="relative z-10 -mt-8 text-[#f5f0e6] md:-mt-10">
+    <footer data-site-footer className="relative z-10 -mt-8 text-[var(--theme-on-dark)] md:-mt-10">
       {/* the waterline: the footer's blue rises into the page above */}
       <svg aria-hidden="true" focusable="false" className="pointer-events-none block h-8 w-full text-night md:h-10" viewBox="0 0 1440 40" preserveAspectRatio="none">
         <path d="M0 24C160 10 320 8 480 18s320 20 480 12 320-22 480-14V40H0Z" fill="currentColor" />
-        <path d="M0 24C160 10 320 8 480 18s320 20 480 12 320-22 480-14" fill="none" stroke="#f5f0e6" strokeOpacity=".25" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <path d="M0 24C160 10 320 8 480 18s320 20 480 12 320-22 480-14" fill="none" stroke="var(--theme-on-dark)" strokeOpacity=".25" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
       </svg>
 
       <div className="bg-night">

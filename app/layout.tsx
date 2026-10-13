@@ -6,6 +6,7 @@ import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { brand, contact, services } from "@/lib/content";
 import { serviceSlug } from "@/lib/home/sections";
 import { siteUrl } from "@/lib/site";
+import "@/color-theme/colors.css";
 import "./globals.css";
 
 /** headings: Inter Tight, the text's own family, set semibold (under the variable every heading already uses), so the whole site is one family */
@@ -164,7 +165,8 @@ const websiteLd = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0b2350",
+  /* the browser bar: the colour theme's deep blue (color-theme/colors.css, --theme-primary-dark) */
+  themeColor: "#0f4980",
   width: "device-width",
   initialScale: 1,
 };

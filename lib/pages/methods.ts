@@ -157,7 +157,7 @@ const BASE_CSS = `
 
 /* the twelve methods, kind by kind */
 .wp-kinds{border-top:2px solid var(--ink)}
-.wp-kind{display:grid;grid-template-columns:minmax(13rem,16rem) minmax(0,1fr);gap:1.2rem clamp(2rem,5vw,5rem);padding:clamp(1.4rem,3vh,2rem) 0;border-bottom:1px solid rgba(18,34,59,.2)}
+.wp-kind{display:grid;grid-template-columns:minmax(13rem,16rem) minmax(0,1fr);gap:1.2rem clamp(2rem,5vw,5rem);padding:clamp(1.4rem,3vh,2rem) 0;border-bottom:1px solid color-mix(in srgb,var(--theme-ink) 20%,transparent)}
 .wp-khead{position:sticky;top:calc(var(--nav-bar,80px) + 1.4rem);align-self:start;padding-top:.7rem}
 .wp-kart{width:100%;max-width:16rem;margin:0 0 .9rem}
 .wp-kart img{display:block;width:100%;height:auto}
@@ -169,20 +169,20 @@ const BASE_CSS = `
 .wp-row:has(> .wp-d[open]),.wp-row:has(> .wp-d[open]) + .wp-row{border-top-color:transparent}
 .wp-row:has(> .wp-d[open]) + .wp-row:has(> .wp-d[open]){margin-top:.6rem}
 .wp-d{border-radius:8px;transition:background-color .25s,box-shadow .25s}
-.wp-d[open]{background:var(--card);box-shadow:0 22px 44px -36px rgba(18,34,59,.5)}
-.wp-row.is-hit > .wp-d{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 6px rgba(39,86,160,.12)}
+.wp-d[open]{background:var(--card);box-shadow:0 22px 44px -36px color-mix(in srgb,var(--theme-ink) 50%,transparent)}
+.wp-row.is-hit > .wp-d{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 6px color-mix(in srgb,var(--theme-primary) 12%,transparent)}
 .wp-sum{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr) 2.5rem;gap:.3rem 2rem;align-items:center;padding:1.1rem;border-radius:8px;list-style:none;cursor:pointer;transition:background-color .2s}
 .wp-sum::-webkit-details-marker{display:none}
-.wp-d:not([open]) > .wp-sum:hover{background:rgba(245,240,230,.6)}
+.wp-d:not([open]) > .wp-sum:hover{background:color-mix(in srgb,var(--theme-on-dark) 60%,transparent)}
 .wp-sum:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .wp-sn{display:flex;flex-direction:column;gap:.2rem;min-width:0}
 .wp-sname{font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
 .wp-sapp{font-size:var(--fs-body);line-height:1.45;color:var(--mute)}
 .wp-sareas{font-size:var(--fs-body);line-height:1.5;color:var(--ink2)}
-.wp-plus{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(18,34,59,.24);color:var(--ink);transition:transform .3s cubic-bezier(.2,.7,.2,1),background-color .2s,color .2s,box-shadow .2s}
+.wp-plus{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 24%,transparent);color:var(--ink);transition:transform .3s cubic-bezier(.2,.7,.2,1),background-color .2s,color .2s,box-shadow .2s}
 .wp-plus svg{width:1.05rem;height:1.05rem}
 .wp-sum:hover .wp-plus{box-shadow:inset 0 0 0 1.5px var(--navy)}
-.wp-d[open] .wp-plus{transform:rotate(45deg);background:var(--navy);box-shadow:none;color:#f5f0e6}
+.wp-d[open] .wp-plus{transform:rotate(45deg);background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
 .wp-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr) 2.5rem;gap:1.2rem 2rem;padding:0 1.1rem 1.3rem}
 .wp-d[open] .wp-body{animation:wp-in .3s ease both}
 @keyframes wp-in{from{opacity:0}to{opacity:1}}
@@ -196,9 +196,9 @@ const BASE_CSS = `
 .wp-prods p{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0;font-size:var(--fs-body)}
 .wp-prods span{margin-right:.35rem;color:var(--mute)}
 .wp-prods a,.wp-prods b{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;border-radius:8px;font-weight:600;line-height:1.3}
-.wp-prods a{background:var(--navy);color:#f5f0e6;text-decoration:none;transition:background-color .2s}
+.wp-prods a{background:var(--navy);color:var(--theme-on-dark);text-decoration:none;transition:background-color .2s}
 .wp-prods a:hover{background:var(--accent)}
-.wp-prods b{box-shadow:inset 0 0 0 1px rgba(18,34,59,.2)}
+.wp-prods b{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent)}
 
 /* opening a method slides its details down (where the browser can animate to the content's height) */
 .wp-d{interpolate-size:allow-keywords}
@@ -207,8 +207,8 @@ const BASE_CSS = `
 /* the opened details: the notes with their marks, products along the foot */
 .wp-notes dt{display:flex;align-items:center;gap:.4rem}
 .wp-notes dt svg{flex:none;width:1rem;height:1rem}
-.wp-notes .is-good dt{color:#1f7a4f}
-.wp-notes .is-mind dt{color:#a35f10}
+.wp-notes .is-good dt{color:var(--theme-success-text)}
+.wp-notes .is-mind dt{color:var(--theme-warning-text)}
 .wp-foot:empty{display:none}
 
 /* the brands follow the methods on the same background, so they need little room above */
@@ -220,7 +220,7 @@ const BASE_CSS = `
 .wp-mtrack{display:flex;gap:.9rem;width:max-content;margin:0;padding:.4rem 0;list-style:none;animation:wp-marq 70s linear infinite}
 .wp-marq:hover .wp-mtrack,.wp-marq:focus-within .wp-mtrack{animation-play-state:paused}
 @keyframes wp-marq{from{transform:translateX(-50%)}to{transform:translateX(0)}}
-.wp-btile{display:grid;place-items:center;flex:none;width:12.5rem;height:6rem;box-sizing:border-box;padding:.9rem 1.4rem;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.wp-btile{display:grid;place-items:center;flex:none;width:12.5rem;height:6rem;box-sizing:border-box;padding:.9rem 1.4rem;border-radius:14px;background:var(--theme-white);box-shadow:inset 0 0 0 1px var(--line)}
 .wp-btile img{display:block;width:auto;height:auto;max-width:100%;max-height:4rem;object-fit:contain}
 .wp-bname{font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.01em;color:var(--ink);text-align:center}
 @media (prefers-reduced-motion:reduce){

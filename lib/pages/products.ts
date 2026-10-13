@@ -219,23 +219,23 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .fo-gname{margin:0 0 .3rem;padding-left:.8rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .fo-group ul{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
 .fo-tab{display:flex;align-items:center;justify-content:space-between;gap:.8rem;min-height:2.5rem;padding:.45rem .8rem;border-radius:6px;font-size:var(--fs-body);line-height:1.3;color:var(--ink2);text-decoration:none;transition:background-color .2s,color .2s}
-.fo-tab:hover{background:rgba(18,34,59,.06);color:var(--ink)}
-.fo-tab[aria-current=true]{background:var(--navy);color:#f5f0e6;font-weight:600}
+.fo-tab:hover{background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--ink)}
+.fo-tab[aria-current=true]{background:var(--navy);color:var(--theme-on-dark);font-weight:600}
 .fo-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fo-tn{min-width:0}
 .fo-tc{flex:none;min-width:1.6rem;font-weight:500;font-variant-numeric:tabular-nums;text-align:right;color:var(--mute)}
-.fo-tab[aria-current=true] .fo-tc{color:rgba(255,255,255,.7)}
+.fo-tab[aria-current=true] .fo-tc{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
 
 /* a job */
-.fo-panel{padding:clamp(1.2rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -50px rgba(18,34,59,.55);scroll-margin-top:calc(var(--nav-bar,64px) + 1rem)}
+.fo-panel{padding:clamp(1.2rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -50px color-mix(in srgb,var(--theme-ink) 55%,transparent);scroll-margin-top:calc(var(--nav-bar,64px) + 1rem)}
 .fo-panel + .fo-panel{margin-top:1.2rem}
 .fo-ph{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:.8rem 1.4rem}
 .fo-jt{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25;letter-spacing:-.01em}
 .fo-k{margin:.3rem 0 0;font-size:var(--fs-body);color:var(--mute)}
-.fo-all,.fo-rate{display:inline-flex;align-items:center;gap:.45rem;border-radius:6px;background:rgba(37,211,102,.12);box-shadow:inset 0 0 0 1px rgba(18,140,75,.32);font-size:var(--fs-body);font-weight:600;color:#128c4b;text-decoration:none;white-space:nowrap;transition:background-color .2s,color .2s,box-shadow .2s}
+.fo-all,.fo-rate{display:inline-flex;align-items:center;gap:.45rem;border-radius:6px;background:color-mix(in srgb,var(--theme-whatsapp) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-whatsapp-dark) 32%,transparent);font-size:var(--fs-body);font-weight:600;color:var(--theme-whatsapp-dark);text-decoration:none;white-space:nowrap;transition:background-color .2s,color .2s,box-shadow .2s}
 .fo-all{height:2.6rem;padding:0 1rem}
 .fo-rate{height:2.2rem;padding:0 .75rem}
-.fo-all:hover,.fo-rate:hover{background:#25d366;box-shadow:none;color:#fff}
+.fo-all:hover,.fo-rate:hover{background:var(--theme-whatsapp);box-shadow:none;color:var(--theme-white)}
 .fo-all .pg-ar,.fo-rate .pg-ar{width:1rem;height:1rem}
 .fo-all:focus-visible,.fo-rate:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fo-packs{display:inline-flex;flex-wrap:wrap;gap:.3rem}
@@ -247,7 +247,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .h2-pick{margin-top:1.3rem}
 .h2-pk{margin:0 0 .6rem;font-size:var(--fs-body);font-weight:600;color:var(--ink2)}
 .h2-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.7rem}
-.h2-brand{padding:.75rem .7rem .7rem;border-radius:12px;background:rgba(18,34,59,.035);box-shadow:inset 0 3px 0 var(--c)}
+.h2-brand{padding:.75rem .7rem .7rem;border-radius:12px;background:color-mix(in srgb,var(--theme-ink) 3.5%,transparent);box-shadow:inset 0 3px 0 var(--c)}
 .h2-bn{display:flex;align-items:center;gap:.5rem;margin:0 0 .5rem .2rem;font-size:var(--fs-body);font-weight:600;color:var(--ink)}
 .h2-bn i{width:.55rem;height:.55rem;border-radius:50%;background:var(--c)}
 .h2-bn span{margin-left:auto;padding-right:.2rem;font-weight:500;color:var(--mute)}
@@ -255,31 +255,31 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .h2-chip{display:grid;grid-template-columns:1.6rem minmax(0,1fr) auto;align-items:center;gap:.6rem;width:100%;min-height:2.75rem;padding:.4rem .7rem .4rem .45rem;border:0;border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);color:var(--ink);text-align:left;cursor:pointer;transition:background-color .2s,box-shadow .2s,color .2s}
 .h2-chip:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
 .h2-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.h2-tag{display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(18,34,59,.2);font-size:var(--fs-body);font-weight:700;line-height:1}
+.h2-tag{display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-size:var(--fs-body);font-weight:700;line-height:1}
 .h2-cn{min-width:0;font-weight:600;line-height:1.3}
 .h2-cp{color:var(--mute);white-space:nowrap}
-.h2-chip[aria-pressed=true]{background:var(--navy);box-shadow:none;color:#fff}
-.h2-chip[aria-pressed=true] .h2-tag{background:#f5f0e6;box-shadow:none;color:var(--navy)}
-.h2-chip[aria-pressed=true] .h2-cp{color:rgba(255,255,255,.7)}
+.h2-chip[aria-pressed=true]{background:var(--navy);box-shadow:none;color:var(--theme-white)}
+.h2-chip[aria-pressed=true] .h2-tag{background:var(--theme-surface);box-shadow:none;color:var(--navy)}
+.h2-chip[aria-pressed=true] .h2-cp{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
 
-.h2-ring{--cols:minmax(0,1fr) 9.5rem minmax(0,1fr);margin-top:1.4rem;padding:clamp(1rem,2vw,1.6rem);border-radius:14px;background:var(--paper,#fbf8f2);box-shadow:inset 0 0 0 1px var(--line)}
+.h2-ring{--cols:minmax(0,1fr) 9.5rem minmax(0,1fr);margin-top:1.4rem;padding:clamp(1rem,2vw,1.6rem);border-radius:14px;background:var(--paper,var(--theme-surface-2));box-shadow:inset 0 0 0 1px var(--line)}
 .h2-heads{display:grid;grid-template-columns:var(--cols);align-items:stretch}
 .h2-head{position:relative;display:flex;flex-direction:column;justify-content:center;gap:.15rem;min-width:0;padding:1rem 1.2rem;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),inset 0 4px 0 var(--c)}
 .h2-head[data-s=a]{align-items:flex-end;padding-right:3.4rem;text-align:right}
 .h2-head[data-s=b]{padding-left:3.4rem}
-.h2-side{position:absolute;top:50%;display:grid;place-items:center;width:2.1rem;height:2.1rem;margin-top:-1.05rem;border-radius:50%;background:var(--c);font-size:var(--fs-body);font-weight:700;color:#fff}
+.h2-side{position:absolute;top:50%;display:grid;place-items:center;width:2.1rem;height:2.1rem;margin-top:-1.05rem;border-radius:50%;background:var(--c);font-size:var(--fs-body);font-weight:700;color:var(--theme-white)}
 .h2-head[data-s=a] .h2-side{right:.9rem}
 .h2-head[data-s=b] .h2-side{left:.9rem}
 .h2-hb{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .h2-hn{margin:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
-.h2-vs{align-self:center;justify-self:center;display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:50%;background:var(--navy);box-shadow:0 0 0 6px var(--paper,#fbf8f2);font-family:var(--display);font-size:var(--fs-body);font-weight:700;color:#f5f0e6}
+.h2-vs{align-self:center;justify-self:center;display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:50%;background:var(--navy);box-shadow:0 0 0 6px var(--paper,var(--theme-surface-2));font-family:var(--display);font-size:var(--fs-body);font-weight:700;color:var(--theme-on-dark)}
 /* the two sides: the brand, and a list to choose the product */
 .h2-head{cursor:pointer}
 .h2-hb{display:block}
 .h2-sel{max-width:100%;margin:0;padding:.1rem 1.6rem .1rem 0;border:0;border-radius:6px;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .1rem center/14px;font-family:var(--display);font-size:var(--fs-body);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none}
 .h2-head[data-s=a] .h2-sel{text-align:right;text-align-last:right}
 .h2-sel:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:16px;color:#12223b}
+.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:16px;color:var(--theme-ink)}
 .h2-head:hover{box-shadow:inset 0 0 0 1.5px var(--navy),inset 0 4px 0 var(--c)}
 .h2-pk{margin:1.1rem 0 0;font-size:var(--fs-body);color:var(--mute)}
 .h2-verdict{max-width:46rem;margin:1.1rem auto .4rem;font-size:var(--fs-body);line-height:1.55;text-align:center;color:var(--ink2)}
@@ -287,7 +287,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .h2-rows{margin:0}
 .h2-row{position:relative;display:grid;grid-template-columns:var(--cols);align-items:start;padding:.85rem 0;border-top:1px solid var(--line)}
 .h2-row dt{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:0 .6rem;font-size:var(--fs-body);font-weight:600;line-height:1.3;text-align:center;color:var(--ink)}
-.h2-row dt em{display:none;padding:.1rem .55rem;border-radius:999px;background:rgba(18,34,59,.07);font-style:normal;font-weight:500;color:var(--mute)}
+.h2-row dt em{display:none;padding:.1rem .55rem;border-radius:999px;background:color-mix(in srgb,var(--theme-ink) 7%,transparent);font-style:normal;font-weight:500;color:var(--mute)}
 .h2-row dd{grid-row:1;min-width:0;margin:0;font-size:var(--fs-body);line-height:1.5;color:var(--ink)}
 .h2-row dd[data-s=a]{grid-column:1;text-align:right}
 .h2-row dd[data-s=b]{grid-column:3}
@@ -296,8 +296,8 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .h2-row:not(.is-same):not([data-row=packs]) dd{font-weight:500}
 .h2-uses{display:flex;flex-wrap:wrap;gap:.3rem}
 .h2-row dd[data-s=a] .h2-uses,.h2-row dd[data-s=a] .fo-packs{justify-content:flex-end}
-.h2-uses span{display:inline-flex;align-items:center;min-height:1.9rem;padding:.15rem .6rem;border-radius:7px;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);font-weight:500;line-height:1.3;color:var(--ink)}
-.h2-uses span.is-both{background:var(--navy);box-shadow:none;color:#f5f0e6}
+.h2-uses span{display:inline-flex;align-items:center;min-height:1.9rem;padding:.15rem .6rem;border-radius:7px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-weight:500;line-height:1.3;color:var(--ink)}
+.h2-uses span.is-both{background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
 .h2-none{color:var(--mute)}
 .h2-row[data-row=packs] .fo-packs svg{color:var(--mute)}
 .h2-acts{display:grid;grid-template-columns:var(--cols);padding-top:1rem;border-top:1px solid var(--line)}
@@ -307,7 +307,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .jb-choose{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:1.4rem clamp(2rem,5vw,4rem);margin-top:clamp(2.4rem,6vh,3.6rem);padding:clamp(1.4rem,3vw,2.2rem);border-radius:8px;background:var(--sand-2)}
 .jb-choose p{margin:.6rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
 .jb-choose ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.6rem;margin:0;padding:0;list-style:none}
-.jb-choose li{display:flex;flex-direction:column;gap:.25rem;padding-top:.8rem;border-top:1px solid rgba(18,34,59,.16);font-size:var(--fs-body);line-height:1.5}
+.jb-choose li{display:flex;flex-direction:column;gap:.25rem;padding-top:.8rem;border-top:1px solid color-mix(in srgb,var(--theme-ink) 16%,transparent);font-size:var(--fs-body);line-height:1.5}
 .jb-choose li span{color:var(--ink2)}
 
 @media (max-width:1199px){
@@ -331,7 +331,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   /* phones: the spine's names go above each row, the two sides below it */
   .h2-ring{--cols:minmax(0,1fr) minmax(0,1fr);padding:.9rem .8rem}
   .h2-heads{column-gap:1.4rem}
-  .h2-vs{position:absolute;left:50%;width:2.4rem;height:2.4rem;margin-left:-1.2rem;box-shadow:0 0 0 4px var(--paper,#fbf8f2)}
+  .h2-vs{position:absolute;left:50%;width:2.4rem;height:2.4rem;margin-left:-1.2rem;box-shadow:0 0 0 4px var(--paper,var(--theme-surface-2))}
   .h2-heads{position:relative}
   .h2-head{padding:2.6rem .8rem .8rem!important;align-items:flex-start!important;text-align:left!important}
   .h2-side{top:.7rem;margin-top:0;width:1.7rem;height:1.7rem}
@@ -360,17 +360,17 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 }
 
 /* the comparison: a plain table, a list above each column to pick the product */
-.cmp-wrap{margin-top:1.2rem;overflow-x:auto;border-radius:14px;background:#fbf8f2;box-shadow:inset 0 0 0 1px var(--line)}
+.cmp-wrap{margin-top:1.2rem;overflow-x:auto;border-radius:14px;background:var(--theme-surface-2);box-shadow:inset 0 0 0 1px var(--line)}
 .cmp-t{width:100%;min-width:34rem;border-collapse:collapse;table-layout:fixed;font-size:var(--fs-body)}
 .cmp-t thead td,.cmp-t tbody th,.cmp-t tfoot td:first-child{width:11.5rem}
 .cmp-t th,.cmp-t td{padding:.85rem 1rem;text-align:left;vertical-align:top;line-height:1.5}
 .cmp-t thead th,.cmp-t thead td{padding-top:1rem;padding-bottom:1rem;background:var(--card);border-bottom:2px solid var(--navy)}
 .cmp-pick{display:flex;flex-direction:column;gap:.3rem}
 .cmp-pick > span{font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.cmp-pick .h2-sel{width:100%;padding:.45rem 2rem .45rem .7rem;border-radius:10px;background-color:#fff;background-position:right .6rem center;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);font-size:var(--fs-body);text-align:left;text-align-last:left}
+.cmp-pick .h2-sel{width:100%;padding:.45rem 2rem .45rem .7rem;border-radius:10px;background-color:var(--theme-white);background-position:right .6rem center;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-size:var(--fs-body);text-align:left;text-align-last:left}
 .cmp-t tbody tr{border-bottom:1px solid var(--line)}
 .cmp-t tbody th{font-weight:600;color:var(--ink)}
-.cmp-t tbody th em{display:none;margin-top:.3rem;width:max-content;padding:.05rem .5rem;border-radius:999px;background:rgba(47,158,107,.14);font-style:normal;font-weight:600;color:#1f7a4f}
+.cmp-t tbody th em{display:none;margin-top:.3rem;width:max-content;padding:.05rem .5rem;border-radius:999px;background:color-mix(in srgb,var(--theme-success) 14%,transparent);font-style:normal;font-weight:600;color:var(--theme-success-text)}
 .cmp-t tbody tr.is-same th em{display:inline-block;margin:0 0 0 .45rem;vertical-align:.05rem}
 .cmp-t tbody tr.is-same td{color:var(--mute)}
 .cmp-t tbody td{color:var(--ink)}
@@ -387,10 +387,10 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .fo-top .pg-h2{margin:.5rem 0 0}
 .fo-pickjob{display:flex;flex-direction:column;gap:.3rem;min-width:min(100%,24rem)}
 .fo-pickjob > span{font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.fo-pickjob select{height:2.9rem;padding:0 2.4rem 0 .9rem;border:0;border-radius:12px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/14px;box-shadow:inset 0 0 0 1.5px var(--navy);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);appearance:none;cursor:pointer}
+.fo-pickjob select{height:2.9rem;padding:0 2.4rem 0 .9rem;border:0;border-radius:12px;background:var(--theme-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/14px;box-shadow:inset 0 0 0 1.5px var(--navy);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);appearance:none;cursor:pointer}
 .fo-pickjob select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .fo-pickjob .fs{width:100%}
-.fo-pickjob .fs-btn{box-shadow:inset 0 0 0 1.5px var(--navy),0 1px 2px rgba(18,34,59,.06)}
+.fo-pickjob .fs-btn{box-shadow:inset 0 0 0 1.5px var(--navy),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent)}
 .cmp-pick .fs-btn{min-height:2.6rem;padding:.4rem .7rem .4rem .8rem;border-radius:10px}
 .cmp-pick .fs-val{white-space:normal;overflow-wrap:anywhere}
 .fo{display:block}

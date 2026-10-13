@@ -34,7 +34,7 @@ export default function NotFound() {
         <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16">
           <div>
             <p className="m-0 flex items-center gap-3 text-body font-medium text-mute">
-              <span className="font-semibold text-[#2756a0]">404</span>
+              <span className="font-semibold text-[var(--theme-primary)]">404</span>
               <span aria-hidden className="h-px w-8 bg-current opacity-40" />
               Page not found
             </p>
@@ -45,13 +45,13 @@ export default function NotFound() {
               The link may be old, or the address may have a typo. Everything on the site is one step from the home page.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/" className={`group inline-flex h-12 items-center gap-2 rounded-[11px] bg-night px-5 text-body font-semibold text-[#f5f0e6] transition-colors hover:bg-[#2756a0] ${focus}`}>
+              <Link href="/" className={`group inline-flex h-12 items-center gap-2 rounded-[11px] bg-night px-5 text-body font-semibold text-[var(--theme-on-dark)] transition-colors hover:bg-[var(--theme-primary)] ${focus}`}>
                 Go to the home page
                 {arrow}
               </Link>
               <Link
                 href="/contact"
-                className={`group inline-flex h-12 items-center gap-2 rounded-[11px] px-5 text-body font-semibold text-ink shadow-[inset_0_0_0_1.5px_rgba(18,34,59,0.26)] transition-colors hover:bg-card ${focus}`}
+                className={`group inline-flex h-12 items-center gap-2 rounded-[11px] px-5 text-body font-semibold text-ink shadow-[inset_0_0_0_1.5px_color-mix(in_srgb,var(--theme-ink)_26%,transparent)] transition-colors hover:bg-card ${focus}`}
               >
                 Book a free inspection
                 {arrow}
@@ -63,22 +63,22 @@ export default function NotFound() {
           <svg viewBox="0 0 360 240" role="img" aria-label="A pipe with a gap in it, and a drop of water falling through the gap" className="mx-auto w-full max-w-[26rem]">
             <defs>
               <linearGradient id="nf-pipe" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#d3c8b5" />
-                <stop offset="0.45" stopColor="#f5f0e6" />
-                <stop offset="1" stopColor="#b9ac95" />
+                <stop offset="0" stopColor="var(--theme-placeholder)" />
+                <stop offset="0.45" stopColor="var(--theme-on-dark)" />
+                <stop offset="1" stopColor="var(--theme-muted)" />
               </linearGradient>
             </defs>
-            <rect x="8" y="58" width="132" height="40" rx="6" fill="url(#nf-pipe)" stroke="#12223b" strokeOpacity="0.25" />
-            <rect x="132" y="50" width="22" height="56" rx="4" fill="#e2d9c9" stroke="#12223b" strokeOpacity="0.3" />
-            <rect x="206" y="50" width="22" height="56" rx="4" fill="#e2d9c9" stroke="#12223b" strokeOpacity="0.3" />
-            <rect x="220" y="58" width="132" height="40" rx="6" fill="url(#nf-pipe)" stroke="#12223b" strokeOpacity="0.25" />
-            <path d="M154 78h52" stroke="#0b6e80" strokeOpacity="0.35" strokeWidth="2" strokeDasharray="3 5" />
+            <rect x="8" y="58" width="132" height="40" rx="6" fill="url(#nf-pipe)" stroke="var(--theme-ink)" strokeOpacity="0.25" />
+            <rect x="132" y="50" width="22" height="56" rx="4" fill="var(--theme-bg-alt)" stroke="var(--theme-ink)" strokeOpacity="0.3" />
+            <rect x="206" y="50" width="22" height="56" rx="4" fill="var(--theme-bg-alt)" stroke="var(--theme-ink)" strokeOpacity="0.3" />
+            <rect x="220" y="58" width="132" height="40" rx="6" fill="url(#nf-pipe)" stroke="var(--theme-ink)" strokeOpacity="0.25" />
+            <path d="M154 78h52" stroke="var(--theme-water)" strokeOpacity="0.35" strokeWidth="2" strokeDasharray="3 5" />
             <g className="[transform-box:fill-box] [transform-origin:50%_100%] motion-safe:animate-[nf-drop_2.2s_cubic-bezier(.55,0,.75,.4)_infinite]">
-              <path d="M180 112c0 0-11 14-11 22a11 11 0 0 0 22 0c0-8-11-22-11-22z" fill="#0b2350" />
-              <path d="M175 136a5 5 0 0 0 5 5" fill="none" stroke="#f5f0e6" strokeWidth="2" strokeLinecap="round" />
+              <path d="M180 112c0 0-11 14-11 22a11 11 0 0 0 22 0c0-8-11-22-11-22z" fill="var(--theme-primary-dark)" />
+              <path d="M175 136a5 5 0 0 0 5 5" fill="none" stroke="var(--theme-on-dark)" strokeWidth="2" strokeLinecap="round" />
             </g>
-            <ellipse cx="180" cy="218" rx="54" ry="8" fill="#0b6e80" opacity="0.14" />
-            <ellipse cx="180" cy="218" rx="26" ry="4" fill="#0b6e80" opacity="0.22" />
+            <ellipse cx="180" cy="218" rx="54" ry="8" fill="var(--theme-water)" opacity="0.14" />
+            <ellipse cx="180" cy="218" rx="26" ry="4" fill="var(--theme-water)" opacity="0.22" />
           </svg>
         </div>
 
@@ -86,7 +86,7 @@ export default function NotFound() {
           <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-4">
             {PLACES.map((p) => (
               <li key={p.href}>
-                <Link href={p.href} className={`group flex h-full flex-col gap-1 rounded-[16px] bg-card p-5 shadow-[inset_0_0_0_1px_rgba(18,34,59,0.12)] transition-shadow hover:shadow-[inset_0_0_0_1px_rgba(39,86,160,0.35),0_18px_34px_-26px_rgba(11,35,80,0.5)] ${focus}`}>
+                <Link href={p.href} className={`group flex h-full flex-col gap-1 rounded-[16px] bg-card p-5 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--theme-ink)_12%,transparent)] transition-shadow hover:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--theme-primary)_35%,transparent),0_18px_34px_-26px_color-mix(in_srgb,var(--theme-primary-dark)_50%,transparent)] ${focus}`}>
                   <span className="flex items-center justify-between gap-3 font-display text-sub font-semibold leading-tight">
                     {p.label}
                     {arrow}

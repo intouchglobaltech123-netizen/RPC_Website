@@ -39,7 +39,7 @@ export function Wordmark({ className = "", size = "md", tile = true }: { classNa
   return (
     <span className={`inline-flex items-center ${s.gap} ${className}`}>
       {tile ? (
-        <span className={`grid shrink-0 place-items-center bg-[#f5f0e6] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.4)] ${s.tile}`}>
+        <span className={`grid shrink-0 place-items-center bg-[var(--theme-surface)] shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--theme-white)_40%,transparent)] ${s.tile}`}>
           <LogoMark className={s.mark} />
         </span>
       ) : (
