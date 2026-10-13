@@ -302,4 +302,14 @@ export const CONTACT_CSS = `
 .ct-tile{min-height:9.6rem}
 .ct-tv--mail{white-space:nowrap;letter-spacing:-.01em}
 .ct-tile--call .ct-open{font-size:var(--fs-body);line-height:1.35}
+/* phones: each way to reach us as one compact row, icon, words and arrow */
+@media (max-width:599px){
+  .ct-tiles{grid-template-columns:1fr;grid-auto-rows:auto;gap:.5rem}
+  .ct-tile{display:grid;grid-template-columns:2.4rem minmax(0,1fr);column-gap:.85rem;align-items:center;min-height:0;height:auto;padding:.8rem 3.2rem .8rem .85rem}
+  .ct-tile .ct-ico{grid-row:1 / span 3;width:2.4rem;height:2.4rem}
+  .ct-tk{margin-top:0}
+  .ct-tv{margin-top:.05rem}
+  .ct-tile .ct-open{margin-top:.15rem}
+  .ct-tgo{top:50%;right:.85rem;margin-top:-.9rem}
+}
 `;

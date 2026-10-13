@@ -67,6 +67,20 @@ export function Nav() {
   const pathname = usePathname();
   const lenis = useLenis();
   const filmHome = pathname === "/classic";
+  // once the page moves, a strip in the page's colour sits behind the bar, so text scrolls under it and never shows around it
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    // not while a dark section (the home film) is under the bar: the bar sits on it as it is
+    const onDark = () =>
+      Array.from(document.querySelectorAll<HTMLElement>("main [data-nav-tone='dark']")).some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top <= 72 && r.bottom > 72;
+      });
+    const on = () => setScrolled(window.scrollY > 4 && !onDark());
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, [pathname]);
 
   useEffect(() => setOpen(false), [pathname]);
 
@@ -118,6 +132,8 @@ export function Nav() {
 
   const visible = open || !filmHome || pastHero || heroNavVisible;
   const darkTop = DARK_TOP.has(pathname ?? "");
+  // the light logo only while it sits on the dark film; on the page's strip it is dark
+  const lightLogo = darkTop && !scrolled;
   const isActive = (href: string) => (href === "/" ? pathname === "/" : Boolean(pathname?.startsWith(href)));
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
 
@@ -143,21 +159,21 @@ export function Nav() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: NAV_CSS }} />
-      {/* the logo, on the page itself: it scrolls away with the page */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 transition-opacity duration-700" style={{ opacity: visible ? 1 : 0 }} aria-hidden={!visible}>
+      {/* the logo, pinned at the top left with the bar, above the strip behind it (the open menu has its own) */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-[51] transition-opacity duration-700" style={{ opacity: visible && !open ? 1 : 0 }} aria-hidden={!visible || open}>
         {/* level with the middle of the floating bar */}
         <div className="gutter mx-auto max-w-[1600px] pt-2 lg:pt-3">
           <Link
             href="/"
             aria-label={`${brand.name} — home`}
-            tabIndex={visible ? 0 : -1}
-            className={`rn-logo pointer-events-auto inline-flex h-12 items-center rounded-[12px] ${darkTop ? "text-white" : "text-night"} ${focus}`}
+            tabIndex={visible && !open ? 0 : -1}
+            className={`rn-logo pointer-events-auto inline-flex h-12 items-center rounded-[12px] ${lightLogo ? "text-white" : "text-night"} ${focus}`}
           >
             <span className="flex lg:hidden">
-              <Wordmark size="sm" tile={darkTop} />
+              <Wordmark size="sm" tile={lightLogo} />
             </span>
             <span className="hidden lg:flex">
-              <Wordmark size="md" tile={darkTop} />
+              <Wordmark size="md" tile={lightLogo} />
             </span>
           </Link>
         </div>
@@ -170,7 +186,12 @@ export function Nav() {
         data-site-nav
         data-nav-tone="dark"
       >
-        <div className="rn-in gutter mx-auto flex max-w-[1600px] justify-end pt-2">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 -bottom-2 bg-paper shadow-[0_10px_24px_-18px_rgba(18,34,59,0.35)] transition-opacity duration-300"
+          style={{ opacity: scrolled && !open ? 1 : 0 }}
+        />
+        <div className="rn-in gutter relative mx-auto flex max-w-[1600px] justify-end pt-2">
           {/* from 1024px: room for the logo, the pages in a pill centred at the top, and Contact at the right */}
           <span aria-hidden className="rn-sp" />
           <nav aria-label="Primary" className="rn-bar pointer-events-auto" style={BAR}>

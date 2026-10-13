@@ -74,7 +74,75 @@ export function mountProducts(root: HTMLElement, env: PageEnv = {}): Off {
   on(window, "hashchange", fromHash);
   fromHash();
   offs.push(mountEnquiry(root));
+  mountViewer(root, on);
   return () => offs.forEach((f) => f());
+}
+
+/** "Product description" and "Watch video" in an opened card: a viewer with the two as tabs */
+function mountViewer(root: HTMLElement, on: On) {
+  const pv = root.querySelector<HTMLDialogElement>("[data-pv]");
+  if (!pv || typeof pv.showModal !== "function") return;
+  const $ = (k: string) => pv.querySelector<HTMLElement>(`[data-pv-${k}]`)!;
+  const pic = $("pic"),
+    brand = $("brand"),
+    name = $("name"),
+    desc = $("desc"),
+    video = $("video"),
+    none = $("none");
+  const tabs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-tab]"));
+  const panes = Array.from(pv.querySelectorAll<HTMLElement>("[data-pv-pane]"));
+  let from: HTMLElement | null = null;
+  const show = (k: string) => {
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.pvTab === k)));
+    panes.forEach((p) => (p.hidden = p.dataset.pvPane !== k));
+    if (k !== "video") video.querySelector("video")?.pause();
+  };
+  const youtube = (u: string) => u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
+  const open = (box: HTMLElement, k: string, btn: HTMLElement) => {
+    const row = box.closest<HTMLElement>(".pf-row");
+    if (!row) return;
+    from = btn;
+    pv.style.setProperty("--tint", row.style.getPropertyValue("--tint"));
+    pic.replaceChildren(...Array.from(row.querySelector(".pf-ico")?.childNodes ?? [], (n) => n.cloneNode(true)));
+    brand.textContent = row.closest("section")?.querySelector(".pf-bhn")?.textContent?.trim() ?? "";
+    name.textContent = row.querySelector(".pf-name")?.textContent ?? "";
+    desc.textContent = box.dataset.viewDesc ?? "";
+    video.replaceChildren();
+    const src = box.dataset.viewVideo ?? "";
+    const yt = src && youtube(src);
+    if (yt) {
+      const f = document.createElement("iframe");
+      f.src = `https://www.youtube-nocookie.com/embed/${yt}`;
+      f.title = `${name.textContent} video`;
+      f.allow = "encrypted-media; picture-in-picture; fullscreen";
+      f.loading = "lazy";
+      video.append(f);
+    } else if (src) {
+      const v = document.createElement("video");
+      v.src = src;
+      v.controls = true;
+      v.playsInline = true;
+      v.preload = "metadata";
+      video.append(v);
+    }
+    none.hidden = Boolean(src);
+    show(k);
+    pv.showModal();
+  };
+  on(root, "click", (e) => {
+    const b = (e.target as Element).closest<HTMLElement>("[data-view-go]");
+    const box = b?.closest<HTMLElement>("[data-view]");
+    if (b && box) open(box, b.dataset.viewGo ?? "desc", b);
+  });
+  tabs.forEach((t) => on(t, "click", () => show(t.dataset.pvTab ?? "desc")));
+  on(pv, "click", (e) => {
+    const t = e.target as Element;
+    if (t === pv || t.closest("[data-pv-close]")) pv.close();
+  });
+  on(pv, "close", () => {
+    video.replaceChildren();
+    from?.focus();
+  });
 }
 
 type On = (t: EventTarget, type: string, fn: (e: Event) => void, o?: AddEventListenerOptions) => void;

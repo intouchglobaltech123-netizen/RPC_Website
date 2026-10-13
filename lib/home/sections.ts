@@ -373,6 +373,8 @@ export const HOME_PRODUCTS_CSS = BRANDS_MARQUEE_CSS + `
   .hl-brands{padding-left:.8rem;padding-right:.8rem}
   .hl-brands div{grid-template-columns:minmax(0,1fr)}
 }
+/* touch screens: product chips at finger height */
+@media (pointer:coarse){.hl-brands a{min-height:2.75rem}}
 `;
 export const HOME_CSS = `
 /*
@@ -700,6 +702,11 @@ export const HOME_CSS = `
 .hm-contact .hm-cgrid{flex:none;align-items:center}
 .hm-contact .hm-cfig{container-type:normal}
 .hm-contact .hm-cph{width:100%}
+/* touch screens: text links keep their look but get a finger-sized tap area; chip links grow to finger height */
+@media (pointer:coarse){
+  .hm-link,.hm-slink{position:relative}
+  .hm-link::after,.hm-slink::after{content:"";position:absolute;inset:-11px -6px}
+}
 `;
 
 /* ------------------------------------------------------------ behaviour */

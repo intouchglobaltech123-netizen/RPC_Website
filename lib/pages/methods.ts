@@ -136,7 +136,19 @@ export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
   </div>
 </section>`;
 
-  return `${head}\n${placeMapMarkup()}\n${rainMarkup()}\n${methods}\n${methodsData(d.products)}\n${brands}\n${ctaBand(c, {
+  // the building waterproofed stage by stage, from the ground to the roof: it builds as the page scrolls
+  const film = `<section class="wp-film" aria-label="Waterproofing from land to roof, stage by stage" data-film-scroll>
+  <div class="wp-fstick">
+    <div class="pg-wrap">
+      <figure class="wp-fbox">
+        <video class="wp-fvid" poster="/videos/land-to-roof.jpg" muted playsinline preload="none" data-film aria-label="A building waterproofed in stages, from the ground to the roof, built as you scroll"><source src="/videos/land-to-roof-scrub.webm" type="video/webm"><source src="/videos/land-to-roof-scrub.mp4" type="video/mp4"></video>
+      </figure>
+      <p class="wp-fbar" aria-hidden="true"><i></i></p>
+    </div>
+  </div>
+</section>`;
+
+  return `${head}\n${film}\n${placeMapMarkup()}\n${rainMarkup()}\n${methods}\n${methodsData(d.products)}\n${brands}\n${ctaBand(c, {
     title: "Not sure which method your building needs?",
     steps: [
       ["Show us where it leaks", "Photos on WhatsApp are a good start."],
@@ -211,6 +223,16 @@ const BASE_CSS = `
 .wp-notes .is-mind dt{color:#a35f10}
 .wp-foot:empty{display:none}
 
+/* the film as a scroll animation: it stays in view while the page moves through it, and each stage builds with the scroll */
+.wp-film{position:relative;height:280vh;margin:clamp(1rem,3vh,2rem) 0 0}
+.wp-fstick{position:sticky;top:calc(var(--nav-bar,64px) + 1rem);display:flex;flex-direction:column;justify-content:center;height:calc(100svh - var(--nav-bar,64px) - 2rem)}
+.wp-fbox{position:relative;margin:0 auto;max-height:calc(100svh - var(--nav-bar,64px) - 4rem);aspect-ratio:1280/702;overflow:hidden;border-radius:16px;background:#0b1626}
+.wp-fvid{display:block;width:100%;height:100%;object-fit:cover}
+.wp-fbar{position:relative;width:min(100%,24rem);height:3px;margin:1rem auto 0;border-radius:3px;background:rgba(18,34,59,.12);overflow:hidden}
+.wp-fbar i{position:absolute;inset:0;background:var(--accent);transform-origin:0 50%;transform:scaleX(var(--p,0))}
+/* less motion: the film simply sits at its first frame, with no long scroll */
+@media (prefers-reduced-motion:reduce){.wp-film{height:auto;padding:1.4rem 0}.wp-fstick{position:static;height:auto}.wp-fbar{display:none}}
+@media (max-width:767px){.wp-film{height:240vh}.wp-fbox{width:100%;max-height:none;aspect-ratio:1/1;border-radius:12px}.wp-fvid{object-position:0 50%}}
 /* the brands follow the methods on the same background, so they need little room above */
 .wp-msec{padding-bottom:clamp(1.2rem,3vh,2rem)}
 .wp-msec ~ .wp-bsec{padding-top:clamp(2rem,5vh,3rem)}

@@ -217,13 +217,88 @@ export function mountMethods(root: HTMLElement, env: PageEnv = {}): () => void {
   } catch {
     rainData = [];
   }
-  const offs = [placeMap(root, env), cmp.off, mountRain(root, rainData)];
+  const offs = [placeMap(root, env), cmp.off, mountRain(root, rainData), mountFilm(root)];
   return () => {
     root.removeEventListener("click", onClickFirst, true);
     root.removeEventListener("click", onClick);
     window.removeEventListener("hashchange", fromHash);
     window.clearTimeout(t);
     offs.forEach((f) => f());
+  };
+}
+
+/* ------------------------------------------------------------ the film */
+
+/**
+ * The land-to-roof film runs with the scroll: as the page moves through its
+ * section the film moves through its stages, eased so a flick of the wheel
+ * glides rather than jumps. Where people ask for less motion it stays still.
+ */
+function mountFilm(root: HTMLElement): () => void {
+  const sec = root.querySelector<HTMLElement>("[data-film-scroll]");
+  const vid = sec?.querySelector<HTMLVideoElement>("video[data-film]");
+  const bar = sec?.querySelector<HTMLElement>(".wp-fbar");
+  if (!sec || !vid || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
+  let raf = 0;
+  let shown = 0;
+  let ready = false;
+  const target = () => {
+    const r = sec.getBoundingClientRect();
+    const run = r.height - window.innerHeight;
+    return Math.min(1, Math.max(0, run > 0 ? -r.top / run : 0));
+  };
+  const tick = () => {
+    raf = 0;
+    const p = target();
+    shown += (p - shown) * 0.18;
+    if (Math.abs(p - shown) < 0.001) shown = p;
+    bar?.style.setProperty("--p", shown.toFixed(4));
+    if (ready && vid.duration) {
+      const t = shown * (vid.duration - 0.05);
+      if (Math.abs(vid.currentTime - t) > 0.02) vid.currentTime = t;
+    }
+    if (shown !== p) raf = requestAnimationFrame(tick);
+  };
+  const kick = () => {
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+  const onMeta = () => {
+    ready = true;
+    kick();
+  };
+  // phones only show frames of a video that has started once: start it and stop it straight away
+  const prime = () => void vid.play().then(() => vid.pause()).catch(() => {});
+  vid.addEventListener("loadedmetadata", onMeta);
+  // the whole film is fetched once and played from memory, so every scroll step can jump straight to its frame
+  let blobUrl = "";
+  let gone = false;
+  const sources = Array.from(vid.querySelectorAll("source"));
+  const pick = sources.find((x) => vid.canPlayType(x.type)) ?? sources[0];
+  if (pick)
+    void fetch(pick.src)
+      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
+      .then((b) => {
+        if (gone) return;
+        blobUrl = URL.createObjectURL(b);
+        ready = false;
+        vid.src = blobUrl;
+        vid.load();
+        prime();
+      })
+      .catch(() => {
+        if (vid.readyState >= 1) onMeta();
+        prime();
+      });
+  window.addEventListener("scroll", kick, { passive: true });
+  window.addEventListener("resize", kick);
+  kick();
+  return () => {
+    gone = true;
+    if (blobUrl) URL.revokeObjectURL(blobUrl);
+    cancelAnimationFrame(raf);
+    vid.removeEventListener("loadedmetadata", onMeta);
+    window.removeEventListener("scroll", kick);
+    window.removeEventListener("resize", kick);
   };
 }
 

@@ -240,4 +240,9 @@ export const MONSOON_CSS = `
   .mh-svg .mh-drip,.mh-svg .mh-ring{display:none}
   .mh-js .mh-step--intro .mh-card>*{transition:none}
 }
+/* touch screens: text links keep their look but get a finger-sized tap area; chip links grow to finger height */
+@media (pointer:coarse){
+  .mh-more{position:relative}
+  .mh-more::after{content:"";position:absolute;inset:-11px -6px}
+}
 `;

@@ -248,6 +248,8 @@ export const KIT_CSS = `
 
 @media (max-width:1023px){
   .pg-head--aside .pg-headgrid{grid-template-columns:1fr}
+}
+@media (max-width:599px){
   .pg-ctasteps{grid-template-columns:1fr}
 }
 @media (max-width:767px){
@@ -271,4 +273,14 @@ export const KIT_CSS = `
 [data-rv=right].rv-pending{transform:translateX(32px)!important}
 [data-rv=rise].rv-pending{transform:translateY(48px)!important}
 @media (prefers-reduced-motion:reduce){.pg *{transition:none!important}}
+/* touch screens: text links keep their look but get a finger-sized tap area; chip links grow to finger height */
+@media (pointer:coarse){
+  .pg-link,.pg-ctatel,.pg-ctaline a,.wpx-more,.pj-ask,.sv-go,.bl-fclear,.pf-clear{position:relative}
+  .pg-link::after,.pg-ctatel::after,.pg-ctaline a::after,.wpx-more::after,.pj-ask::after,.sv-go::after,.bl-fclear::after,.pf-clear::after{content:"";position:absolute;inset:-11px -6px}
+  .wp-prods a,.wp-prods b,.pf-packs span{min-height:2.75rem}
+}
+/* tablets: the three next steps side by side in the closing panel */
+@media (min-width:600px) and (max-width:1023px){
+  .pg-ctasteps{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 `;

@@ -26,7 +26,7 @@ export function Footer() {
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapQuery)}`;
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
   const head = "mb-3 text-body font-semibold text-water-2";
-  const link = `rounded text-body text-white/72 transition-colors hover:text-white ${focus}`;
+  const link = `-my-2 inline-block py-2 rounded text-body text-white/72 transition-colors hover:text-white ${focus}`;
   const socials = contact.socials.filter((s) => s.label !== "WhatsApp");
 
   return (
@@ -100,17 +100,17 @@ export function Footer() {
               <p className={head}>Get in touch</p>
               <ul className="space-y-2 text-body text-white/72">
                 <li>
-                  <a href={tel} className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={tel} className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <Phone size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.phone}
                   </a>
                 </li>
                 <li>
-                  <a href={`mailto:${contact.email}`} className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={`mailto:${contact.email}`} className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <Mail size={15} aria-hidden className="shrink-0 text-water-2" /> <span className="min-w-0 break-all">{contact.email}</span>
                   </a>
                 </li>
                 <li>
-                  <a href={maps} target="_blank" rel="noopener noreferrer" className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={maps} target="_blank" rel="noopener noreferrer" className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <MapPin size={15} aria-hidden className="shrink-0 text-water-2" /> 142 Perundurai Road, Erode
                   </a>
                 </li>

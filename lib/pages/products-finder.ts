@@ -16,68 +16,78 @@
  * rates are asked for. Without scripts every product is listed, each row still
  * opens, and each product keeps its own rate link.
  */
-import { FAMILIES, familyOf, rateLink, type Product } from "../products";
-import { brandMark, jobOf, type BrandInfo, type JobView } from "../products/brands";
-import { cap, fullName, jobsFor, packAmount, shortName, useTerms, usesNote } from "../products/compare";
-import { packIcon } from "../products/packs";
-import { esc, listing, type ContactInfo } from "./kit";
+import { BRAND_LOGOS } from "../methods/brand-logos";
+import { imageSrc, mediaOf, videoSrc } from "../products/media";
+import { FAMILIES, familyOf, type Product } from "../products";
+import { brandMark, type BrandInfo, type JobView } from "../products/brands";
+import { fullName, shortName } from "../products/compare";
+import { packArt } from "../products/pack-art";
+import { esc, type ContactInfo } from "./kit";
 
 const search = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const chev = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const plus = `<svg class="pf-plus" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
 const tick = `<svg class="pf-tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.6 11.4 12.6 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const lowerFirst = (s: string) => (/^[A-Z][a-z]/.test(s) ? s[0]!.toLowerCase() + s.slice(1) : s);
 
 /** what the search looks through */
 const searchText = (p: Product) => [p.brand, p.name, p.category, p.purpose, p.areas, ...p.packs.map((k) => `${k.size} ${k.listed}`)].join(" ").toLowerCase().replace(/\s+/g, " ");
 
-/** a product's packs drawn at sizes that follow their weight or volume (by the cube root, as a container grows) */
-function packsToScale(p: Product) {
-  const max = Math.max(0, ...p.packs.map((k) => packAmount(k.size) ?? 0));
-  return `<ul class="pf-scale" aria-label="Pack sizes">${p.packs
-    .map((k) => {
-      const q = packAmount(k.size);
-      const px = q && max ? 1.6 + 1.9 * Math.cbrt(q / max) : 2.6;
-      return `<li style="--px:${px.toFixed(2)}rem">${packIcon(k.shape)}<span>${esc(k.size)}</span></li>`;
-    })
-    .join("")}</ul>`;
-}
+
+const docIco = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>`;
+const playIco = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.8v6.4l5.2-3.2z" fill="currentColor"/></svg>`;
+
+/** the viewer a card's "Product description" and "Watch video" open; the page's script fills it from the card */
+const VIEWER_HTML = `<dialog class="pv" data-pv aria-labelledby="pv-name">
+  <div class="pv-head">
+    <span class="pv-pic" data-pv-pic aria-hidden="true"></span>
+    <span class="pv-tx"><span class="pv-brand" data-pv-brand></span><span class="pv-name" id="pv-name" data-pv-name></span></span>
+    <button type="button" class="pv-x" data-pv-close aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="pv-tabs" role="tablist">
+    <button type="button" role="tab" class="pv-tab" data-pv-tab="desc" aria-selected="true">Description</button>
+    <button type="button" role="tab" class="pv-tab" data-pv-tab="video" aria-selected="false">Video</button>
+  </div>
+  <div class="pv-body">
+    <div class="pv-pane" data-pv-pane="desc" role="tabpanel"><p class="pv-desc" data-pv-desc></p></div>
+    <div class="pv-pane" data-pv-pane="video" role="tabpanel" hidden>
+      <div class="pv-video" data-pv-video></div>
+      <p class="pv-none" data-pv-none hidden>${playIco}<span>The video for this product is on its way.</span></p>
+    </div>
+  </div>
+</dialog>`;
 
 /** one product: a row that opens */
 function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
   const f = familyOf(p.family);
-  const uses = useTerms(p);
-  const parts = jobsFor(p.slug);
-  const job = jobOf(p, js);
   const cat = p.category === "Construction chemical" ? "Ask us what this one is best used for" : p.category;
-  const facts = [
-    ["What it does", p.purpose],
-    ["Used on", uses.length ? cap(listing(uses)) : usesNote(p)],
-    ["Bought by", p.customers],
-    parts.length ? ["Part of", parts.map((x) => `${x.job} (${lowerFirst(x.step)})`).join("; ")] : null,
-  ].filter((x): x is string[] => Boolean(x && x[1]));
+  const m = mediaOf(p.slug);
+  const img = imageSrc(m);
+  const media = `<div class="pf-media" data-view="${p.slug}" data-view-desc="${esc(m.description ?? p.purpose)}"${img ? ` data-view-img="${esc(img)}"` : ""}${videoSrc(m) ? ` data-view-video="${esc(videoSrc(m))}"` : ""}>
+          <button type="button" class="pf-vlink" data-view-go="desc">${docIco}<span>Description</span></button>
+          <button type="button" class="pf-vlink" data-view-go="video">${playIco}<span>Video</span></button>
+        </div>`;
   return `<li class="pf-row" id="${p.slug}" data-family="${p.family}" data-q="${esc(searchText(p))}" style="--tint:${f.tint}">
   <details class="pf-d">
     <summary class="pf-sum">
-      <span class="pf-ico">${packIcon(p.packs[0]?.shape ?? "pail")}</span>
+      <span class="pf-fam">${esc(f.label)}</span>
+      <span class="pf-ico${img ? " pf-ico--photo" : ""}">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : packArt(p.slug, p.packs[0]?.shape ?? "bag", f.tint, p.packs[0]?.size ?? "")}</span>
       <span class="pf-tx"><span class="pf-name">${esc(shortName(p))}</span><span class="pf-cat">${esc(cat)}</span></span>
       <span class="pf-packs">${p.packs.map((k) => `<span>${esc(k.size)}</span>`).join("")}</span>
       <span class="pf-chev">${chev}</span>
     </summary>
     <div class="pf-open">
-      <dl class="pf-facts">${facts.map(([k, v]) => `<div><dt>${esc(k!)}</dt><dd>${esc(v!)}</dd></div>`).join("")}</dl>
-      <div class="pf-ofoot">
-        ${packsToScale(p)}
-        <div class="pf-acts">
-          <a class="pf-rate" href="${esc(rateLink(c.whatsapp, [p]))}" target="_blank" rel="noopener noreferrer">Ask today’s rate</a>
-          ${job ? `<a class="pf-alt" href="#job-${job.key}" data-job-go="${job.key}">Compare brands for this job</a>` : ""}
-        </div>
-      </div>
+      ${media}
     </div>
   </details>
   <button type="button" class="pf-add" data-add="${p.slug}" data-label="${esc(fullName(p))}" data-packs="${esc(p.packs.map((k) => k.size).join("|"))}" aria-pressed="false" aria-label="Add ${esc(fullName(p))} to your enquiry" hidden>${plus}${tick}<span>Add</span></button>
 </li>`;
 }
+
+/** a brand as its logo where RPC has one, otherwise its name set in the brand's colour */
+const brandFace = (name: string) =>
+  BRAND_LOGOS[name]
+    ? `<img src="/images/brands/${esc(BRAND_LOGOS[name]!)}" alt="${esc(name)}" loading="lazy" decoding="async">`
+    : `<strong>${esc(name)}</strong>`;
 
 /** the filters: a brand and a kind of product, each with how many (a column beside the list; on phones, two rows that scroll sideways) */
 function filters(bs: readonly BrandInfo[], total: number) {
@@ -90,10 +100,10 @@ function filters(bs: readonly BrandInfo[], total: number) {
     <button type="button" class="pf-chip pf-chip--all" data-chip-fam="all" aria-pressed="true">Every kind<span>${total}</span></button>
     ${fams.map((f) => `<button type="button" class="pf-chip" data-chip-fam="${f.key}" data-label="${esc(f.label)}" aria-pressed="false">${tick}${esc(f.label)}<span data-chip-n>${count(f.key)}</span></button>`).join("")}
   </div>
-  <div class="pf-chiprow" role="group" aria-labelledby="pf-fb">
+  <div class="pf-chiprow pf-chiprow--brands" role="group" aria-labelledby="pf-fb">
     <p class="pf-fh" id="pf-fb">Brand<span class="pf-picked" data-picked="brand"></span></p>
     <button type="button" class="pf-chip pf-chip--all" data-chip-brand="all" aria-pressed="true">All brands<span>${total}</span></button>
-    ${bs.map((b) => `<button type="button" class="pf-chip" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<i aria-hidden="true"></i>${esc(b.name)}<span>${b.count}</span></button>`).join("")}
+    ${bs.map((b) => `<button type="button" class="pf-chip pf-bt" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<em class="pf-blogo">${brandFace(b.name)}</em><span>${b.count}</span></button>`).join("")}
   </div>
 </div>`;
 }
@@ -102,7 +112,7 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
   const lists = bs
     .map(
       (b) => `<section class="pf-brand" id="brand-${b.key}" data-brand="${b.key}" aria-labelledby="pf-h-${b.key}">
-  <h3 class="pf-bh" id="pf-h-${b.key}" style="--c:${brandMark(b.name)}"><i aria-hidden="true"></i>${esc(b.name)}<span data-bcount>${b.count} ${b.count === 1 ? "product" : "products"}</span></h3>
+  <h3 class="pf-bh${BRAND_LOGOS[b.name] ? " pf-bh--logo" : ""}" id="pf-h-${b.key}" style="--c:${brandMark(b.name)}">${BRAND_LOGOS[b.name] ? `<em class="pf-bhl"><img src="/images/brands/${esc(BRAND_LOGOS[b.name]!)}" alt="" loading="lazy" decoding="async"></em>` : `<i aria-hidden="true"></i>`}<b class="pf-bhn">${esc(b.name)}</b><span data-bcount>${b.count} ${b.count === 1 ? "product" : "products"}</span></h3>
   <ul class="pf-rows">${b.products.map((p) => row(p, c, js)).join("")}</ul>
   <button type="button" class="pf-more" data-more hidden>Show all ${b.count} ${esc(b.name)} products</button>
 </section>`,
@@ -117,6 +127,7 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
         <label class="pf-search">${search}<span class="sr-only">Search products</span><input type="search" data-search placeholder="Search ${total} products" autocomplete="off" enterkeyhint="search"><button type="button" class="pf-x" data-clear-q aria-label="Clear the search" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label>
         <div class="pf-state"><p class="pf-status" data-status aria-live="polite">All ${total} products, brand by brand.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button></div>
         <div class="pf-lists">${lists}</div>
+        ${VIEWER_HTML}
         <p class="pf-empty" data-empty hidden>Nothing on our list matches that. Try a shorter word, or <button type="button" data-clear>show every product</button>.</p>
       </div>
     </div>
@@ -164,6 +175,24 @@ export const FINDER_CSS = `
 .pf-picked:empty{display:none}
 .pf-chip:not(.pf-chip--all)[aria-pressed="true"] span{color:var(--ink2)}
 .pf-chip[aria-pressed="true"] .pf-ck{background:var(--navy);box-shadow:none;color:#fff}
+/* brands as logo tiles, two to a row: the logo (or the name in the brand's colour), the count in the corner, a tick when picked */
+.pf-chiprow--brands{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+.pf-chiprow--brands .pf-fh,.pf-chiprow--brands .pf-chip--all{grid-column:1 / -1}
+.pf-chiprow--brands .pf-fh{margin-bottom:.1rem}
+.pf-bt{position:relative;justify-content:center;height:5rem;padding:1.3rem .7rem .55rem;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .2s}
+.pf-bt:hover{background:#fff;box-shadow:inset 0 0 0 1.5px rgba(18,34,59,.4)}
+.pf-chip.pf-bt[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 2px var(--navy)}
+.pf-bt .pf-ck{position:absolute;left:.45rem;top:.45rem;width:1rem;height:1rem}
+.pf-bt > span{position:absolute;right:.5rem;top:.35rem;margin:0;padding:0;color:var(--mute)}
+.pf-blogo{display:grid;place-items:center;width:100%;height:100%;font-style:normal}
+.pf-blogo img{display:block;max-width:100%;max-height:2.7rem;width:auto;height:auto;object-fit:contain}
+.pf-blogo strong{font-family:var(--display);font-weight:700;letter-spacing:-.01em;color:var(--c,var(--ink))}
+.pf-chip.pf-bt[data-empty]{opacity:.45}
+/* each brand's list opens with its logo */
+.pf-bhn{font-weight:600}
+.pf-bh--logo .pf-bhn{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.pf-bhl{display:inline-grid;place-items:center;height:2.6rem;padding:.35rem .7rem;border-radius:8px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-style:normal}
+.pf-bhl img{display:block;height:1.9rem;max-width:9rem;width:auto;object-fit:contain}
 
 /* the list */
 .pf-main{min-width:0;container-type:inline-size}
@@ -271,6 +300,24 @@ export const FINDER_CSS = `
 .pf-open .pf-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 2rem}
 .pf-open .pf-facts div{grid-template-columns:8rem minmax(0,1fr);gap:.1rem 1rem}
 .pf-open .pf-facts div:nth-child(2){border-top:0}
+/* each card as a product label: a band in the colour of its kind across the top, the kind named under it,
+   the name as the card's title beside a large drawing of its pack, and the packs and Add along a ruled foot */
+.pf-row{--h:11.2rem;overflow:hidden;border-radius:14px;background:#fbf8f2}
+.pf-row::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:var(--tint)}
+.pf-sum{grid-template-columns:minmax(0,1fr) 3.2rem;grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"fam fam" "tx ico" "packs packs";gap:.45rem .9rem;padding:1.05rem 1rem .9rem}
+.pf-fam{grid-area:fam;display:flex;align-items:center;gap:.45rem;min-width:0;padding-right:1.8rem;font-size:var(--fs-body);font-weight:500;color:var(--tint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-tx{padding-right:0}
+.pf-name{font-family:var(--sans);font-size:var(--fs-body);font-weight:700;line-height:1.35;letter-spacing:0;color:var(--ink)}
+.pf-cat{margin-top:.15rem;line-height:1.45}
+.pf-ico{width:3.2rem;height:3.2rem;border-radius:50%;background:color-mix(in srgb,var(--tint) 12%,transparent);color:var(--tint)}
+.pf-ico svg{width:1.7rem;height:1.7rem}
+.pf-packs{margin:0 -1rem;padding:.7rem 6.6rem 0 1rem;border-top:1px solid var(--line)}
+.pf-packs span{background:color-mix(in srgb,var(--tint) 9%,#fff);color:var(--ink)}
+.pf-chev{top:.95rem}
+.pf-add{top:calc(var(--h) - 2.95rem)}
+.pf-row:has(.pf-d[open]){--h:9.4rem}
+.pf-row:has(.pf-d[open])::before{height:6px}
+.pf-open{padding:.4rem 1rem 1rem;border-top:1px solid var(--line)}
 .pf-ofoot{flex-direction:row;align-items:flex-end}
 @media (max-width:1199px){.pf-rows{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:699px){
@@ -282,7 +329,7 @@ export const FINDER_CSS = `
   .pf-acts{flex-direction:column;align-items:stretch;width:100%}
   .pf-rate,.pf-alt{justify-content:center}
 }
-@media (max-width:599px){.pf-rows{grid-template-columns:minmax(0,1fr)}.pf-row,.pf-row:has(.pf-d[open]){--h:9.6rem}.pf-d[open] .pf-name,.pf-d[open] .pf-cat{-webkit-line-clamp:2}}
+@media (max-width:599px){.pf-rows{grid-template-columns:minmax(0,1fr)}.pf-row,.pf-row:has(.pf-d[open]){--h:11rem}.pf-d[open] .pf-name,.pf-d[open] .pf-cat{-webkit-line-clamp:2}}
 
 /* the enquiry, floating at the foot of the screen */
 .rl{position:fixed;left:50%;bottom:max(1rem,env(safe-area-inset-bottom));z-index:36;width:min(38rem,calc(100vw - 2 * var(--gutter,1rem)));transform:translateX(-50%);animation:rl-in .4s cubic-bezier(.2,.8,.2,1)}
@@ -371,6 +418,11 @@ export const FINDER_CSS = `
   .pf-chip{flex:none;width:auto;height:2.4rem;padding:0 .85rem;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);white-space:nowrap}
   .pf-chip span{margin-left:0;padding-left:.15rem}
   .pf-chip[aria-pressed="true"]{box-shadow:none}
+  .pf-chiprow--brands{display:flex}
+  .pf-bt{width:9rem;height:3rem;padding:.35rem 2rem .35rem 1.8rem}
+  .pf-bt .pf-ck{top:50%;margin-top:-.5rem}
+  .pf-bt > span{top:50%;transform:translateY(-50%)}
+  .pf-blogo img{max-height:2rem}
 }
 @media (max-width:699px){
   .pf-search{height:3.2rem}
@@ -380,4 +432,91 @@ export const FINDER_CSS = `
   .rl-send{width:2.8rem;padding:0;justify-content:center}
   .rl-send .pg-ar{width:1.25rem;height:1.25rem}
 }
+/* the product's picture on the right of the card, larger */
+.pf-sum{grid-template-columns:minmax(0,1fr) 6.6rem}
+.pf-row{--h:13.6rem}
+.pf-row:has(.pf-d[open]){--h:13.6rem}
+.pf-d[open] .pf-name,.pf-d[open] .pf-cat{-webkit-line-clamp:2}
+.pf-ico{align-self:start;width:6.6rem;height:6.6rem;border-radius:12px;background:radial-gradient(circle at 50% 38%,#fff 0,color-mix(in srgb,var(--tint) 9%,#fff) 70%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tint) 14%,transparent)}
+.pf-ico svg.pa{width:100%;height:100%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.pf-row:hover .pf-ico svg.pa{transform:translateY(-2px) scale(1.04)}
+.pf-ico--photo{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+.pf-ico img{display:block;width:100%;height:100%;padding:.3rem;box-sizing:border-box;object-fit:contain}
+/* in an opened card: the description and the video, as two links */
+.pf-media{display:flex;gap:.5rem;padding:.3rem 0 0}
+.pf-media .pf-vlink{flex:1 1 0;justify-content:center;min-width:0}
+.pf-vlink{display:inline-flex;align-items:center;gap:.5rem;height:2.4rem;padding:0 .95rem 0 .75rem;border:0;border-radius:6px;background:color-mix(in srgb,var(--tint) 10%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tint) 30%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);cursor:pointer;transition:background-color .2s,box-shadow .2s}
+.pf-vlink svg{width:1.15rem;height:1.15rem;color:var(--tint)}
+.pf-vlink:hover{box-shadow:inset 0 0 0 1.5px var(--tint)}
+.pf-vlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* the viewer */
+.pv{width:min(44rem,calc(100vw - 2rem));max-width:none;max-height:calc(100svh - 2rem);margin:auto;padding:0;border:0;border-radius:16px;background:#fbf8f2;color:var(--ink);box-shadow:0 40px 80px -30px rgba(4,12,30,.6);overflow:hidden}
+.pv[open]{display:flex;flex-direction:column;animation:pv-in .25s cubic-bezier(.2,.8,.2,1)}
+.pv::backdrop{background:rgba(9,20,38,.55)}
+@keyframes pv-in{from{opacity:0;transform:translateY(12px)}}
+.pv-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1rem .9rem 1.2rem;border-top:5px solid var(--tint,#2756a0)}
+.pv-pic{display:grid;place-items:center;flex:none;width:3.4rem;height:3.4rem;border-radius:10px;background:color-mix(in srgb,var(--tint,#2756a0) 12%,#fff);color:var(--tint,#2756a0);overflow:hidden}
+.pv-pic svg{width:1.7rem;height:1.7rem}
+.pv-pic svg.pa{width:100%;height:100%}
+.pv-pic img{width:100%;height:100%;object-fit:contain;background:#fff}
+.pv-tx{display:flex;flex-direction:column;min-width:0;flex:1}
+.pv-brand{font-size:var(--fs-body);color:var(--mute)}
+.pv-name{font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2}
+.pv-x{display:grid;place-items:center;flex:none;width:2.6rem;height:2.6rem;padding:0;border:0;border-radius:50%;background:rgba(18,34,59,.06);color:var(--ink);cursor:pointer}
+.pv-x:hover{background:rgba(18,34,59,.12)}
+.pv-x svg{width:1rem;height:1rem}
+.pv-tabs{display:flex;gap:.3rem;padding:0 1.2rem;border-bottom:1px solid var(--line)}
+.pv-tab{position:relative;height:2.8rem;padding:0 .8rem;border:0;background:none;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--mute);cursor:pointer}
+.pv-tab[aria-selected="true"]{color:var(--ink)}
+.pv-tab[aria-selected="true"]::after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;border-radius:2px;background:var(--tint,#2756a0)}
+.pv-tab:focus-visible,.pv-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pv-body{min-height:11rem;padding:1.2rem 1.2rem 1.4rem;overflow-y:auto}
+.pv-pane[hidden]{display:none}
+.pv-desc{margin:0;font-size:var(--fs-body);line-height:1.65;white-space:pre-line}
+.pv-video video,.pv-video iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
+.pv-none{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin:0;padding:2.4rem 1rem;border-radius:10px;background:color-mix(in srgb,var(--tint,#2756a0) 7%,#fff);font-size:var(--fs-body);color:var(--mute);text-align:center}
+.pv-none[hidden]{display:none}
+.pv-none svg{width:2.2rem;height:2.2rem;color:var(--tint,#2756a0)}
+@media (max-width:599px){
+  .pv{width:100%;max-height:88svh;margin:auto auto 0;border-radius:16px 16px 0 0}
+}
+@media (prefers-reduced-motion:reduce){.pv[open]{animation:none}}
+
+/* phones: two cards to a row, like a shop app: the pack drawn large on top, then the kind, name and line, the pack sizes, and Add across the foot */
+@media (max-width:599px){
+  .pf-rows{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+  .pf-row,.pf-row:has(.pf-d[open]){--h:18.4rem}
+  .pf-row:has(.pf-d[open]){grid-column:1/-1}
+  .pf-sum{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"ico" "fam" "tx" "packs";gap:.35rem;padding:.7rem .7rem 3.5rem}
+  .pf-ico{width:100%;height:4.8rem;border-radius:10px}
+  .pf-ico svg{width:2.6rem;height:2.6rem}
+  .pf-fam{display:block;padding-right:0;margin-top:.25rem}
+  .pf-name{-webkit-line-clamp:2}
+  .pf-cat{-webkit-line-clamp:1}
+  .pf-cat{margin-top:.1rem}
+  .pf-packs{align-self:end;margin:0;padding:0;border-top:0;flex-wrap:nowrap;overflow:hidden}
+  .pf-packs span{height:1.7rem;padding:0 .5rem}
+  .pf-chev{top:1.1rem;right:1.1rem;width:1.7rem;height:1.7rem;border-radius:50%;background:rgba(255,255,255,.75)}
+  .pf-add{top:auto;bottom:.7rem;left:.7rem;right:.7rem;justify-content:center;height:2.3rem}
+  .pf-row:has(.pf-d[open]) .pf-add{top:calc(var(--h) - 3rem);bottom:auto}
+  .pf-open{padding:.4rem .8rem .9rem}
+}
+/* an opened card keeps its place and size: only the description and video links show under it */
+.pf-rows .pf-row:has(.pf-d[open]){grid-column:auto}
+.pf-open{padding:.7rem 1rem .9rem}
+@media (max-width:599px){.pf-media{flex-direction:column}.pf-media .pf-vlink{flex:none}.pf-d[open] .pf-cat{-webkit-line-clamp:1}.pf-open{padding:.6rem .7rem .8rem}}
+
+/* polish: a card lifts a little on hover; an added card is outlined and its picture marked; the picture sits in a calm, even box */
+.pf-row{transition:box-shadow .25s,transform .25s}
+@media (hover:hover){.pf-row:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(18,34,59,.28),0 18px 34px -24px rgba(18,34,59,.55)}}
+.pf-row:has(.pf-add.is-on){box-shadow:inset 0 0 0 1.5px var(--navy)}
+.pf-ico{position:relative;border-radius:14px}
+.pf-ico--photo img{padding:0;object-fit:cover;border-radius:13px}
+.pf-row:has(.pf-add.is-on) .pf-ico::after{content:"";position:absolute;top:-.35rem;left:-.35rem;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4 6.6 11.4 12.6 4.8' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/70%;box-shadow:0 0 0 2px #fbf8f2}
+.pf-add.is-on:hover{background:var(--accent)}
+.pf-more{height:2.8rem;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(18,34,59,.16)}
+.pf-more:hover{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
+.pf-bh{gap:.75rem}
+@media (prefers-reduced-motion:reduce){.pf-row,.pf-row:hover{transition:none;transform:none}}
 `;
