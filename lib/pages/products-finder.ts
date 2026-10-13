@@ -56,6 +56,13 @@ const VIEWER_HTML = `<dialog class="pv" data-pv aria-labelledby="pv-name">
   </div>
 </dialog>`;
 
+/** the larger picture a card's picture opens */
+const ZOOM_HTML = `<dialog class="pz" data-pz aria-labelledby="pz-name">
+  <button type="button" class="pz-x" data-pz-close aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+  <div class="pz-pic" data-pz-pic></div>
+  <p class="pz-cap"><span class="pz-name" id="pz-name" data-pz-name></span><span class="pz-sub" data-pz-sub></span></p>
+</dialog>`;
+
 /** one product: a row that opens */
 function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
   const f = familyOf(p.family);
@@ -70,8 +77,8 @@ function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
   <details class="pf-d">
     <summary class="pf-sum">
       <span class="pf-fam">${esc(f.label)}</span>
-      <span class="pf-ico${img ? " pf-ico--photo" : ""}">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : packArt(p.slug, p.packs[0]?.shape ?? "bag", f.tint, p.packs[0]?.size ?? "")}</span>
-      <span class="pf-tx"><span class="pf-name">${esc(shortName(p))}</span><span class="pf-cat">${esc(cat)}</span></span>
+      <span class="pf-ico${img ? " pf-ico--photo" : ""}" data-zoom title="View larger picture">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : packArt(p.slug, p.packs[0]?.shape ?? "bag", f.tint, p.packs[0]?.size ?? "")}</span>
+      <span class="pf-tx"><span class="pf-name">${esc(shortName(p))}</span><span class="pf-cat">${esc(cat)}</span><span class="pf-use">${esc(p.purpose)}</span></span>
       <span class="pf-packs">${p.packs.map((k) => `<span>${esc(k.size)}</span>`).join("")}</span>
       <span class="pf-chev">${chev}</span>
     </summary>
@@ -113,6 +120,7 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
     .map(
       (b) => `<section class="pf-brand" id="brand-${b.key}" data-brand="${b.key}" aria-labelledby="pf-h-${b.key}">
   <h3 class="pf-bh${BRAND_LOGOS[b.name] ? " pf-bh--logo" : ""}" id="pf-h-${b.key}" style="--c:${brandMark(b.name)}">${BRAND_LOGOS[b.name] ? `<em class="pf-bhl"><img src="/images/brands/${esc(BRAND_LOGOS[b.name]!)}" alt="" loading="lazy" decoding="async"></em>` : `<i aria-hidden="true"></i>`}<b class="pf-bhn">${esc(b.name)}</b><span data-bcount>${b.count} ${b.count === 1 ? "product" : "products"}</span></h3>
+  <p class="pf-thead" aria-hidden="true"><span>Product</span><span>What it does</span><span>Packs</span></p>
   <ul class="pf-rows">${b.products.map((p) => row(p, c, js)).join("")}</ul>
   <button type="button" class="pf-more" data-more hidden>Show all ${b.count} ${esc(b.name)} products</button>
 </section>`,
@@ -125,9 +133,14 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
       <div class="pf-side">${filters(bs, total)}</div>
       <div class="pf-main">
         <label class="pf-search">${search}<span class="sr-only">Search products</span><input type="search" data-search placeholder="Search ${total} products" autocomplete="off" enterkeyhint="search"><button type="button" class="pf-x" data-clear-q aria-label="Clear the search" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label>
-        <div class="pf-state"><p class="pf-status" data-status aria-live="polite">All ${total} products, brand by brand.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button></div>
-        <div class="pf-lists">${lists}</div>
+        <div class="pf-state"><p class="pf-status" data-status aria-live="polite">All ${total} products, brand by brand.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button><div class="pf-views" role="group" aria-label="View products as" data-views hidden>
+          <button type="button" data-view-as="grid" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg><span>Cards</span></button>
+          <button type="button" data-view-as="list" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="4" height="4" rx="1"/><rect x="2" y="9.5" width="4" height="4" rx="1"/><path d="M8.5 3.5h5.5M8.5 5.8h3.5M8.5 10.5h5.5M8.5 12.8h3.5" stroke-linecap="round"/></svg><span>List</span></button>
+          <button type="button" data-view-as="table" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12M2 6.5h12M2 9.5h12M2 12.5h12" stroke-linecap="round"/></svg><span>Table</span></button>
+        </div></div>
+        <div class="pf-lists" data-view="grid">${lists}</div>
         ${VIEWER_HTML}
+        ${ZOOM_HTML}
         <p class="pf-empty" data-empty hidden>Nothing on our list matches that. Try a shorter word, or <button type="button" data-clear>show every product</button>.</p>
       </div>
     </div>
@@ -190,7 +203,6 @@ export const FINDER_CSS = `
 .pf-chip.pf-bt[data-empty]{opacity:.45}
 /* each brand's list opens with its logo */
 .pf-bhn{font-weight:600}
-.pf-bh--logo .pf-bhn{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .pf-bhl{display:inline-grid;place-items:center;height:2.6rem;padding:.35rem .7rem;border-radius:8px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-style:normal}
 .pf-bhl img{display:block;height:1.9rem;max-width:9rem;width:auto;object-fit:contain}
 
@@ -519,4 +531,149 @@ export const FINDER_CSS = `
 .pf-more:hover{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
 .pf-bh{gap:.75rem}
 @media (prefers-reduced-motion:reduce){.pf-row,.pf-row:hover{transition:none;transform:none}}
+
+/* a card's picture opens larger */
+.pf-ico[data-zoom]{cursor:zoom-in}
+.pz{width:min(34rem,calc(100vw - 2rem));max-width:none;max-height:calc(100svh - 2rem);margin:auto;padding:0;border:0;border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 40px 80px -30px rgba(4,12,30,.6);overflow:hidden}
+.pz[open]{animation:pz-in .25s cubic-bezier(.2,.8,.2,1)}
+.pz::backdrop{background:rgba(9,20,38,.6)}
+@keyframes pz-in{from{opacity:0;transform:scale(.96)}}
+.pz-x{position:absolute;top:.8rem;right:.8rem;z-index:1;display:grid;place-items:center;width:2.6rem;height:2.6rem;padding:0;border:0;border-radius:50%;background:rgba(18,34,59,.07);color:var(--ink);cursor:pointer}
+.pz-x:hover{background:rgba(18,34,59,.14)}
+.pz-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pz-x svg{width:1rem;height:1rem}
+.pz-pic{display:grid;place-items:center;aspect-ratio:1;max-height:calc(100svh - 9rem);background:radial-gradient(circle at 50% 40%,#fff 0,color-mix(in srgb,var(--tint,#2756a0) 8%,#fff) 75%)}
+.pz-pic img{display:block;width:100%;height:100%;object-fit:contain}
+.pz-pic svg{width:78%;height:78%}
+.pz-cap{display:flex;flex-direction:column;gap:.1rem;margin:0;padding:1rem 1.2rem 1.2rem;border-top:1px solid var(--line)}
+.pz-name{font-size:var(--fs-body);font-weight:700}
+.pz-sub{font-size:var(--fs-body);color:var(--mute)}
+@media (prefers-reduced-motion:reduce){.pz[open]{animation:none}}
+
+/* catalogue finish: every brand heading reads logo, name, count; the card's pack drawing drops its tiny size label (the size is in the chip below, and the larger picture shows it) */
+.pf-bh{flex-wrap:wrap;row-gap:.3rem}
+.pf-bh span{margin-left:0}
+.pf-ico svg.pa text{display:none}
+@media (max-width:599px){
+  .pf-row,.pf-row:has(.pf-d[open]){--h:20.6rem}
+  .pf-ico{height:7.6rem}
+}
+
+/* three ways to look at the catalogue: cards, a list, a table */
+.pf-views{display:inline-flex;gap:2px;margin-left:auto;padding:3px;border-radius:10px;background:rgba(18,34,59,.06)}
+.pf-views[hidden]{display:none}
+.pf-views button{display:inline-flex;align-items:center;gap:.4rem;height:2.3rem;padding:0 .8rem;border:0;border-radius:8px;background:transparent;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--mute);cursor:pointer;transition:background-color .2s,color .2s}
+.pf-views button:hover{color:var(--ink)}
+.pf-views button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(18,34,59,.18)}
+.pf-views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pf-views svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.4}
+.pf-use,.pf-thead{display:none}
+
+/* list: one product a row, its picture on the left, what it does under its name, the packs on the right */
+.pf-lists[data-view="list"] .pf-rows{grid-template-columns:minmax(0,1fr);gap:.6rem}
+.pf-lists[data-view="list"] .pf-row,.pf-lists[data-view="list"] .pf-row:has(.pf-d[open]){--h:9.2rem;grid-column:auto}
+.pf-lists[data-view="list"] .pf-sum{grid-template-columns:7.2rem minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);grid-template-areas:"ico fam packs" "ico tx packs";gap:.25rem 1.3rem;padding:1rem 10rem 1rem 1rem}
+.pf-lists[data-view="list"] .pf-ico{grid-row:1/3;width:7.2rem;height:7.2rem}
+.pf-lists[data-view="list"] .pf-name,.pf-lists[data-view="list"] .pf-cat{-webkit-line-clamp:1}
+.pf-lists[data-view="list"] .pf-use{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:.35rem;font-size:var(--fs-body);line-height:1.45;color:var(--ink)}
+.pf-lists[data-view="list"] .pf-packs{align-self:center;max-width:15rem;margin:0;padding:0;border-top:0;flex-wrap:wrap;justify-content:flex-end}
+.pf-lists[data-view="list"] .pf-add{top:calc(var(--h) / 2 - 1.1rem);bottom:auto;left:auto;right:1rem;width:auto}
+
+/* table: a compact sheet, a row a product: picture, name and kind, what it does, packs, Add */
+.pf-lists[data-view="table"] .pf-thead{display:grid;grid-template-columns:3.2rem minmax(0,1.2fr) minmax(0,1.6fr) minmax(0,1fr);gap:0 1.2rem;margin:0;padding:0 9.5rem .5rem 1rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
+.pf-lists[data-view="table"] .pf-thead span:first-child{grid-column:1/3}
+.pf-lists[data-view="table"] .pf-rows{grid-template-columns:minmax(0,1fr);gap:0;border-radius:14px;background:#fbf8f2;box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.pf-lists[data-view="table"] .pf-row,.pf-lists[data-view="table"] .pf-row:has(.pf-d[open]){--h:4.6rem;grid-column:auto;border-radius:0;background:transparent;box-shadow:none;border-top:1px solid var(--line);transform:none}
+.pf-lists[data-view="table"] .pf-row:first-child{border-top:0}
+.pf-lists[data-view="table"] .pf-row::before{inset:0 auto 0 0;width:4px;height:auto}
+.pf-lists[data-view="table"] .pf-row:hover{background:color-mix(in srgb,var(--tint) 5%,#fff)}
+.pf-lists[data-view="table"] .pf-row:has(.pf-add.is-on){background:rgba(39,86,160,.06)}
+.pf-lists[data-view="table"] .pf-sum{grid-template-columns:3.2rem minmax(0,1.2fr) minmax(0,1.6fr) minmax(0,1fr);grid-template-rows:auto auto;grid-template-areas:"ico name use packs" "ico cat use packs";align-items:center;gap:0 1.2rem;padding:.6rem 9.5rem .6rem 1rem}
+.pf-lists[data-view="table"] .pf-fam{display:none}
+.pf-lists[data-view="table"] .pf-tx{display:contents}
+.pf-lists[data-view="table"] .pf-name{grid-area:name;align-self:end;-webkit-line-clamp:1}
+.pf-lists[data-view="table"] .pf-cat{grid-area:cat;align-self:start;margin:0;-webkit-line-clamp:1}
+.pf-lists[data-view="table"] .pf-use{grid-area:use;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:var(--fs-body);line-height:1.4;color:var(--ink)}
+.pf-lists[data-view="table"] .pf-ico{grid-row:1/3;width:3.2rem;height:3.2rem;border-radius:8px}
+.pf-lists[data-view="table"] .pf-ico::after{display:none}
+.pf-lists[data-view="table"] .pf-packs{grid-row:1/3;align-self:center;margin:0;padding:0;border-top:0;flex-wrap:wrap}
+.pf-lists[data-view="table"] .pf-add{top:calc(var(--h) / 2 - 1.05rem);bottom:auto;left:auto;right:2.9rem;width:auto}
+.pf-lists[data-view="table"] .pf-chev{top:calc(var(--h) / 2 - .75rem);right:.8rem}
+
+/* a narrow screen: list and table both become one-column rows, the picture on the left */
+@media (max-width:899px){
+  .pf-lists[data-view="table"] .pf-thead{display:none}
+  .pf-lists[data-view="table"] .pf-sum{grid-template-columns:3.2rem minmax(0,1fr) auto;grid-template-areas:"ico name packs" "ico cat packs"}
+  .pf-lists[data-view="table"] .pf-use{display:none}
+}
+@media (max-width:599px){
+  .pf-lists[data-view="list"] .pf-row,.pf-lists[data-view="list"] .pf-row:has(.pf-d[open]){--h:8.4rem}
+  .pf-lists[data-view="list"] .pf-sum{grid-template-columns:5.8rem minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"ico fam" "ico tx" "ico packs";gap:.15rem .9rem;padding:.75rem .75rem .75rem .75rem}
+  .pf-lists[data-view="list"] .pf-ico{grid-row:1/4;width:5.8rem;height:100%;max-height:6.9rem}
+  .pf-lists[data-view="list"] .pf-use{display:none}
+  .pf-lists[data-view="list"] .pf-fam{padding-right:2.2rem}
+  .pf-lists[data-view="list"] .pf-packs{align-self:end;justify-content:flex-start;flex-wrap:nowrap;overflow:hidden;max-width:none;padding-right:5.4rem}
+  .pf-lists[data-view="list"] .pf-add{top:auto;bottom:.75rem;right:.75rem;height:2.1rem}
+  .pf-lists[data-view="table"] .pf-row,.pf-lists[data-view="table"] .pf-row:has(.pf-d[open]){--h:5.2rem}
+  .pf-lists[data-view="table"] .pf-sum{grid-template-columns:2.8rem minmax(0,1fr);grid-template-areas:"ico name" "ico cat";padding:.6rem 7.6rem .6rem .8rem;gap:0 .8rem}
+  .pf-lists[data-view="table"] .pf-ico{width:2.8rem;height:2.8rem}
+  .pf-lists[data-view="table"] .pf-packs{display:none}
+  .pf-lists[data-view="table"] .pf-sum{grid-template-areas:"ico name" "ico cat"}
+  .pf-lists[data-view="table"] .pf-name{-webkit-line-clamp:2;line-height:1.3}
+  .pf-lists[data-view="table"] .pf-row:has(.pf-name) .pf-cat{-webkit-line-clamp:1}
+  .pf-lists[data-view="table"] .pf-add{right:2.6rem;height:2.1rem;padding:0 .6rem}
+  .pf-lists[data-view="table"] .pf-chev{right:.6rem;background:none}
+  .pf-views{margin-left:0}
+  .pf-views button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .pf-views button{padding:0 .7rem}
+}
+
+/* card finish: a clean white card with a soft edge; the kind marked by a coloured dot instead of a band; the picture on a quiet tinted ground;
+   neutral pack chips; Add as a soft navy button that fills when pressed */
+.pf-lists:not([data-view="table"]) .pf-row{background:#fffdf9;box-shadow:0 0 0 1px rgba(18,34,59,.09),0 1px 2px rgba(18,34,59,.04);border-radius:16px}
+.pf-lists:not([data-view="table"]) .pf-row::before{display:none}
+@media (hover:hover){.pf-lists:not([data-view="table"]) .pf-row:hover{box-shadow:0 0 0 1px rgba(18,34,59,.16),0 20px 36px -26px rgba(18,34,59,.55)}}
+.pf-lists:not([data-view="table"]) .pf-row:has(.pf-add.is-on){box-shadow:0 0 0 1.5px var(--navy),0 12px 28px -24px rgba(18,34,59,.6)}
+.pf-lists:not([data-view="table"]) .pf-fam{color:var(--mute)}
+.pf-lists:not([data-view="table"]) .pf-fam::before{content:"";flex:none;width:.55rem;height:.55rem;border-radius:50%;background:var(--tint);box-shadow:0 0 0 3px color-mix(in srgb,var(--tint) 16%,transparent)}
+.pf-lists:not([data-view="table"]) .pf-ico{background:color-mix(in srgb,var(--tint) 7%,#f6f3ee);box-shadow:none}
+.pf-lists:not([data-view="table"]) .pf-ico--photo{background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.07)}
+.pf-lists:not([data-view="table"]) .pf-packs{border-top-color:rgba(18,34,59,.07)}
+.pf-packs span{background:#f1ede5;color:var(--ink)}
+.pf-chev{border-radius:50%;transition:background-color .2s,transform .25s}
+.pf-sum:hover .pf-chev{background:rgba(18,34,59,.06);color:var(--ink)}
+.pf-add{border-radius:9px;background:rgba(18,34,59,.06);box-shadow:none;color:var(--navy)}
+.pf-add:hover{background:var(--navy);box-shadow:none;color:#fff}
+.pf-add.is-on{background:var(--navy);color:#fff}
+.pf-add:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:599px){.pf-lists:not([data-view="table"]) .pf-fam{display:block}.pf-lists:not([data-view="table"]) .pf-fam::before{display:inline-block;margin:0 .5rem 0 .15rem;vertical-align:.1em}}
+
+/* shop cards (cards view, every width): the picture large on top, the kind, the name in bold, the line it belongs to and its packs;
+   along the foot a full-width Add and, beside it, the arrow that opens the description and video */
+.pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:23rem;grid-column:auto}
+.pf-lists[data-view="grid"] .pf-sum{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"ico" "fam" "tx" "packs";gap:.4rem;padding:.75rem .75rem 4.1rem;align-items:start}
+.pf-lists[data-view="grid"] .pf-ico{width:100%;height:10rem;border-radius:12px;margin-bottom:.35rem}
+.pf-lists[data-view="grid"] .pf-ico svg.pa{width:100%;height:100%}
+.pf-lists[data-view="grid"] .pf-fam{display:flex;padding:0 .2rem}
+.pf-lists[data-view="grid"] .pf-tx{padding:0 .2rem}
+.pf-lists[data-view="grid"] .pf-name{-webkit-line-clamp:2}
+.pf-lists[data-view="grid"] .pf-cat{-webkit-line-clamp:1;margin-top:.1rem}
+.pf-lists[data-view="grid"] .pf-packs{align-self:end;margin:0;padding:0 .2rem;border-top:0;flex-wrap:nowrap;overflow:hidden}
+.pf-lists[data-view="grid"] .pf-add{top:calc(var(--h) - 3.35rem);bottom:auto;left:.75rem;right:4rem;width:auto;height:2.6rem;justify-content:center;border-radius:10px;background:var(--navy);color:#fff}
+.pf-lists[data-view="grid"] .pf-add:hover{background:#13316c}
+.pf-lists[data-view="grid"] .pf-add.is-on{background:#1f6b49;color:#fff}
+.pf-lists[data-view="grid"] .pf-chev{top:calc(var(--h) - 3.35rem);right:.75rem;width:2.6rem;height:2.6rem;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);color:var(--ink)}
+.pf-lists[data-view="grid"] .pf-chev svg{width:1rem;height:1rem}
+.pf-lists[data-view="grid"] .pf-sum:hover .pf-chev{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
+.pf-lists[data-view="grid"] .pf-d[open] .pf-chev{background:var(--navy);color:#fff;box-shadow:none}
+.pf-lists[data-view="grid"] .pf-row:has(.pf-add.is-on) .pf-ico::after{left:.5rem;top:.5rem}
+.pf-lists[data-view="grid"] .pf-open{padding:.2rem .75rem .9rem}
+@media (max-width:599px){
+  .pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:21.4rem}
+  .pf-lists[data-view="grid"] .pf-ico{height:8rem}
+  .pf-lists[data-view="grid"] .pf-sum{padding:.6rem .6rem 3.8rem;gap:.3rem}
+  .pf-lists[data-view="grid"] .pf-fam{display:block}
+  .pf-lists[data-view="grid"] .pf-add{top:calc(var(--h) - 3.05rem);left:.6rem;right:3.5rem;height:2.45rem;padding:0 .5rem}
+  .pf-lists[data-view="grid"] .pf-chev{top:calc(var(--h) - 3.05rem);right:.6rem;width:2.45rem;height:2.45rem}
+}
 `;

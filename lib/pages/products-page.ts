@@ -75,7 +75,80 @@ export function mountProducts(root: HTMLElement, env: PageEnv = {}): Off {
   fromHash();
   offs.push(mountEnquiry(root));
   mountViewer(root, on);
+  mountZoom(root, on);
+  mountViews(root, on);
   return () => offs.forEach((f) => f());
+}
+
+/** cards, list or table: the visitor's choice, remembered on this device */
+function mountViews(root: HTMLElement, on: On) {
+  const box = root.querySelector<HTMLElement>("[data-views]");
+  const lists = root.querySelector<HTMLElement>(".pf-lists");
+  if (!box || !lists) return;
+  const btns = Array.from(box.querySelectorAll<HTMLButtonElement>("[data-view-as]"));
+  const KEY = "rpc-products-view";
+  const set = (v: string, keep: boolean) => {
+    if (!btns.some((b) => b.dataset.viewAs === v)) v = "grid";
+    lists.dataset.view = v;
+    btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.viewAs === v)));
+    if (keep)
+      try {
+        localStorage.setItem(KEY, v);
+      } catch {
+        /* storage may be off: the choice lasts for this visit */
+      }
+  };
+  let saved = "grid";
+  try {
+    saved = localStorage.getItem(KEY) ?? "grid";
+  } catch {
+    /* storage may be off */
+  }
+  set(saved, false);
+  box.hidden = false;
+  btns.forEach((b) => on(b, "click", () => set(b.dataset.viewAs ?? "grid", true)));
+}
+
+/** a card's picture opens larger, in a pop-up that closes with ×, Esc or a click outside */
+function mountZoom(root: HTMLElement, on: On) {
+  const pz = root.querySelector<HTMLDialogElement>("[data-pz]");
+  if (!pz || typeof pz.showModal !== "function") return;
+  const pic = pz.querySelector<HTMLElement>("[data-pz-pic]")!;
+  const name = pz.querySelector<HTMLElement>("[data-pz-name]")!;
+  const sub = pz.querySelector<HTMLElement>("[data-pz-sub]")!;
+  on(
+    root,
+    "click",
+    (e) => {
+      const ico = (e.target as Element).closest<HTMLElement>("[data-zoom]");
+      const row = ico?.closest<HTMLElement>(".pf-row");
+      if (!ico || !row) return;
+      // the picture sits in the card's summary: open the picture, not the card
+      e.preventDefault();
+      e.stopPropagation();
+      pz.style.setProperty("--tint", row.style.getPropertyValue("--tint"));
+      pic.replaceChildren();
+      const img = ico.querySelector("img");
+      if (img) {
+        const big = document.createElement("img");
+        big.src = img.currentSrc || img.src;
+        big.alt = row.querySelector(".pf-name")?.textContent ?? "";
+        pic.append(big);
+      } else {
+        const art = ico.querySelector("svg");
+        if (art) pic.append(art.cloneNode(true));
+      }
+      const brand = row.closest("section")?.querySelector(".pf-bhn")?.textContent?.trim();
+      name.textContent = [brand, row.querySelector(".pf-name")?.textContent].filter(Boolean).join(" ");
+      sub.textContent = [row.querySelector(".pf-cat")?.textContent, Array.from(row.querySelectorAll(".pf-packs span"), (x) => x.textContent).join(" · ")].filter(Boolean).join(" — ");
+      pz.showModal();
+    },
+    { capture: true },
+  );
+  on(pz, "click", (e) => {
+    const t = e.target as Element;
+    if (t === pz || t.closest("[data-pz-close]")) pz.close();
+  });
 }
 
 /** "Product description" and "Watch video" in an opened card: a viewer with the two as tabs */
