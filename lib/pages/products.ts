@@ -37,7 +37,7 @@ export const PRODUCTS_TRAIL = [
 ] as const;
 
 
-export { packIcon };
+export { packIcon } from "../products/packs";
 
 /* ------------------------------------------------------------ same job, different brands */
 
@@ -203,7 +203,7 @@ ${enquiryMarkup(d.contact)}`;
 }
 
 export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS + `
-.pr-head{border-bottom:0;padding-bottom:clamp(1rem,2.6vh,1.8rem)}
+.pr-head{border-bottom:1px solid var(--line);padding-bottom:clamp(1.6rem,4vh,2.6rem)}
 .pr-bsec{padding-block:clamp(2rem,5vh,3.5rem);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pr-bsec .pg-shead{margin-bottom:1.4rem}
 .pr-headgrid{display:grid;grid-template-columns:minmax(0,1.2fr) auto;align-items:end;gap:1.4rem clamp(2rem,6vw,7rem)}
