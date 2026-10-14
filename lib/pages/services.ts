@@ -1,21 +1,31 @@
 /**
  * Services page, kept to what we do and what search engines read.
  *
- *   opening        the page's heading: the services and the towns
- *   waterproofing  the eight waterproofing services from RPC's methods guide
- *   building       the six building services
- *                  both as the same card, four to a row: a photograph, a
- *                  small icon on its lower edge, the name, one line on what
- *                  it covers, and a quote
+ *   opening        the shared inner-page banner: the services and the towns,
+ *                  a quote and two jumps down the page, a photograph of a
+ *                  finished house with a deep-blue chip counting the services
+ *   waterproofing  the eight waterproofing services from RPC's methods guide,
+ *                  on white, four to a row
+ *   building       the six building services, on a deep-blue band with a soft
+ *                  wave along its top (water), three to a row
+ *                  both as the same white card: a photograph with its corner
+ *                  cut, a navy icon tile on its lower edge, the name, one line
+ *                  on what it covers, and "Get a quote" under a hairline
  *   questions      what people ask before they book (also set out for search
- *                  engines on the page)
+ *                  engines on the page): the heading and a small deep-blue
+ *                  panel with the phone number held at the left, the questions
+ *                  as a hairline list at the right
  *   close          the ways to start
+ *
+ * Orange appears only on actions: the buttons, the arrow circle and underline
+ * of a hovered card, the open question's control. Labels, lines, icon tiles
+ * and numbers stay blue or grey.
  *
  * Each service has its own id (its name, made into a link), so the footer, the
  * home page and the search results can link straight to it.
  */
 import { AREA_PURPOSE, SERVICE_CATEGORIES } from "../methods/doc";
-import { arrow, ctaBand, esc, mark, secHead, serviceSlug, type ContactInfo, type PageOptions } from "./kit";
+import { arrow, arrowDown, banner, ctaBand, esc, ph, ruler, secHead, serviceSlug, shot, tel, type ContactInfo, type PageOptions } from "./kit";
 
 export interface ServiceData {
   id: string;
@@ -75,6 +85,17 @@ const PLACE_PHOTO: Record<string, string> = {
   podium: "/images/waterproofing/villa-pool-deck.jpg",
   cracks: "/images/waterproofing/house-wet-zones.jpg",
 };
+/** the pixel sizes of the photographs the cards use (anything not listed is 1920 x 1080) */
+const PHOTO_SIZE: Record<string, readonly [number, number]> = {
+  "/images/detail-01.jpg": [1600, 1000],
+  "/images/waterproofing/house-wet-zones.jpg": [1600, 900],
+  "/images/waterproofing/house-lit-interiors.jpg": [1600, 900],
+  "/images/projects/avinashi-corporate-centre-coimbatore.jpg": [1376, 768],
+  "/images/projects/sipcot-textile-unit-perundurai.jpg": [1376, 768],
+  "/images/interior-joinery.jpg": [1200, 896],
+};
+const sizeOf = (src: string) => PHOTO_SIZE[src] ?? ([1920, 1080] as const);
+
 const svg = (paths: string) =>
   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
 
@@ -88,6 +109,10 @@ const BUILD_ICON: readonly (readonly [RegExp, string])[] = [
   [/project|management/i, `<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="M8.5 10l1.5 1.5 3-3M8.5 16h7"/>`],
 ];
 const buildIcon = (title: string) => BUILD_ICON.find(([r]) => r.test(title))?.[1] ?? BUILD_ICON[0]![1];
+
+/** a house and an office block, drawn in thin lines (the same drawing style as the Projects header panel) */
+const HOUSE_ART = `<svg class="sv-helpart" viewBox="0 0 200 160" aria-hidden="true"><path d="M20 150V62l50-34 50 34v88M70 150v-46h28v46M120 150V40h60v110M132 58h12M156 58h12M132 80h12M156 80h12M132 102h12M156 102h12M8 150h184" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+const PHONE = `<svg class="sv-helpi" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 3.5h3l1.6 4.2-2 1.3a11 11 0 0 0 6.9 6.9l1.3-2 4.2 1.6v3a2 2 0 0 1-2.2 2A17 17 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 
 /** the questions people ask, answered from what the rest of the site already says (also set out for search engines on the page) */
 export function serviceFaq(d: Pick<ServicesData, "services" | "process" | "contact">): { q: string; a: string }[] {
@@ -109,20 +134,25 @@ export function serviceFaq(d: Pick<ServicesData, "services" | "process" | "conta
 }
 
 /**
- * A service as a card, the same for waterproofing and building: a photograph,
- * a small icon for the kind of service sitting on its lower edge, the name,
- * one line on what it covers, and a quote along the foot. The whole card
- * opens the quote.
+ * A service as a card, the same for waterproofing and building: a photograph
+ * with its top-left corner cut, a navy icon tile for the kind of service on its
+ * lower edge, the name, one line on what it covers, and "Get a quote" under a
+ * hairline. The whole card opens the quote; under the pointer it lifts, the
+ * photograph zooms, the arrow circle fills orange and an orange bar grows
+ * along its foot.
  */
-function card(c: { title: string; text: string; icon: string; photo?: string }, i: number) {
+function card(c: { title: string; text: string; icon: string; photo?: string }) {
+  // the id and the quote link keep the service's own title; the card shows it in sentence case, like every other heading
   const slug = serviceSlug(c.title);
-  return `<li class="sv-card" id="${slug}">
-  <figure class="sv-cimg">${c.photo ? `<img src="${esc(c.photo)}" alt="" width="1920" height="1080" loading="${i < 4 ? "eager" : "lazy"}" decoding="async">` : ""}</figure>
+  const name = c.title.charAt(0).toUpperCase() + c.title.slice(1).toLowerCase();
+  const media = c.photo ? shot(c.photo, "", "sv-cimg", false, { size: sizeOf(c.photo) }) : ph({ ratio: "16/10", cls: "sv-cimg" });
+  return `<li class="sv-card pg-card pg-cardx" id="${slug}" data-rv>
+  ${media}
   <div class="sv-cbody">
     <span class="sv-icon" aria-hidden="true">${svg(c.icon)}</span>
-    <h3 class="sv-ct" id="sv-${slug}">${esc(c.title)}</h3>
+    <h3 class="sv-ct" id="sv-${slug}">${esc(name)}</h3>
     <p class="sv-cp">${esc(c.text)}</p>
-    <a class="sv-go" href="${esc(ask(c.title))}" data-internal><span>Get a quote<span class="pg-vh"> for ${esc(c.title.toLowerCase())}</span></span><i aria-hidden="true">${arrow}</i></a>
+    <a class="sv-go pg-more" href="${esc(ask(c.title))}" data-internal><span>Get a quote<span class="pg-vh"> for ${esc(c.title.toLowerCase())}</span></span>${arrow}</a>
   </div>
 </li>`;
 }
@@ -134,36 +164,69 @@ export function servicesPageMarkup(d: ServicesData, o: PageOptions = {}) {
   const c = d.contact;
   const [wp, ...build] = d.services;
   const [hq] = c.regions;
-  const head = `<header class="pg-head sv-head">
-  <div class="pg-wrap sv-headgrid">
-    <div>
-      ${mark("01", "Services")}
-      <h1 class="pg-h1">Waterproofing and construction services in ${esc(hq ?? "Erode")}, Coimbatore and&nbsp;Tiruppur.</h1>
-    </div>
-  </div>
-</header>`;
+  const wpId = wp ? serviceSlug(wp.title) : "";
+  const wpCount = wp ? SERVICE_CATEGORIES.length : 0;
+
+  const lead = "Waterproofing and construction services in";
+  const head = banner({
+    cls: "sv-head",
+    n: "01",
+    label: "Services",
+    title: `${lead} ${esc(hq ?? "Erode")}, Coimbatore and&nbsp;Tiruppur.`,
+    accentFrom: lead.split(" ").length,
+    // the quote, then the two jumps down the page, kept together so they wrap as a pair
+    actions: `<a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Get a quote${arrow}</a><span class="sv-jumps">${
+      wp ? `<a class="pg-btn pg-btn--line sv-jump" href="#${wpId}">Waterproofing services${arrowDown}</a>` : ""
+    }<a class="pg-btn pg-btn--line sv-jump" href="#building">Construction services${arrowDown}</a></span>`,
+    media: shot("/images/waterproofing/house-lit-interiors.jpg", "A three-storey house at dusk, its rooms lit, with open balconies, a rooftop water tank and a pool", "", true, {
+      size: sizeOf("/images/waterproofing/house-lit-interiors.jpg"),
+    }),
+    fact: { n: String(wpCount + build.length), label: `${wpCount} waterproofing and ${build.length} construction services` },
+  });
 
   const waterproofing = wp
-    ? `<section class="pg-sec sv-wsec" id="${serviceSlug(wp.title)}" aria-labelledby="sv-w-h">
+    ? `<section class="pg-sec pg-sec--white sv-wsec" id="${wpId}" aria-labelledby="sv-w-h">
   <div class="pg-wrap">
-    ${secHead({ n: "02", label: "Waterproofing services", title: "From the terrace to the sump.", id: "sv-w-h", lede: "Eight places water gets into a building, and the waterproofing we use to keep it out of each." })}
-    <ul class="sv-grid">${SERVICE_CATEGORIES.map((x, i) => card({ title: x.title, text: AREA_PURPOSE[x.area] ?? "", icon: PLACE_ICON[x.area] ?? "", photo: PLACE_PHOTO[x.area] }, i)).join("")}</ul>
+    ${secHead({
+      split: true,
+      label: "Waterproofing services",
+      title: `From the terrace <span class="pg-acc">to the sump.</span>`,
+      id: "sv-w-h",
+      lede: "Eight places water gets into a building, and the waterproofing we use to keep it out of each.",
+      extra: `<a class="pg-btn pg-btn--line sv-jump" href="#questions">Ask a question${arrowDown}</a>`,
+    })}
+    <ul class="sv-grid" data-rv-stagger="60">${SERVICE_CATEGORIES.map((x) => card({ title: x.title, text: AREA_PURPOSE[x.area] ?? "", icon: PLACE_ICON[x.area] ?? "", photo: PLACE_PHOTO[x.area] })).join("")}</ul>
   </div>
 </section>`
     : "";
 
-  const building = `<section class="pg-sec pg-sec--stone sv-bsec" id="building" aria-labelledby="sv-b-h">
+  const building = `<section class="pg-sec pg-band pg-wave-top sv-bsec" id="building" aria-labelledby="sv-b-h">
   <div class="pg-wrap">
-    ${secHead({ n: "03", label: "Construction services", title: "Homes, offices and factories, built to stay dry.", id: "sv-b-h", lede: "New buildings and repairs, with every terrace, bathroom and sump sealed as the work goes up." })}
-    <ul class="sv-grid">${build.map((x, i) => card({ title: x.title, text: sentence(x.line ?? x.short ?? x.body), icon: buildIcon(x.title), photo: x.image }, i)).join("")}</ul>
+    ${secHead({
+      label: "Construction services",
+      title: `Homes, offices and factories, <span class="pg-acc">built to stay dry.</span>`,
+      id: "sv-b-h",
+      lede: "New buildings and repairs, with every terrace, bathroom and sump sealed as the work goes up.",
+    })}
+    <ul class="sv-grid" data-rv-stagger="60">${build.map((x) => card({ title: x.title, text: sentence(x.line ?? x.short ?? x.body), icon: buildIcon(x.title), photo: x.image })).join("")}</ul>
   </div>
 </section>`;
 
   const faq = `<section class="pg-sec sv-fsec" id="questions" aria-labelledby="sv-f-h">
+  ${ruler()}
   <div class="pg-wrap sv-fgrid">
-    ${secHead({ n: "04", label: "Questions", title: "Waterproofing questions, answered.", id: "sv-f-h", lede: "What people in Erode and Coimbatore ask us before they book." })}
-    <div class="sv-faq">${serviceFaq(d)
-      .map((f, i) => `<details class="sv-q"${i === 0 ? " open" : ""}><summary><h3>${esc(f.q)}</h3><span class="sv-qi" aria-hidden="true"></span></summary><p>${esc(f.a)}</p></details>`)
+    <div class="sv-fhead">
+      ${secHead({ label: "Questions", title: `Waterproofing questions, <span class="pg-acc">answered.</span>`, id: "sv-f-h", lede: "What people in Erode and Coimbatore ask us before they book." })}
+      <aside class="sv-help pg-panel--blue" aria-label="Talk to an engineer" data-rv>
+        ${HOUSE_ART}
+        <p class="sv-helpl">Still unsure? Call an engineer</p>
+        <a class="sv-heltel" href="${tel(c.phone)}">${PHONE}<span>${esc(c.phone)}</span></a>
+        <p class="sv-helph">${esc(c.hours)}</p>
+        <a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>
+      </aside>
+    </div>
+    <div class="sv-faq" data-rv-stagger="70">${serviceFaq(d)
+      .map((f, i) => `<details class="sv-q" data-rv${i === 0 ? " open" : ""}><summary><h3>${esc(f.q)}</h3><span class="sv-qi" aria-hidden="true"></span></summary><p>${esc(f.a)}</p></details>`)
       .join("")}</div>
   </div>
 </section>`;
@@ -179,73 +242,103 @@ export function servicesPageMarkup(d: ServicesData, o: PageOptions = {}) {
 }
 
 export const SERVICES_CSS = `
-/* the opening: the title */
-.sv-headgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:1.6rem clamp(2rem,5vw,6rem);align-items:end}
-.sv-headgrid .pg-mark{margin-bottom:.9rem}
-.sv-headgrid .pg-h1{max-width:32ch}
-.sv-head{padding-bottom:clamp(1.4rem,3.5vh,2.2rem);border-bottom:0}
-.sv-wsec,.sv-bsec{scroll-margin-top:var(--nav-bar,80px)}
+/* ── the opening: the shared banner; the jump buttons point down, so their arrows nudge down ── */
+.sv-jumps{display:flex;flex-wrap:wrap;gap:.75rem}
+.sv-jump:hover>.pg-ar,.sv-jump:focus-visible>.pg-ar{transform:translateY(2px)}
+.sv-wsec,.sv-bsec,.sv-fsec{scroll-margin-top:var(--nav-bar,64px)}
 
-/* the cards, waterproofing and building alike, four to a row: a photograph, the service's icon small on its lower edge at the left, the name, a line, and a quote under a hairline */
-.sv-wsec .pg-shead,.sv-bsec .pg-shead{margin-bottom:clamp(1.6rem,4vh,2.4rem)}
-.sv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.9rem,1.4vw,1.25rem);margin:0;padding:0;list-style:none}
-.sv-card{position:relative;display:flex;flex-direction:column;min-width:0;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);overflow:hidden;scroll-margin-top:calc(var(--nav-bar,80px) + 1rem);transition:box-shadow .35s,transform .35s cubic-bezier(.2,.7,.2,1)}
-.sv-bsec .sv-card{background:var(--theme-surface-2)}
-.sv-cimg{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;background:var(--theme-placeholder)}
-.sv-cimg img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform .9s cubic-bezier(.2,.7,.2,1)}
-.sv-cbody{display:flex;flex:1;flex-direction:column;padding:0 1.2rem 1.1rem}
-/* the icon sits half over the photograph's lower edge, ringed in the card's colour */
-.sv-icon{position:relative;z-index:1;display:grid;place-items:center;width:2.75rem;height:2.75rem;margin-top:-1.375rem;border-radius:12px;background:var(--navy);color:var(--theme-on-dark);box-shadow:0 0 0 4px var(--card);transition:background-color .3s}
-.sv-bsec .sv-icon{box-shadow:0 0 0 4px var(--theme-surface-2)}
-.sv-icon svg{width:1.3rem;height:1.3rem}
-.sv-ct{margin:.85rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.015em;color:var(--ink);text-wrap:balance;transition:color .3s}
-.sv-cp{margin:.45rem 0 1.1rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink2);text-wrap:pretty}
-.sv-go{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:.85rem;border-top:1px solid var(--line);font-size:var(--fs-body);font-weight:600;color:var(--accent);text-decoration:none}
+/* ── the two grids: waterproofing four to a row on white, building three to a row on the deep-blue band ── */
+.sv-wsec .pg-shead,.sv-bsec .pg-shead{margin-bottom:clamp(1.8rem,4.5vh,2.8rem)}
+.sv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5rem;margin:0;padding:0;list-style:none}
+.sv-grid--3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* ── a service card: white, a hairline, the photograph inset with its top-left corner cut ── */
+.sv-card{display:flex;flex-direction:column;min-width:0;padding:.5rem;scroll-margin-top:calc(var(--nav-bar,64px) + 1.5rem)}
+/* arrival (opacity, transform: staggered) and the hover lift (translate) run on separate clocks, so the lift is never delayed */
+.sv-grid>.sv-card[data-rv]{transition:opacity .8s var(--ease) var(--rvd,0ms),transform .9s cubic-bezier(.2,.75,.15,1) var(--rvd,0ms),translate .35s var(--ease),box-shadow .35s var(--ease)}
+.sv-grid>.sv-card:not(.rv-pending):is(:hover,:focus-within){transform:none;translate:0 -4px}
+.sv-cimg{--ar:16/10;--cut:clamp(.95rem,1.5vw,1.3rem);flex:none;border-radius:var(--r-ctl)}
+.sv-cbody{display:flex;flex:1;flex-direction:column;padding:0 .75rem .6rem}
+/* the icon tile sits half over the photograph's lower edge, ringed in white; it is a label, so it stays navy */
+.sv-icon{position:relative;z-index:1;display:grid;place-items:center;width:3rem;height:3rem;margin-top:-1.5rem;border-radius:var(--r-ctl);background:var(--navy);color:var(--theme-on-dark);box-shadow:0 0 0 4px var(--card);pointer-events:none}
+.sv-icon svg{width:1.4rem;height:1.4rem}
+.sv-ct{margin:1rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.015em;color:var(--ink);text-wrap:balance;transition:color .3s var(--ease)}
+.sv-cp{margin:.5rem 0 1.3rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink2);text-wrap:pretty}
+/* "Get a quote" under a hairline: navy words, an outlined arrow circle at the right */
+.sv-go{display:flex;justify-content:space-between;gap:1rem;margin-top:auto;padding-top:.85rem;border-top:1px solid var(--line)}
+.sv-go>span{padding-bottom:2px;background:linear-gradient(var(--act),var(--act)) left bottom/0% 1.5px no-repeat;transition:background-size .45s var(--ease)}
 /* the whole card opens the quote */
-.sv-go::after{content:"";position:absolute;inset:0;border-radius:16px}
-.sv-go > span{background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;padding-bottom:2px;transition:background-size .3s}
-.sv-go > i{display:grid;place-items:center;flex:none;width:2.1rem;height:2.1rem;border-radius:50%;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent);color:var(--ink);font-style:normal;transition:background-color .3s,color .3s,box-shadow .3s}
-.sv-go .pg-ar{width:.85rem;height:.85rem;transition:transform .3s}
-.sv-go:focus-visible{outline:none}
+.sv-go::after{content:"";position:absolute;inset:0;z-index:1;border-radius:var(--r-card)}
+.pg .sv-go:focus-visible{outline:none}
 .sv-go:focus-visible::after{box-shadow:inset 0 0 0 2px var(--accent)}
-.sv-card:hover,.sv-card:focus-within{transform:translateY(-3px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 24%,transparent),0 26px 44px -32px color-mix(in srgb,var(--theme-ink) 55%,transparent)}
-.sv-card:hover .sv-cimg img,.sv-card:focus-within .sv-cimg img{transform:scale(1.1)}
-.sv-card:hover .sv-ct,.sv-card:focus-within .sv-ct{color:var(--accent)}
-.sv-card:hover .sv-icon,.sv-card:focus-within .sv-icon{background:var(--theme-secondary);color:var(--theme-on-secondary)}
-.sv-card:hover .sv-go > span,.sv-card:focus-within .sv-go > span{background-size:100% 1.5px}
-.sv-card:hover .sv-go > i,.sv-card:focus-within .sv-go > i{background:var(--navy);color:var(--theme-on-dark);box-shadow:none}
-.sv-card:hover .pg-ar{transform:translate(2px,-2px)}
-.sv-card:target{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 6px color-mix(in srgb,var(--theme-primary) 10%,transparent)}
-@media (prefers-reduced-motion:reduce){.sv-card,.sv-card *{transition:none}.sv-card:hover,.sv-card:focus-within{transform:none}}
-.sv-wsec{padding-top:calc(var(--nav-room,80px) + clamp(1.5rem,4vh,2.5rem))}
+.sv-card:has(.sv-go:focus-visible){outline:2px solid var(--accent);outline-offset:3px}
+.sv-bsec .sv-card:has(.sv-go:focus-visible){outline-color:var(--theme-focus-on-dark)}
+.sv-card:hover .sv-ct,.sv-card:focus-within .sv-ct{color:var(--navy)}
+.sv-card:hover .sv-go>span,.sv-card:focus-within .sv-go>span{background-size:100% 1.5px}
+/* a card reached by a link (/services#terrace-waterproofing): ringed in blue, its bar shown */
+.sv-grid>.sv-card:target{box-shadow:inset 0 0 0 2px var(--accent),var(--lift)}
 
-/* how a job runs: six steps on one line, joined */
+/* ── questions: the heading and a deep-blue panel held at the left; the questions as a hairline list ── */
+.sv-fsec>.pg-ruler{position:absolute;top:0;left:0;right:0}
+.sv-fgrid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:2.4rem clamp(2.5rem,6vw,6rem);align-items:start}
+.sv-fhead{position:sticky;top:calc(var(--nav-bar,64px) + 2rem);display:flex;flex-direction:column;gap:clamp(1.6rem,4vh,2.4rem);min-width:0}
+.sv-fhead .pg-shead{margin-bottom:0}
+.sv-help{--cut:clamp(1rem,1.6vw,1.4rem);overflow:hidden;max-width:26rem;padding:calc(1.5rem + 12px) 1.6rem 1.6rem;clip-path:polygon(var(--cut) 0,100% 0,100% 100%,0 100%,0 var(--cut))}
+.sv-help>*:not(.sv-helpart){position:relative;z-index:1}
+.sv-helpart{position:absolute;right:-1.4rem;bottom:-1.2rem;width:11rem;color:var(--theme-on-dark);opacity:.08;pointer-events:none}
+.sv-helpl{margin:0;font-size:var(--fs-body);line-height:1.4;color:var(--band-mute)}
+.sv-heltel{display:inline-flex;align-items:center;gap:.6rem;margin-top:.6rem;padding-bottom:3px;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;color:var(--theme-white);text-decoration:none;font-variant-numeric:tabular-nums;background:linear-gradient(var(--act),var(--act)) left bottom/0% 1.5px no-repeat;transition:background-size .45s var(--ease)}
+.sv-heltel:hover,.sv-heltel:focus-visible{background-size:100% 1.5px}
+.sv-helpi{width:1.15rem;height:1.15rem;flex:none;color:var(--band-mute)}
+.sv-helph{margin:.4rem 0 0;font-size:var(--fs-body);line-height:1.4;color:var(--band-mute)}
+.sv-help .pg-btn{margin-top:1.4rem}
 
-/* three ways to work with us */
-
-/* questions: the heading beside, each question opening to its answer */
-.sv-fgrid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:1.6rem clamp(2rem,5vw,5rem);align-items:start}
-.sv-fgrid .pg-shead{margin-bottom:0}
-.sv-faq{display:flex;flex-direction:column;gap:.5rem}
-.sv-q{border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);interpolate-size:allow-keywords}
-.sv-q::details-content{height:0;overflow:clip;transition:height .3s ease,content-visibility .3s allow-discrete}
+.sv-faq{min-width:0;border-top:1px solid var(--line)}
+.sv-q{position:relative;border-bottom:1px solid var(--line);interpolate-size:allow-keywords}
+.sv-faq>.sv-q[data-rv]{transition:opacity .8s var(--ease) var(--rvd,0ms),transform .9s cubic-bezier(.2,.75,.15,1) var(--rvd,0ms),background-color .3s var(--ease)}
+/* the open row turns white and a blue bar draws down its left edge */
+.sv-q::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--navy);transform:scaleY(0);transform-origin:top;transition:transform .35s var(--ease)}
+.sv-q[open]{background:var(--theme-surface)}
+.sv-q[open]::before{transform:scaleY(1)}
+.sv-q:not([open]):hover{background:color-mix(in srgb,var(--theme-surface) 55%,transparent)}
+.sv-q::details-content{height:0;overflow:clip;transition:height .4s var(--ease),content-visibility .4s allow-discrete}
 .sv-q[open]::details-content{height:auto}
-.sv-q summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.2rem;list-style:none;cursor:pointer}
+.sv-q summary{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem;list-style:none;cursor:pointer}
 .sv-q summary::-webkit-details-marker{display:none}
-.sv-q summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:14px}
-.sv-q h3{margin:0;font-size:var(--fs-body);font-weight:600;line-height:1.4;color:var(--ink)}
-.sv-qi{position:relative;flex:none;width:1.8rem;height:1.8rem;border-radius:50%;background:color-mix(in srgb,var(--theme-ink) 7%,transparent);transition:transform .3s,background-color .2s}
-.sv-qi::before,.sv-qi::after{content:"";position:absolute;left:50%;top:50%;width:.7rem;height:1.6px;margin:-.8px 0 0 -.35rem;background:var(--ink)}
+.sv-q h3{margin:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:500;line-height:1.3;letter-spacing:-.015em;color:var(--ink);text-wrap:balance;transition:color .3s var(--ease)}
+.sv-q summary:hover h3{color:var(--navy)}
+/* the + control: an outline at rest, an orange ring under the pointer or keyboard focus, filled navy and turned to an x when open (open is a state, not an action) */
+.sv-qi{position:relative;flex:none;width:2.25rem;height:2.25rem;border-radius:50%;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 24%,transparent);color:var(--ink);transition:transform .35s var(--ease),background-color .3s var(--ease),box-shadow .3s var(--ease),color .3s var(--ease)}
+.sv-qi::before,.sv-qi::after{content:"";position:absolute;left:50%;top:50%;width:.8rem;height:1.6px;margin:-.8px 0 0 -.4rem;background:currentColor}
 .sv-qi::after{transform:rotate(90deg)}
-.sv-q[open] .sv-qi{transform:rotate(45deg);background:var(--navy)}
-.sv-q[open] .sv-qi::before,.sv-q[open] .sv-qi::after{background:var(--theme-white)}
-.sv-q p{margin:0;padding:0 1.2rem 1.1rem;font-size:var(--fs-body);line-height:1.65;color:var(--ink2)}
+.sv-q summary:hover .sv-qi,.sv-q summary:focus-visible .sv-qi{box-shadow:inset 0 0 0 1.5px var(--act)}
+.sv-q[open] .sv-qi{transform:rotate(45deg);background:var(--navy);color:var(--theme-on-dark);box-shadow:none}
+.sv-q[open] summary:hover .sv-qi,.sv-q[open] summary:focus-visible .sv-qi{box-shadow:0 0 0 2px var(--theme-surface),0 0 0 3.5px var(--act)}
+.sv-q p{margin:0;padding:0 4.75rem 1.5rem 1.25rem;font-size:var(--fs-body);line-height:1.65;color:var(--ink2);text-wrap:pretty;transition:opacity .35s var(--ease) .05s,transform .4s var(--ease) .05s}
+@starting-style{.sv-q[open] p{opacity:0;transform:translateY(-6px)}}
 
-@media (max-width:1023px){
-  .sv-headgrid,.sv-fgrid{grid-template-columns:1fr}
-  .sv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+/* eight cards stay four to a row down to 1024px and six stay three, so no row is left short */
+@media (max-width:1279px){
+  .sv-grid{gap:1.25rem}
 }
-@media (max-width:599px){
-  .sv-grid{grid-template-columns:minmax(0,1fr)}
+@media (max-width:1023px){
+  .sv-grid,.sv-grid--3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sv-fgrid{grid-template-columns:minmax(0,1fr)}
+  .sv-fhead{position:static}
+}
+@media (max-width:767px){
+  .sv-jumps{flex:1 1 100%}
+  .sv-jumps .pg-btn{flex:1 1 auto}
+  .sv-q summary{padding:1.1rem 1rem}
+  .sv-q p{padding:0 1rem 1.3rem}
+  .sv-help{max-width:none}
+}
+@media (max-width:639px){
+  .sv-grid,.sv-grid--3{grid-template-columns:minmax(0,1fr);gap:1.25rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .sv-grid>.sv-card:not(.rv-pending):is(:hover,:focus-within){translate:none}
+  .sv-jump:hover>.pg-ar,.sv-jump:focus-visible>.pg-ar{transform:none}
+  .sv-q::details-content{transition:none}
 }
 `;

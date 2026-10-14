@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUp, Clock, Mail, MapPin, Phone } from "lucide-react";
 import { Wordmark } from "@/components/navigation/Logo";
 import { SocialIcon } from "@/components/ui/SocialIcons";
@@ -19,14 +20,28 @@ const listed = (xs: readonly string[]) => (xs.length < 2 ? xs.join("") : `${xs.s
  * services and how to reach us, each list one link to a line (on a tablet the
  * logo runs across the top; on a phone the two lists sit side by side). Then
  * the small print.
+ *
+ * `accent` (the inner pages) gives the links and buttons the action colour on
+ * hover: an orange underline and a small nudge on links, orange social
+ * squares. Layout, headings, icons and the background never change. Left out,
+ * it follows the route: on for the inner pages, off for home and the legacy
+ * routes, which keep the footer exactly as it was.
  */
-export function Footer() {
+const INNER = ["/about", "/services", "/projects", "/products", "/waterproofing", "/blog", "/contact"];
+export function Footer({ accent }: { accent?: boolean } = {}) {
+  const pathname = usePathname();
+  const on = accent ?? INNER.some((p) => pathname === p || Boolean(pathname?.startsWith(`${p}/`)));
   const toTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const tel = `tel:${contact.phone.replace(/[^0-9+]/g, "")}`;
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapQuery)}`;
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
   const head = "mb-3 text-body font-semibold text-water-2";
-  const link = `rounded text-body text-white/72 transition-colors hover:text-white ${focus}`;
+  /** the action hover on inner pages: orange text, an orange underline, a 4px nudge (motion-safe) */
+  const act = "hover:text-[var(--theme-action)] hover:underline decoration-[var(--theme-action)] decoration-1 underline-offset-4 motion-safe:transition-[color,transform] motion-safe:hover:translate-x-1";
+  const link = on ? `inline-block rounded text-body text-white/72 transition-colors ${act} ${focus}` : `rounded text-body text-white/72 transition-colors hover:text-white ${focus}`;
+  const reach = on ? `flex w-fit items-center gap-2 rounded transition-colors ${act} ${focus}` : `flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`;
+  const social = on ? "hover:bg-[var(--theme-action)] hover:text-[var(--theme-on-action)]" : "hover:bg-water-2 hover:text-night";
+  const back = on ? "hover:text-[var(--theme-action)]" : "hover:text-white";
   const socials = contact.socials.filter((s) => s.label !== "WhatsApp");
 
   return (
@@ -58,7 +73,7 @@ export function Footer() {
                       rel="noopener noreferrer"
                       aria-label={s.label}
                       title={s.label}
-                      className={`grid h-9 w-9 place-items-center rounded-[10px] bg-white/[0.07] text-white/80 transition-colors hover:bg-water-2 hover:text-night md:h-10 md:w-10 ${focus}`}
+                      className={`grid h-9 w-9 place-items-center rounded-[10px] bg-white/[0.07] text-white/80 transition-colors ${social} md:h-10 md:w-10 ${focus}`}
                     >
                       <SocialIcon name={s.label} size={16} />
                     </a>
@@ -100,17 +115,17 @@ export function Footer() {
               <p className={head}>Get in touch</p>
               <ul className="space-y-2 text-body text-white/72">
                 <li>
-                  <a href={tel} className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={tel} className={reach}>
                     <Phone size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.phone}
                   </a>
                 </li>
                 <li>
-                  <a href={`mailto:${contact.email}`} className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={`mailto:${contact.email}`} className={reach}>
                     <Mail size={15} aria-hidden className="shrink-0 text-water-2" /> <span className="min-w-0 break-all">{contact.email}</span>
                   </a>
                 </li>
                 <li>
-                  <a href={maps} target="_blank" rel="noopener noreferrer" className={`flex w-fit items-center gap-2 rounded transition-colors hover:text-white ${focus}`}>
+                  <a href={maps} target="_blank" rel="noopener noreferrer" className={reach}>
                     <MapPin size={15} aria-hidden className="shrink-0 text-water-2" /> 142 Perundurai Road, Erode
                   </a>
                 </li>
@@ -125,7 +140,7 @@ export function Footer() {
             <p>
               © {new Date().getFullYear()} {brand.name}.<span className="hidden sm:inline"> All rights reserved.</span>
             </p>
-            <button type="button" onClick={toTop} className={`inline-flex items-center gap-1.5 rounded transition-colors hover:text-white ${focus}`}>
+            <button type="button" onClick={toTop} className={`inline-flex items-center gap-1.5 rounded transition-colors ${back} ${focus}`}>
               Back to top <ArrowUp size={14} aria-hidden />
             </button>
           </div>

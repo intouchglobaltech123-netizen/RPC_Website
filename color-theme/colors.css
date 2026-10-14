@@ -28,8 +28,8 @@
 
 :root {
   /* ── 1. BRAND PALETTE ─────────────────────────────────────────────────── */
-  --brand-blue: #1565b1;        /* primary   — buttons, links, active states, navigation */
-  --brand-orange: #f29c1f;      /* secondary — highlights, section labels, key accents */
+  --brand-blue: #1565b1;        /* primary   — brand and structure: nav bar, bands, panels, links, heading accents */
+  --brand-orange: #f29c1f;      /* secondary — ACTIONS ONLY (buttons, selected controls, hover/focus of clickable things) */
   --brand-grey-dark: #282828;   /* dark grey — text, headings, dark panels */
   --brand-grey-light: #eef0f3;  /* light grey — page background */
   --brand-white: #ffffff;       /* white — cards, panels, text on dark */
@@ -41,10 +41,19 @@
   --theme-primary-soft: color-mix(in srgb, var(--brand-blue) 14%, var(--brand-white)); /* pale blue panels */
   --theme-focus-on-dark: color-mix(in srgb, var(--brand-blue) 45%, var(--brand-white)); /* focus ring on dark panels */
 
-  /* secondary (orange) */
-  --theme-secondary: var(--brand-orange);                                           /* highlight fills, lines, active tabs */
+  /* secondary (orange) — the colour of ACTION. Use it only on things that can be
+     clicked or are selected: buttons and CTAs, the chosen tab / chip, the
+     hover / focus state of links and clickable cards. Never on headings,
+     section labels, decorative lines, static icons, numbers or backgrounds. */
+  --theme-secondary: var(--brand-orange);                                           /* action fills; do not use for labels, lines or backgrounds */
   --theme-secondary-text: color-mix(in srgb, var(--brand-orange) 62%, #000);        /* orange as small text on light (readable) */
   --theme-on-secondary: var(--brand-grey-dark);                                     /* text on an orange fill */
+
+  /* action (the orange's only job) */
+  --theme-action: var(--theme-secondary);                                           /* buttons, CTAs, selected controls ONLY */
+  --theme-action-hover: color-mix(in srgb, var(--brand-orange) 84%, var(--brand-grey-dark)); /* hover / pressed sweep on an orange button */
+  --theme-on-action: var(--theme-on-secondary);                                     /* labels and glyphs on an orange fill (white fails contrast) */
+  --theme-action-text: var(--theme-secondary-text);                                 /* orange as small text or a thin line, in hover / selected states only */
 
   /* text */
   --theme-ink: var(--brand-grey-dark);                                              /* headings and main text */
@@ -61,6 +70,16 @@
   --theme-dark: var(--brand-grey-dark);                                             /* dark sections and chips */
   --theme-white: var(--brand-white);
   --theme-water: var(--brand-blue);                                                 /* water-related highlights */
+
+  /* bands: full-width coloured sections (one dark-grey band per page at most) */
+  --theme-band: var(--theme-primary-dark);                                          /* deep-blue section ground */
+  --theme-band-2: var(--theme-dark);                                                /* dark-grey section ground */
+  --theme-on-band-muted: color-mix(in srgb, var(--brand-white) 70%, transparent);   /* body and meta text on bands and blue panels */
+
+  /* drawing marks: the engineering-drawing textures */
+  --theme-hatch: color-mix(in srgb, var(--brand-white) 14%, transparent);           /* 45° hatch and grid on deep-blue bands */
+  --theme-tick: color-mix(in srgb, var(--brand-blue) 24%, transparent);             /* measuring-ruler ticks at light section seams */
+  --theme-blueprint: color-mix(in srgb, var(--brand-blue) 7%, transparent);         /* faint blueprint grid / dots on light grounds */
 
   /* lines and shadows (used as see-through mixes where they appear) */
   --theme-line: color-mix(in srgb, var(--theme-ink) 14%, transparent);

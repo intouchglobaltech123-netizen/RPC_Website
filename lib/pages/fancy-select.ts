@@ -209,31 +209,39 @@ export function fancySelect(sel: HTMLSelectElement, on: On, cls = ""): () => voi
   return undo;
 }
 
-/** the look of the button and the list; the page adds its own sizes */
+/**
+ * The look of the button and the list; the page adds its own sizes. Pills
+ * with a hairline at rest, a 2px blue ring when open; in the list the chosen
+ * line carries the action colour (a short orange bar, an orange tick and an
+ * orange count). Colours come from the theme roles directly, because the list
+ * may sit outside the page's .pg wrapper.
+ */
 export const FANCY_SELECT_CSS = `
 .fs{position:relative;min-width:0}
-.fs-btn{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;min-height:2.9rem;margin:0;padding:.45rem .9rem .45rem 1rem;border:0;border-radius:12px;background:var(--theme-white);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 22%,transparent),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1.3;color:var(--ink);text-align:left;cursor:pointer;transition:box-shadow .2s}
-.fs-btn:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 45%,transparent),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent)}
-.fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 1.5px var(--navy),0 0 0 4px color-mix(in srgb,var(--theme-primary) 12%,transparent)}
-.fs-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fs-btn{display:flex;align-items:center;justify-content:space-between;gap:.8rem;width:100%;min-height:3.25rem;margin:0;padding:.45rem 1.1rem .45rem 1.3rem;border:0;border-radius:999px;background:var(--theme-surface);box-shadow:inset 0 0 0 1px var(--theme-line);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1.3;color:var(--ink,var(--theme-ink));text-align:left;cursor:pointer;transition:box-shadow .2s cubic-bezier(.2,.7,.2,1),background-color .2s cubic-bezier(.2,.7,.2,1)}
+.fs-btn:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 40%,transparent)}
+.fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--theme-primary)}
+.fs-btn:focus-visible{outline:2px solid var(--theme-primary);outline-offset:3px}
+.fs--h2 .fs-btn{min-height:2.75rem;border-radius:10px;padding:.4rem .8rem .4rem .95rem}
 .fs-val{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fs-chev{flex:none;width:15px;height:15px;color:var(--mute);transition:transform .25s}
-.fs-btn[aria-expanded=true] .fs-chev{transform:rotate(180deg);color:var(--ink)}
-.fs-n{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;margin-left:.15rem;padding:0 .35rem;border-radius:999px;background:color-mix(in srgb,var(--theme-primary) 10%,transparent);font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--accent);vertical-align:1px;font-variant-numeric:tabular-nums}
-.fs-list{position:fixed;inset:auto;z-index:80;margin:0;padding:.4rem;border:0;border-radius:14px;background:var(--theme-white);box-shadow:0 0 0 1px color-mix(in srgb,var(--theme-ink) 10%,transparent),0 24px 48px -18px color-mix(in srgb,var(--theme-ink) 35%,transparent);overflow-y:auto;overscroll-behavior:contain;color:var(--ink,var(--theme-ink));font-family:var(--sans);opacity:0;transform:translateY(-4px);transition:opacity .16s,transform .16s}
+.fs-chev{flex:none;width:15px;height:15px;color:var(--theme-muted);transition:transform .3s cubic-bezier(.2,.7,.2,1),color .2s}
+.fs-btn[aria-expanded=true] .fs-chev{transform:rotate(180deg);color:var(--theme-ink)}
+.fs-n{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;margin-left:.15rem;padding:0 .4rem;border-radius:999px;background:var(--theme-bg);font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--theme-muted);vertical-align:1px;font-variant-numeric:tabular-nums;transition:background-color .2s,color .2s}
+.fs-list{position:fixed;inset:auto;z-index:80;margin:0;padding:.4rem;border:0;border-radius:14px;background:var(--theme-surface);box-shadow:0 0 0 1px var(--theme-line),0 24px 48px -20px color-mix(in srgb,var(--theme-shadow) 40%,transparent);overflow-y:auto;overscroll-behavior:contain;color:var(--ink,var(--theme-ink));font-family:var(--sans,inherit);opacity:0;transform:translateY(-4px);transition:opacity .2s cubic-bezier(.2,.7,.2,1),transform .2s cubic-bezier(.2,.7,.2,1)}
 .fs-list.is-up{transform:translateY(4px)}
 .fs-list.is-open{opacity:1;transform:none}
 @starting-style{.fs-list.is-open{opacity:0;transform:translateY(-4px)}}
 .fs-list:focus{outline:none}
 .fs-list:focus-visible{outline:none}
-.fs-g + .fs-g{margin-top:.3rem;padding-top:.3rem;border-top:1px solid color-mix(in srgb,var(--theme-ink) 8%,transparent)}
-.fs-gh{position:sticky;top:-.4rem;z-index:1;margin:0;padding:.55rem .7rem .3rem;background:var(--theme-white);font-size:var(--fs-body);font-weight:600;color:var(--mute,var(--theme-muted))}
-.fs-opt{display:grid;grid-template-columns:1rem minmax(0,1fr) auto;align-items:center;gap:.55rem;padding:.5rem .7rem;border-radius:9px;font-size:var(--fs-body);line-height:1.35;cursor:pointer}
-.fs-opt.is-active{background:color-mix(in srgb,var(--theme-primary) 8%,transparent)}
-.fs-tick{width:1rem;height:1rem;color:var(--accent);opacity:0}
+.fs-g + .fs-g{margin-top:.3rem;padding-top:.3rem;border-top:1px solid var(--theme-line)}
+.fs-gh{position:sticky;top:-.4rem;z-index:1;margin:0;padding:.55rem .7rem .3rem;background:var(--theme-surface);font-size:var(--fs-body);font-weight:600;color:var(--theme-muted)}
+.fs-opt{position:relative;display:grid;grid-template-columns:1rem minmax(0,1fr) auto;align-items:center;gap:.55rem;padding:.55rem .7rem .55rem .8rem;border-radius:10px;font-size:var(--fs-body);line-height:1.35;cursor:pointer;transition:background-color .15s}
+.fs-opt.is-active{background:var(--theme-primary-soft)}
+.fs-tick{width:1rem;height:1rem;color:var(--theme-action-text);opacity:0}
 .fs-opt[aria-selected=true]{font-weight:600}
+.fs-opt[aria-selected=true]::before{content:"";position:absolute;left:0;top:.5rem;bottom:.5rem;width:3px;border-radius:0 2px 2px 0;background:var(--theme-action)}
 .fs-opt[aria-selected=true] .fs-tick{opacity:1}
-.fs-opt .fs-n{background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--ink2,var(--theme-ink-2))}
-.fs-opt[aria-selected=true] .fs-n{background:var(--navy,var(--theme-ink));color:var(--theme-white)}
-@media (prefers-reduced-motion:reduce){.fs-list,.fs-chev{transition:none}}
+.fs-opt .fs-n{background:var(--theme-bg);color:var(--theme-muted)}
+.fs-opt[aria-selected=true] .fs-n{background:var(--theme-action);color:var(--theme-on-action)}
+@media (prefers-reduced-motion:reduce){.fs-list,.fs-chev,.fs-btn,.fs-opt,.fs-n{transition:none}}
 `;

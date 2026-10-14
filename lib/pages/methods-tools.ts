@@ -16,8 +16,16 @@
 import { METHOD_GROUPS, METHODS, PLACES, type Method } from "../methods/data";
 import { AREA_PURPOSE, SERVICE_CATEGORIES } from "../methods/doc";
 import type { Product } from "../products";
-import { arrow, esc, secHead, serviceSlug } from "./kit";
+import { arrow, esc, mark, secHead, serviceSlug, words } from "./kit";
 import { compareRowsHtml, type CmpMethod } from "./methods-compare";
+
+/**
+ * A section's head on the waterproofing page: the numbered blue eyebrow, the
+ * h2 (its words rise in; from word `acc` on they are brand blue) and a line
+ * under it. `title` is plain text.
+ */
+export const wpHead = (o: { n: string; label: string; title: string; acc: number; id: string; lede?: string; cls?: string }) =>
+  `<header class="pg-shead${o.cls ? ` ${o.cls}` : ""}">${mark(o.n, o.label)}<h2 class="pg-h2" id="${o.id}" data-rv="words">${words(esc(o.title), o.acc)}</h2>${o.lede ? `<p class="pg-lede" data-rv>${o.lede}</p>` : ""}</header>`;
 
 const byNo = (n: number) => METHODS.find((m) => m.no === n);
 export const groupLabel = (m: Method) => METHOD_GROUPS.find((g) => g.key === m.group)?.label ?? "";
@@ -140,7 +148,7 @@ function houseDrawing() {
 </svg>`;
 }
 
-function placePanel(key: string, active: boolean) {
+function placePanel(key: string, n: number, active: boolean) {
   const place = PLACES.find((p) => p.key === key);
   const service = SERVICE_CATEGORIES.find((s) => s.area === key);
   if (!place || !service) return "";
@@ -148,6 +156,7 @@ function placePanel(key: string, active: boolean) {
   const book = `/contact?service=${encodeURIComponent(service.title)}#enquiry`;
   return `<div class="wpx-panel" id="wpx-p-${key}" role="tabpanel" aria-labelledby="wpx-t-${key}" tabindex="0"${active ? "" : " hidden"}>
   <div class="wpx-phead">
+    <span class="wpx-pn" aria-hidden="true">${n}</span>
     <h3 class="wpx-ph">${esc(place.label)}</h3>
     <p class="wpx-why">${esc(AREA_PURPOSE[key] ?? "")}</p>
   </div>
@@ -159,14 +168,17 @@ function placePanel(key: string, active: boolean) {
     )
     .join("")}</ul>
   <div class="wpx-acts">
-    <a class="pg-btn pg-btn--ink" href="${esc(book)}" data-internal>Book an inspection</a>
-    <a class="wpx-more" href="/services#${serviceSlug(service.title)}" data-internal>About ${esc(service.title.toLowerCase())}${arrow}</a>
+    <a class="pg-btn pg-btn--ink" href="${esc(book)}" data-internal>Book an inspection${arrow}</a>
+    <a class="pg-link wpx-more" href="/services#${serviceSlug(service.title)}" data-internal>About ${esc(service.title.toLowerCase())}${arrow}</a>
   </div>
 </div>`;
 }
 
+/** the places marked on the drawing, in the order of our services */
+export const MAP_PLACES: readonly string[] = SERVICE_CATEGORIES.map((s) => s.area).filter((k) => SPOTS[k]);
+
 export function placeMapMarkup() {
-  const keys = SERVICE_CATEGORIES.map((s) => s.area).filter((k) => SPOTS[k]);
+  const keys = MAP_PLACES;
   const first = keys[0]!;
   const pct = (v: number, o: number, s: number) => (((v - o) / s) * 100).toFixed(2);
   const spots = keys
@@ -183,18 +195,23 @@ export function placeMapMarkup() {
     .join("");
   // the first place starts marked on the drawing
   const drawing = houseDrawing().replace(`class="wpx-part" data-zone="${first}"`, `class="wpx-part is-on" data-zone="${first}"`);
-  return `<section class="wpx-map" id="find" aria-labelledby="wpx-h" data-wpx-map>
+  return `<section class="pg-sec pg-sec--white wpx-map" id="find" aria-labelledby="wpx-h" data-wpx-map>
   <div class="pg-wrap">
-    <div class="wpx-top">
-      <h2 class="wpx-h" id="wpx-h">Where is the water getting in?</h2>
-      <p class="wpx-hint">Pick a place on the house to see where it is protected and the methods our guide names for it.</p>
-    </div>
+    ${wpHead({
+      n: "02",
+      label: "Find the leak",
+      title: "Where is the water getting in?",
+      acc: 4,
+      id: "wpx-h",
+      lede: "Pick a place on the house to see where it is protected and the methods our guide names for it.",
+      cls: "wpx-top",
+    })}
     <div class="wpx-grid">
-      <div class="wpx-stage">
+      <div class="wpx-stage" data-rv="fade">
         <div class="wpx-frame"><div class="wpx-art">${drawing}${spots}</div></div>
         <div class="wpx-tabs" role="tablist" aria-label="Places in the house">${tabs}</div>
       </div>
-      <div class="wpx-panels">${keys.map((k) => placePanel(k, k === first)).join("")}</div>
+      <div class="wpx-panels" data-rv>${keys.map((k, i) => placePanel(k, i + 1, k === first)).join("")}</div>
     </div>
   </div>
 </section>`;
@@ -257,14 +274,15 @@ export function compareMarkup(products: readonly Product[]) {
 export const METHODS_TOOLS_CSS = `
 .wpx-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-/* the map */
-.wpx-map{padding:clamp(2rem,5vh,3rem) 0 clamp(3.6rem,9vh,6.5rem);scroll-margin-top:var(--nav-bar,80px)}
-.wpx-top{display:flex;flex-direction:column;gap:.35rem;margin-bottom:clamp(1.1rem,2.6vh,1.5rem);padding-top:clamp(1.4rem,3vh,2rem);border-top:1px solid var(--line)}
-.wpx-h{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25;letter-spacing:-.01em}
-.wpx-hint{margin:0;max-width:36rem;font-size:var(--fs-body);line-height:1.5;color:var(--mute)}
+/* the map: a white section. The drawing sits in a chamfered white frame on a
+   faint blueprint grid; the numbered places are navy discs (the chosen one is
+   orange, the action colour); the place's panel has a hatched deep-blue head. */
+.wpx-map{scroll-margin-top:var(--nav-bar,80px)}
 .wpx-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1.6rem clamp(1.4rem,3vw,2.6rem);align-items:start}
-.wpx-stage{min-width:0}
-.wpx-frame{padding:clamp(.6rem,1.4vw,1.1rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.wpx-stage,.wpx-panels{min-width:0}
+.wpx-frame{position:relative;padding:clamp(.75rem,1.6vw,1.25rem);border-radius:var(--r-card);background-color:var(--card);background-image:linear-gradient(var(--bp) 1px,transparent 1px),linear-gradient(90deg,var(--bp) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px;box-shadow:inset 0 0 0 1px var(--line);clip-path:polygon(var(--cut) 0,100% 0,100% 100%,0 100%,0 var(--cut))}
+/* the hairline along the cut corner */
+.wpx-frame::before{content:"";position:absolute;left:0;top:0;z-index:1;width:var(--cut);height:var(--cut);background:linear-gradient(135deg,transparent 50%,var(--line) 50%,var(--line) calc(50% + 1.2px),transparent calc(50% + 1.2px));pointer-events:none}
 .wpx-art{position:relative}
 .wpx-draw{display:block;width:100%;height:auto;overflow:visible}
 .wpx-cut{fill:url(#wpx-hatch);stroke:var(--theme-ink);stroke-width:1.2;stroke-linejoin:round}
@@ -279,38 +297,79 @@ export const METHODS_TOOLS_CSS = `
 .wpx-water{fill:var(--theme-water);fill-opacity:.2}
 .wpx-lid{fill:var(--theme-ink-2)}
 .wpx-crack{fill:none;stroke:var(--theme-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.wpx-coat{fill:none;stroke:var(--theme-water);stroke-opacity:.28;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .25s,stroke-width .25s}
-.wpx-flow{fill:none;stroke:var(--theme-primary);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .25s}
+.wpx-coat{fill:none;stroke:var(--theme-water);stroke-opacity:.28;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .3s var(--ease),stroke-width .3s var(--ease)}
+.wpx-flow{fill:none;stroke:var(--theme-primary);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .3s var(--ease)}
 .wpx-part.is-on .wpx-coat{stroke-opacity:1;stroke-width:5.5}
 .wpx-part.is-on .wpx-flow{opacity:1}
-.wpx-spot{position:absolute;display:grid;place-items:center;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;padding:0;border:0;border-radius:50%;background:var(--card);box-shadow:0 0 0 1.5px var(--navy),0 6px 14px -6px color-mix(in srgb,var(--theme-primary-dark) 55%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .2s}
-.wpx-spot:hover{transform:scale(1.08)}
-.wpx-spot.is-on{background:var(--navy);color:var(--theme-on-dark)}
-.wpx-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem}
-.wpx-tab{display:inline-flex;align-items:center;gap:.5rem;height:2.4rem;padding:0 .95rem 0 .35rem;border:0;border-radius:6px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);font-weight:500;color:var(--ink);white-space:nowrap;cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
-.wpx-tab span{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--sand-2);font-weight:600;font-variant-numeric:tabular-nums}
-.wpx-tab:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 45%,transparent)}
-.wpx-tab[aria-selected="true"]{background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
-.wpx-tab[aria-selected="true"] span{background:var(--theme-surface);color:var(--navy)}
-.wpx-tab:focus-visible,.wpx-panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wpx-panel{padding:clamp(1.3rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -48px color-mix(in srgb,var(--theme-ink) 50%,transparent)}
-.wpx-ph{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.01em}
-.wpx-why{margin:.5rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
-.wpx-ml{margin:1.2rem 0 .4rem;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.wpx-ms{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
-.wpx-ms li{border-bottom:1px solid var(--line)}
-.wpx-ms a{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;column-gap:.8rem;padding:.65rem .1rem;color:var(--ink);text-decoration:none}
-.wpx-mi{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:4px;background:color-mix(in srgb,var(--theme-ink) 5%,transparent);color:var(--ink2)}
-.wpx-mi svg{width:1.25rem;height:1.25rem}
+/* the numbered places on the drawing: navy at rest, an orange ring under the pointer, orange when chosen (with a soft pulse) */
+.wpx-spot{position:absolute;display:grid;place-items:center;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;padding:0;border:0;border-radius:50%;background:var(--navy);box-shadow:0 0 0 3px var(--card),0 6px 14px -6px color-mix(in srgb,var(--theme-primary-dark) 60%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--theme-on-dark);font-variant-numeric:tabular-nums;cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease)}
+.wpx-spot:hover{transform:scale(1.08);box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--act)}
+.wpx-spot.is-on{background:var(--act);color:var(--on-act)}
+.wpx-spot.is-on::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 2px var(--act);opacity:0;pointer-events:none}
+@media (prefers-reduced-motion:no-preference){.wpx-spot.is-on::after{animation:wpx-pulse 2s var(--ease) infinite}}
+@keyframes wpx-pulse{0%{transform:scale(1);opacity:.75}100%{transform:scale(1.6);opacity:0}}
+/* the row of names: white pills with a navy number; the chosen one is filled orange */
+.wpx-tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.wpx-tab{display:inline-flex;align-items:center;gap:.55rem;height:2.75rem;padding:0 1.1rem 0 .4rem;border:0;border-radius:var(--r-pill);background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);font-weight:500;color:var(--ink);white-space:nowrap;cursor:pointer;transition:background-color .2s var(--ease),color .2s var(--ease),box-shadow .2s var(--ease)}
+.wpx-tab span{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:var(--navy);color:var(--theme-on-dark);font-weight:600;font-variant-numeric:tabular-nums;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.wpx-tab:hover{box-shadow:inset 0 0 0 1.5px var(--act)}
+.wpx-tab[aria-selected="true"]{background:var(--act);box-shadow:none;color:var(--on-act)}
+.wpx-tab[aria-selected="true"] span{background:var(--theme-surface);color:var(--on-act)}
+/* the place's panel: a white card; its head deep blue with the hatch strip, the place's number in an outlined square */
+.wpx-panel{overflow:hidden;border-radius:var(--r-card);background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.wpx-panel:not([hidden]){animation:wpx-in .35s var(--ease) both}
+@keyframes wpx-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wpx-phead{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.95rem;align-items:start;padding:calc(1.15rem + 12px) 1.4rem 1.3rem;background-color:var(--band);background-image:var(--hatch-img);background-size:100% 12px;background-repeat:no-repeat;color:var(--theme-on-dark)}
+.wpx-pn{grid-row:1 / span 2;display:grid;place-items:center;width:2.25rem;height:2.25rem;border-radius:var(--r-ctl);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 40%,transparent);font-family:var(--display);font-size:var(--fs-body);font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.wpx-ph{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.01em;color:var(--theme-on-dark)}
+.wpx-why{margin:.35rem 0 0;font-size:var(--fs-body);line-height:1.5;color:var(--band-mute)}
+.wpx-ml{margin:0;padding:1.15rem 1.4rem .35rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
+/* the methods the guide names: hairline rows; a blue diamond marks the kind */
+.wpx-ms{margin:0;padding:0;list-style:none}
+.wpx-ms li{margin:0 1.4rem}
+.wpx-ms li + li{border-top:1px solid var(--line)}
+.wpx-ms a{--k:var(--theme-primary);display:flex;align-items:center;justify-content:space-between;gap:1rem;margin:0 -1.4rem;padding:.75rem 1.4rem;color:var(--ink);text-decoration:none;transition:background-color .25s var(--ease)}
+.wpx-ms a[data-k=sheet]{--k:var(--theme-primary-dark)}
+.wpx-ms a[data-k=concrete]{--k:color-mix(in srgb,var(--theme-primary) 55%,var(--theme-white))}
+.wpx-ms a[data-k=joint]{--k:var(--theme-ink-2)}
+.wpx-ms a:hover{background:color-mix(in srgb,var(--theme-primary-soft) 60%,transparent)}
+.wpx-ms a:hover .wpx-mn,.wpx-ms a:focus-visible .wpx-mn{text-decoration:underline;text-decoration-color:var(--act);text-decoration-thickness:1.5px;text-underline-offset:4px}
+.pg .wpx-ms a:focus-visible{outline-offset:-3px}
 .wpx-mt{display:flex;flex-direction:column;min-width:0}
-.wpx-mn{font-size:var(--fs-body);font-weight:600;line-height:1.35}
-.wpx-ma{font-size:var(--fs-body);line-height:1.4;color:var(--mute)}
-.wpx-ms .pg-ar{color:var(--mute);transition:transform .2s,color .2s}
-.wpx-ms a:hover .pg-ar{color:var(--ink);transform:translateY(2px)}
-.wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px}
-.wpx-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.4rem;margin-top:1.3rem}
+.wpx-mn{font-size:var(--fs-body);font-weight:600;line-height:1.3}
+.wpx-ma{overflow:hidden;font-size:var(--fs-body);line-height:1.4;color:var(--mute);text-overflow:ellipsis;white-space:nowrap}
+.wpx-mk{flex:none;display:inline-flex;align-items:center;gap:.5rem;font-size:var(--fs-body);color:var(--mute);white-space:nowrap}
+.wpx-mk::before{content:"";width:.45rem;height:.45rem;background:var(--k,var(--theme-primary));transform:rotate(45deg)}
+/* the panel's foot: the booking button (orange) and a link to the service */
+.wpx-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem 1.2rem;margin-top:.35rem;padding:1rem 1.4rem 1.2rem;border-top:1px solid var(--line)}
+.pg .wpx-panel:focus-visible{outline-offset:2px}
+@media (max-width:479px){.wpx-mk{display:none}.wpx-ma{white-space:normal}.wpx-acts .pg-btn{width:100%}.wpx-more{margin-inline:auto}}
+@media (max-width:1023px){
+  .wpx-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:767px){
+  .wpx-frame{padding:.4rem .3rem}
+  .wpx-spot{width:1.5rem;height:1.5rem;margin:-.75rem 0 0 -.75rem;box-shadow:0 0 0 2px var(--card),0 4px 10px -5px color-mix(in srgb,var(--theme-primary-dark) 60%,transparent)}
+  .wpx-spot:hover{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--act)}
+  /* one scrolling row; 6px of room above and below inside the scroller, so a focused tab's ring (3px out, 2px thick) is not clipped */
+  .wpx-tabs{flex-wrap:nowrap;overflow-x:auto;margin:calc(1rem - 6px) calc(-1 * var(--gutter,16px)) -6px;padding:6px var(--gutter,16px);scrollbar-width:none}
+  .wpx-tabs::-webkit-scrollbar{display:none}
+  .wpx-tab{flex:none}
+  .wpx-phead{padding:calc(1rem + 12px) 1.1rem 1.1rem}
+  .wpx-ml{padding:1rem 1.1rem .3rem}
+  .wpx-ms li{margin:0 1.1rem}
+  .wpx-ms a{margin:0 -1.1rem;padding:.7rem 1.1rem}
+  .wpx-acts{padding:.9rem 1.1rem 1.1rem}
+}
+`;
 
-/* two methods side by side */
+/**
+ * The comparison (compareMarkup), which is not on the page at the moment. Its
+ * CSS ships only with it: add METHODS_COMPARE_CSS to the page CSS if
+ * compareMarkup is rendered again.
+ */
+export const METHODS_COMPARE_CSS = `
+/* two methods side by side (not shown on the page at the moment; kept with its scripts) */
 .wpx-table{border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
 .wpx-row{display:grid;grid-template-columns:10.5rem minmax(0,1fr) minmax(0,1fr);gap:.5rem 1.4rem;padding:.95rem clamp(1rem,2vw,1.6rem);border-top:1px solid var(--line)}
 .wpx-row--head{position:relative;z-index:5;align-items:center;border-top:0;border-radius:8px 8px 0 0;background:var(--navy)}
@@ -319,18 +378,19 @@ export const METHODS_TOOLS_CSS = `
 .wpx-cell--both{grid-column:2 / -1}
 .wpx-both{display:inline-flex;align-items:center;height:1.6rem;margin-right:.55rem;padding:0 .5rem;border-radius:6px;background:var(--sky);font-weight:600;color:var(--water)}
 .wpx-pick{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.7rem;min-height:3.1rem;padding:.55rem 1rem;border-radius:6px;background:color-mix(in srgb,var(--theme-white) 8%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 16%,transparent);color:var(--theme-on-dark);cursor:pointer;transition:background-color .2s,box-shadow .3s}
-.wpx-pick:hover{background:color-mix(in srgb,var(--theme-white) 14%,transparent)}
+.wpx-pick:hover{background:color-mix(in srgb,var(--theme-white) 14%,transparent);box-shadow:inset 0 0 0 1.5px var(--act)}
 .wpx-pick.is-new{box-shadow:inset 0 0 0 2px var(--theme-white)}
 .wpx-pick:has(select:focus-visible){outline:2px solid var(--theme-white);outline-offset:2px}
 .wpx-pickname{min-width:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .wpx-pick svg{flex:none;width:15px;height:15px}
 .wpx-pick select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;font-size:16px;color:var(--theme-dark);background:var(--theme-white);cursor:pointer;appearance:none}
-.wpx-swap{display:inline-flex;align-items:center;gap:.5rem;height:3.1rem;padding:0 1rem 0 .85rem;border:0;border-radius:6px;background:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 16%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--theme-on-dark);cursor:pointer;transition:background-color .2s}
+.wpx-swap{display:inline-flex;align-items:center;gap:.5rem;height:3.1rem;padding:0 1rem 0 .85rem;border:0;border-radius:6px;background:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-white) 16%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--theme-on-dark);cursor:pointer;transition:background-color .2s,box-shadow .2s}
 .wpx-swap svg{width:20px;height:20px;transition:transform .3s}
-.wpx-swap:hover{background:color-mix(in srgb,var(--theme-white) 10%,transparent)}
+.wpx-swap:hover{background:color-mix(in srgb,var(--theme-white) 10%,transparent);box-shadow:inset 0 0 0 1.5px var(--act)}
 .wpx-swap:hover svg{transform:rotate(180deg)}
 .wpx-swap:focus-visible{outline:2px solid var(--theme-white);outline-offset:2px}
-/* the method picker: a panel of the twelve, grouped by kind (with scripts; the plain select without) */
+/* the method picker: a panel of the twelve, grouped by kind (with scripts; the plain select without).
+   The chosen method is filled orange (a selected control); hover is an outline */
 .wpx-js .wpx-pick select{display:none}
 .wpx-js .wpx-pick:focus-visible{outline:2px solid var(--theme-white);outline-offset:2px}
 .wpx-js .wpx-pick[aria-expanded=true]{background:var(--theme-surface);box-shadow:none;color:var(--navy)}
@@ -354,57 +414,24 @@ export const METHODS_TOOLS_CSS = `
 .wpx-otag:empty{visibility:hidden}
 .wpx-otick{display:grid;place-items:center;color:transparent}
 .wpx-otick svg{width:16px;height:16px}
-.wpx-opt[aria-selected=true]{background:var(--navy);box-shadow:none;color:var(--theme-white)}
-.wpx-opt[aria-selected=true] .wpx-oa{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
-.wpx-opt[aria-selected=true] .wpx-otick{color:var(--theme-on-dark)}
+.wpx-opt[aria-selected=true]{background:var(--act);box-shadow:none;color:var(--on-act)}
+.wpx-opt[aria-selected=true] .wpx-oa{color:color-mix(in srgb,var(--on-act) 75%,transparent)}
+.wpx-opt[aria-selected=true] .wpx-otick{color:var(--on-act)}
+.wpx-opt[aria-selected=true] .wpx-otag{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--on-act) 45%,transparent);color:var(--on-act)}
 
-/* the rows: what each row is about on a quiet band, the two methods on either side */
+/* the rows: what each row is about on a quiet band, the two methods on either side.
+   Products are blue links at rest, orange under the pointer */
 .wpx-row:not(.wpx-row--head){align-items:start}
 .wpx-row:not(.wpx-row--head) .wpx-rh{font-weight:600;color:var(--ink2)}
 .wpx-row:not(.wpx-row--head):nth-child(even){background:color-mix(in srgb,var(--theme-ink) 2.5%,transparent)}
 .wpx-row:not(.wpx-row--head):hover{background:color-mix(in srgb,var(--theme-primary) 5%,transparent)}
 [data-cmp-rows] .wpx-row:last-child{border-radius:0 0 8px 8px}
-/* the place's box, simple: its name on a dark band, its methods as plain rows with a line between, then the booking button and a link */
-.wpx-panel{padding:0;overflow:hidden;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
-.wpx-phead{padding:1.1rem 1.3rem 1.15rem;background:var(--navy);color:var(--theme-on-dark)}
-.wpx-panel .wpx-ph{margin:0;padding:0;background:none;color:var(--theme-on-dark)}
-.wpx-panel .wpx-why{margin:.3rem 0 0;padding:0;background:none;font-size:var(--fs-body);line-height:1.45;color:color-mix(in srgb,var(--theme-on-dark) 75%,transparent)}
-.wpx-panel .wpx-ml{margin:0;padding:1rem 1.3rem .25rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.wpx-panel .wpx-ms{display:block;margin:0 1.3rem;padding:0;border:0;background:none;box-shadow:none}
-.wpx-panel .wpx-ms li{border:0;border-bottom:1px solid var(--line);box-shadow:none}
-.wpx-panel .wpx-ms li:last-child{border-bottom:0}
-.wpx-panel .wpx-ms a{--k:var(--theme-primary);display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-radius:0;background:none;box-shadow:none}
-.wpx-panel .wpx-ms a[data-k=sheet]{--k:#a35f10}
-.wpx-panel .wpx-ms a[data-k=concrete]{--k:#1f7a4f}
-.wpx-panel .wpx-ms a[data-k=joint]{--k:#6a4c9c}
-.wpx-panel .wpx-ms a:hover{background:none;box-shadow:none}
-.wpx-panel .wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:color-mix(in srgb,var(--theme-ink) 35%,transparent)}
-.wpx-panel .wpx-ms a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wpx-panel .wpx-mt{min-width:0}
-.wpx-panel .wpx-mn{font-weight:600;line-height:1.3;color:var(--ink)}
-.wpx-panel .wpx-ma{overflow:hidden;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
-.wpx-mk{flex:none;display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-body);color:var(--mute);white-space:nowrap}
-.wpx-mk::before{content:"";width:.4rem;height:.4rem;border-radius:50%;background:var(--k,var(--theme-primary))}
-.wpx-panel .wpx-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem 1rem;margin:.4rem 0 0;padding:.9rem 1.3rem 1rem;border-top:1px solid var(--line)}
-.wpx-panel .wpx-acts .pg-btn{height:2.6rem;padding:0 1.1rem}
-.wpx-more{display:inline-flex;align-items:center;gap:.3rem;font-size:var(--fs-body);font-weight:600;color:var(--ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--theme-ink) 25%,transparent);text-underline-offset:4px;transition:text-decoration-color .2s}
-.wpx-more:hover{text-decoration-color:currentColor}
-.wpx-more .pg-ar{width:.9rem;height:.9rem}
-@media (max-width:479px){.wpx-mk{display:none}.wpx-panel .wpx-ma{white-space:normal}.wpx-panel .wpx-acts .pg-btn{width:100%}.wpx-more{margin-inline:auto}}
 .wpx-prods{display:flex;flex-wrap:wrap;gap:.35rem}
-.wpx-prods a{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;line-height:1.3;border-radius:8px;background:var(--navy);color:var(--theme-on-dark);font-weight:600;text-decoration:none}
-.wpx-prods a:hover{background:var(--accent)}
+.wpx-prods a{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;line-height:1.3;border-radius:8px;background:var(--navy);color:var(--theme-on-dark);font-weight:600;text-decoration:none;transition:background-color .2s var(--ease),color .2s var(--ease)}
+.wpx-prods a:hover{background:var(--act);color:var(--on-act)}
 .wpx-none{color:var(--mute)}
 
-@media (max-width:1023px){
-  .wpx-grid{grid-template-columns:minmax(0,1fr)}
-}
 @media (max-width:767px){
-  .wpx-frame{margin-inline:calc(-1 * var(--gutter,16px));padding:.5rem .25rem;border-radius:0;box-shadow:inset 0 1px 0 var(--line),inset 0 -1px 0 var(--line)}
-  .wpx-spot{width:1.5rem;height:1.5rem;margin:-.75rem 0 0 -.75rem}
-  .wpx-tabs{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1 * var(--gutter,16px));padding:0 var(--gutter,16px) 2px;scrollbar-width:none}
-  .wpx-tabs::-webkit-scrollbar{display:none}
-  .wpx-tab{flex:none}
   .wpx-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.35rem .9rem;padding:.85rem 1rem}
   .wpx-row .wpx-rh{grid-column:1 / -1}
   .wpx-cell--both{grid-column:1 / -1}

@@ -30,36 +30,43 @@ export function searchBar(o: { label: string; placeholder: string; filters: read
 </div>`;
 }
 
+/**
+ * The bar's look: no outer box, a row of pills. The search pill gets a 2px
+ * blue ring while you type; a chosen filter is the selected state, so it wears
+ * the action colour (an orange ring on a faint orange wash).
+ */
 export const SEARCH_BAR_CSS =
   FANCY_SELECT_CSS +
   `
-.sb{display:flex;align-items:stretch;width:100%;min-height:3rem;border-radius:12px;background:var(--theme-white);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 14%,transparent);transition:box-shadow .2s}
+.sb{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;width:100%}
 .sb[hidden]{display:none}
-.sb:focus-within{box-shadow:inset 0 0 0 1.5px var(--navy),0 0 0 3px color-mix(in srgb,var(--theme-primary) 10%,transparent)}
 .sb .sb-q input:focus,.sb .sb-q input:focus-visible{outline:none}
-.sb-q{position:relative;display:flex;align-items:center;flex:1 1 10rem;min-width:9rem;cursor:text}
-.sb-ico{position:absolute;left:1rem;width:1.15rem;height:1.15rem;color:var(--mute);pointer-events:none}
-.sb-q input{width:100%;height:100%;min-height:3rem;margin:0;padding:0 2.6rem 0 2.75rem;border:0;border-radius:12px;background:none;font:inherit;font-size:var(--fs-body);color:var(--ink);outline:none;-webkit-appearance:none;appearance:none}
-.sb-q input::placeholder{color:var(--mute);opacity:1}
+.sb-q{position:relative;display:flex;align-items:center;flex:1 1 16rem;min-width:9rem;height:3.25rem;border-radius:999px;background:var(--theme-surface);box-shadow:inset 0 0 0 1px var(--theme-line);cursor:text;transition:box-shadow .2s cubic-bezier(.2,.7,.2,1)}
+.sb-q:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 40%,transparent)}
+.sb-q:focus-within{box-shadow:inset 0 0 0 2px var(--theme-primary)}
+.sb-ico{position:absolute;left:1.15rem;width:1.15rem;height:1.15rem;color:var(--theme-muted);pointer-events:none}
+.sb-q input{width:100%;height:100%;margin:0;padding:0 3rem 0 2.9rem;border:0;border-radius:999px;background:none;font:inherit;font-size:var(--fs-body);color:var(--ink,var(--theme-ink));outline:none;-webkit-appearance:none;appearance:none}
+.sb-q input::placeholder{color:var(--theme-muted);opacity:1}
 .sb-q input::-webkit-search-cancel-button{display:none}
-.sb-x{position:absolute;right:.55rem;display:grid;place-items:center;width:1.9rem;height:1.9rem;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--ink);cursor:pointer}
+.sb-x{position:absolute;right:.6rem;display:grid;place-items:center;width:2rem;height:2rem;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--theme-ink);cursor:pointer;transition:background-color .2s,color .2s}
 .sb-x[hidden]{display:none}
-.sb-x:hover{background:color-mix(in srgb,var(--theme-ink) 12%,transparent)}
+.sb-x:hover{background:var(--theme-action);color:var(--theme-on-action)}
+.sb-x:focus-visible{outline:2px solid var(--theme-primary);outline-offset:2px}
 .sb-x svg{width:.85rem;height:.85rem}
-.sb-f{position:relative;display:flex;align-items:center;flex:0 0 auto;min-width:0;padding:.3rem;border-left:1px solid color-mix(in srgb,var(--theme-ink) 10%,transparent)}
+.sb-f{position:relative;display:flex;align-items:center;flex:0 0 auto;min-width:0;padding:0;border:0}
 .sb-f .fs-btn .fs-n{display:none}
-.sb-f select{width:100%;height:2.5rem;padding:0 .8rem;border:0;background:none;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink)}
+.sb-f select{width:100%;height:3.25rem;padding:0 1.2rem;border:0;border-radius:999px;background:var(--theme-surface);box-shadow:inset 0 0 0 1px var(--theme-line);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink,var(--theme-ink))}
 .sb-f .fs{width:100%}
-.sb-f .fs-btn{gap:.6rem;min-height:2.4rem;padding:.3rem .75rem;border-radius:8px;background:none;box-shadow:none;font-weight:500}
-.sb-f .fs-btn:hover{background:color-mix(in srgb,var(--theme-ink) 5%,transparent);box-shadow:none}
-.sb-f .fs-btn[aria-expanded=true]{background:color-mix(in srgb,var(--theme-primary) 8%,transparent);box-shadow:none}
-.sb-f.is-set .fs-btn{color:var(--accent)}
+.sb-f .fs-btn{min-width:11rem}
+.sb-f.is-set .fs-btn{box-shadow:inset 0 0 0 1.5px var(--theme-action);background:color-mix(in srgb,var(--theme-action) 10%,var(--theme-surface));color:var(--ink,var(--theme-ink))}
+.sb-f.is-set .fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--theme-primary)}
+.sb-f.is-set .fs-chev{color:var(--theme-ink)}
 .fs-opt[aria-disabled=true]{opacity:.4;cursor:default}
 .fs-opt[aria-disabled=true].is-active{background:none}
 @media (max-width:599px){
-  .sb{flex-wrap:wrap}
   .sb-q{flex-basis:100%}
-  .sb-f{flex:1 1 0;border-left:0;border-top:1px solid color-mix(in srgb,var(--theme-ink) 10%,transparent)}
-  .sb-f + .sb-f{border-left:1px solid color-mix(in srgb,var(--theme-ink) 10%,transparent)}
+  .sb-f{flex:1 1 0}
+  .sb-f .fs-btn{min-width:0}
 }
+@media (prefers-reduced-motion:reduce){.sb-q,.sb-x{transition:none}}
 `;

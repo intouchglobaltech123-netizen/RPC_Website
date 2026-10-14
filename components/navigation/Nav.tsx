@@ -120,6 +120,21 @@ export function Nav() {
   const darkTop = DARK_TOP.has(pathname ?? "");
   const isActive = (href: string) => (href === "/" ? pathname === "/" : Boolean(pathname?.startsWith(href)));
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
+  /** inner pages: the action buttons wear the action colour (orange); home and the legacy routes stay exactly as they were */
+  const actionOrange = !!pathname && pathname !== "/" && !["/classic", "/v2", "/v3"].some((p) => pathname.startsWith(p)) && !pathname.startsWith("/studio");
+  const ctaTone = actionOrange
+    ? "bg-[var(--theme-action)] text-[var(--theme-on-action)] hover:bg-[var(--theme-action-hover)]"
+    : "bg-night text-white hover:bg-rpc";
+  const ctaChip = actionOrange ? "bg-night text-white" : "bg-card text-night";
+  const ctaSmTone = actionOrange
+    ? "bg-[var(--theme-action)] text-[var(--theme-on-action)] hover:bg-[var(--theme-action-hover)]"
+    : "bg-card text-night hover:bg-paper";
+  const callTone = actionOrange
+    ? "bg-[var(--theme-action)] text-[var(--theme-on-action)] hover:bg-[var(--theme-action-hover)]"
+    : "bg-white/[0.08] text-white hover:bg-white/[0.16]";
+  const bookTone = actionOrange
+    ? "bg-[var(--theme-action)] text-[var(--theme-on-action)] transition-colors hover:bg-[var(--theme-action-hover)]"
+    : "bg-water-2 text-night";
 
   /** a page in the bar, in plain text; the page you are on sits in the sand pill */
   const pageLink = (n: (typeof links)[number]) => {
@@ -183,10 +198,10 @@ export function Nav() {
               href="/contact"
               tabIndex={visible ? 0 : -1}
               aria-current={isActive("/contact") ? "page" : undefined}
-              className={`rn-cta group pointer-events-auto bg-night text-body font-semibold text-white transition-colors duration-300 hover:bg-rpc ${focus}`}
+              className={`rn-cta group pointer-events-auto ${ctaTone} text-body font-semibold transition-colors duration-300 ${focus}`}
             >
               Contact
-              <span className="rn-ctai bg-card text-night transition-transform duration-300 group-hover:rotate-45">
+              <span className={`rn-ctai ${ctaChip} transition-transform duration-300 group-hover:rotate-45`}>
                 <ArrowUpRight size={16} strokeWidth={1.8} />
               </span>
             </Link>
@@ -194,14 +209,14 @@ export function Nav() {
 
           {/* phones and tablets: a small bar at the right with the call button, Contact (from 768px) and the menu */}
           <nav aria-label="Primary" className="rn-mini pointer-events-auto" style={BAR}>
-            <a href={tel} tabIndex={visible ? 0 : -1} aria-label={`Call ${contact.phone}`} className={`rn-sq bg-white/[0.08] text-white transition-colors hover:bg-white/[0.16] ${focus}`}>
+            <a href={tel} tabIndex={visible ? 0 : -1} aria-label={`Call ${contact.phone}`} className={`rn-sq ${callTone} transition-colors ${focus}`}>
               <Phone size={16} aria-hidden />
             </a>
             <Link
               href="/contact"
               tabIndex={visible ? 0 : -1}
               aria-current={isActive("/contact") ? "page" : undefined}
-              className={`rn-cta rn-cta--sm group bg-card text-body font-semibold text-night transition-colors duration-300 hover:bg-paper ${focus}`}
+              className={`rn-cta rn-cta--sm group ${ctaSmTone} text-body font-semibold transition-colors duration-300 ${focus}`}
             >
               Contact
               <span className="rn-ctai bg-night text-white transition-transform duration-300 group-hover:rotate-45">
@@ -263,7 +278,7 @@ export function Nav() {
               <Link
                 href="/contact"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-12 items-center justify-between rounded-[10px] bg-water-2 pl-5 pr-1.5 font-semibold text-night"
+                className={`inline-flex h-12 items-center justify-between rounded-[10px] ${bookTone} pl-5 pr-1.5 font-semibold`}
               >
                 Book a free inspection
                 <span className="grid h-9 w-9 place-items-center rounded-[8px] bg-night text-white"><ArrowUpRight size={16} /></span>

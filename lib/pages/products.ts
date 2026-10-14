@@ -1,28 +1,32 @@
 /**
  * Products page, a counter to find a product and ask its rate.
  *
- *   opening    what we supply, in a line
- *   find       who makes what: every brand against every kind of product, as a
- *              grid of counts that lists what is picked; a search; and every
- *              product in rows that open (lib/pages/products-finder.ts)
+ *   opening    the shared inner-page banner: what we supply, in a line, the ways
+ *              in, and the packs on the list drawn on a blueprint board
+ *   find       a filter panel (kind of product, brand) beside every product as
+ *              cards, brand by brand, with a search (lib/pages/products-finder.ts)
  *   by job     "same job, different brands": the jobs for which we stock more
  *              than one brand, listed by the kind of work; pick one, then any two
- *              of its products, and they face each other head to head, with
+ *              of its products, and they face each other in one table, with
  *              what they share marked and what differs standing out.
+ *   brands     the brands in the methods guide, moving slowly
  *   close      before you buy, and the ways to ask
- *   enquiry    products added from their rows ride in a bar at the foot of the
+ *   enquiry    products added from their cards ride in a bar at the foot of the
  *              screen, each with its pack and how many, and go to RPC on
  *              WhatsApp as one message
  *
- * Product facts come only from RPC's spreadsheet; it lists no prices, so every
- * rate is asked for on WhatsApp. Links: /products#<slug> opens that product,
- * #brand-<key> a brand, #job-<key> a job.
+ * Colour: white and light grey grounds, deep blue for structure (the eyebrows,
+ * the table head, the drawings), orange only on what can be pressed or is
+ * picked. Product facts come only from RPC's spreadsheet; it lists no prices,
+ * so every rate is asked for on WhatsApp. Links: /products#<slug> opens that
+ * product, #brand-<key> a brand, #job-<key> a job.
  */
 import { FANCY_SELECT_CSS } from "./fancy-select";
 import { PRODUCT_COUNT, rateLink, type Product } from "../products";
 import { brandInfo, brandMark, jobGroup, jobs, type JobView } from "../products/brands";
 import { cap, fullName, shortName, useTerms, usesNote } from "../products/compare";
-import { arrow, ctaBand, esc, listing, mark, secHead, type ContactInfo } from "./kit";
+import { packArt } from "../products/pack-art";
+import { arrow, arrowDown, banner, ctaBand, esc, listing, mark, secHead, waGlyph, words, type ContactInfo } from "./kit";
 import { enquiryMarkup, FINDER_CSS, finderMarkup } from "./products-finder";
 import { brandsMarqueeHtml, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
 
@@ -39,15 +43,51 @@ export const PRODUCTS_TRAIL = [
 
 export { packIcon } from "../products/packs";
 
+/* ------------------------------------------------------------ the opening's picture */
+
+/**
+ * The packs on the list, drawn on two ruled shelves on a blueprint board: one
+ * of each common kind of pack, each labelled with a real pack size from the
+ * sheet. `w` is each drawing's share of its shelf.
+ */
+const SHELVES = [
+  [
+    { shape: "bag", w: 30, word: "sacks" },
+    { shape: "drum", w: 33, word: "drums" },
+    { shape: "pail", w: 30, word: "pails" },
+  ],
+  [
+    { shape: "can", w: 30, word: "cans" },
+    { shape: "kit", w: 33, word: "kits" },
+    { shape: "roll", w: 30, word: "membrane rolls" },
+  ],
+] as const;
+
+function shelf(ps: readonly Product[]) {
+  const packs = ps.flatMap((p) => p.packs);
+  const rows = SHELVES.map((row) =>
+    row.flatMap((s) => {
+      const k = packs.find((x) => x.shape === s.shape);
+      return k ? [{ ...s, size: k.size }] : [];
+    }),
+  ).filter((r) => r.length);
+  const words = rows.flat().map((x) => x.word);
+  return `<figure class="pr-shelf" role="img" aria-label="Drawings of the packs on our list: ${esc(listing(words))}">${rows
+    .map(
+      (r) => `<ul class="pr-row" data-rv-stagger>${r
+        .map((x) => `<li data-rv style="--w:${x.w}%">${packArt(`hero-${x.shape}`, x.shape, x.shape === "drum" ? "var(--theme-primary-dark)" : "var(--theme-primary)", x.size)}</li>`)
+        .join("")}</ul>`,
+    )
+    .join("")}</figure>`;
+}
+
 /* ------------------------------------------------------------ same job, different brands */
 
 /**
- * One job, head to head. Every product for the job sits in its brand's column
- * as a chip; the two picked (one from each of the first two brands, to start)
- * face each other across a spine of what the sheet says about them: the type,
- * what it does, where it is listed for, who buys it and the packs. A row the two
- * share is marked "Same" and kept quiet, so what differs stands out; the places
- * they are both listed for are filled in. The rest happens in the browser
+ * One job, head to head: a list above each column picks the product, and the
+ * table's rows say what each is: the brand, the type, what it does, where it is
+ * listed for and the packs. A row the two share is marked "Same" and kept
+ * quiet, so what differs stands out. The rest happens in the browser
  * (products-page.ts), from the job's facts set out below the panel as JSON.
  */
 const ROWS = [
@@ -104,9 +144,9 @@ function compareRows(a: Side, b: Side) {
 }
 
 /**
- * One job's products compared two at a time: a list above each column picks
- * the product, and the table below says, row by row, what each is; rows the
- * two share are marked "Same".
+ * One job's products compared two at a time: a navy head (how many, and a way
+ * to ask for every rate), a list above each column to pick the product, and the
+ * table below saying, row by row, what each is.
  */
 function faceOff(j: JobView, c: ContactInfo) {
   const n = j.products.length;
@@ -121,7 +161,7 @@ function faceOff(j: JobView, c: ContactInfo) {
   const pick = (s: "a" | "b", sel: string) =>
     `<th scope="col" data-s="${s}"><label class="cmp-pick"><span>Product ${s === "a" ? 1 : 2}</span><select class="h2-sel" data-h2="${s}">${options(sel)}</select></label></th>`;
   const rate = (s: "a" | "b", x: Side) =>
-    `<td data-s="${s}"><a class="fo-rate" data-s="${s}" href="${esc(x.rate)}" target="_blank" rel="noopener noreferrer">Ask the rate<span class="h2-rn">for ${esc(x.n)}</span></a></td>`;
+    `<td data-s="${s}"><a class="fo-rate" data-s="${s}" href="${esc(x.rate)}" target="_blank" rel="noopener noreferrer">${waGlyph}Ask the rate<span class="h2-rn">for ${esc(x.n)}</span></a></td>`;
   const data = JSON.stringify({ sides }).replace(/</g, "\\u003c");
   return `<article class="fo-panel" id="job-${j.key}" data-job="${j.key}" data-a="${pa.slug}" data-b="${pb.slug}" aria-labelledby="fo-t-${j.key}">
   <header class="fo-ph">
@@ -129,7 +169,7 @@ function faceOff(j: JobView, c: ContactInfo) {
       <h3 class="fo-jt sr-only" id="fo-t-${j.key}">${esc(j.name)}</h3>
       <p class="fo-k">${n} products from ${esc(listing(j.brands.map((b) => b.name)))}. Choose any two below.</p>
     </div>
-    <a class="fo-all" href="${esc(rateLink(c.whatsapp, j.products))}" target="_blank" rel="noopener noreferrer">Ask for all ${n} rates</a>
+    <a class="fo-all" href="${esc(rateLink(c.whatsapp, j.products))}" target="_blank" rel="noopener noreferrer">${waGlyph}Ask for all ${n} rates</a>
   </header>
   <div class="cmp-wrap" aria-live="polite">
     <table class="cmp-t">
@@ -149,16 +189,19 @@ function byJobMarkup(js: readonly JobView[], c: ContactInfo) {
   const jobOptions = groups
     .map((g) => `<optgroup label="${esc(g)}">${js.filter((j) => jobGroup(j) === g).map((j, i) => `<option value="${j.key}"${g === groups[0] && i === 0 ? " selected" : ""}>${esc(j.name)} (${j.products.length})</option>`).join("")}</optgroup>`)
     .join("");
-  return `<section class="pg-sec fo-sec" id="by-job" aria-labelledby="fo-h">
+  return `<section class="pg-sec pg-seam fo-sec" id="by-job" aria-labelledby="fo-h">
   <div class="pg-wrap">
-    <div class="fo-top">
-      <div>
-        <p class="pg-mark">Same job, different brands</p>
-        <h2 class="pg-h2" id="fo-h">Compare two products side by side.</h2>
+    <header class="pg-shead pg-shead--split fo-top">
+      <div class="pg-shl">
+        ${mark("", "Same job, different brands")}
+        <h2 class="pg-h2" id="fo-h" data-rv="words">${words("Compare two products side by side.", 3)}</h2>
+        <p class="pg-lede" data-rv>Pick a job, then any two of its products. Rows the two share are marked “Same”, so what differs stands out.</p>
       </div>
-      <label class="fo-pickjob"><span>Job</span><select data-job-select>${jobOptions}</select></label>
-    </div>
-    <div class="fo"><div class="fo-stage">${js.map((j) => faceOff(j, c)).join("\n")}</div></div>
+      <div class="pg-sextra" data-rv>
+        <label class="fo-pickjob"><span>Job</span><select data-job-select>${jobOptions}</select></label>
+      </div>
+    </header>
+    <div class="fo" data-rv><div class="fo-stage">${js.map((j) => faceOff(j, c)).join("\n")}</div></div>
   </div>
 </section>`;
 }
@@ -168,23 +211,21 @@ function byJobMarkup(js: readonly JobView[], c: ContactInfo) {
 export function productsPageMarkup(d: ProductsData) {
   const bs = brandInfo(d.products);
   const js = jobs(d.products);
-  const head = `<header class="pg-head pr-head">
+  const head = banner({
+    label: "Products",
+    n: "01",
+    title: "Waterproofing products and construction chemicals, by&nbsp;brand.",
+    accentFrom: 5,
+    intro: `${PRODUCT_COUNT} products from ${esc(listing(bs.map((b) => b.name)))}, all on RPC’s list. Find one by kind or brand, compare two for the same job, and ask for today’s rate on WhatsApp.`,
+    actions: `<a class="pg-btn pg-btn--ink" href="#find">Find a product${arrowDown}</a><a class="pg-btn pg-btn--line" href="#by-job">Compare brands by job</a><a class="pg-btn pg-btn--line" href="#brands">Brands</a>`,
+    media: shelf(d.products),
+    fact: { n: String(PRODUCT_COUNT), label: `products from ${bs.length} brands` },
+    cls: "pr-head",
+  });
+  const brands = `<section class="pg-sec pg-sec--white pg-seam pr-bsec" id="brands" aria-labelledby="pr-b-h">
   <div class="pg-wrap">
-    <div class="pr-headgrid">
-      <div>
-        ${mark("01", "Products")}
-        <h1 class="pg-h1">Waterproofing products and construction chemicals, by&nbsp;brand.</h1>
-      </div>
-      <div class="pr-headside">
-        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#find">Find a product${arrow}</a><a class="pg-btn pg-btn--line" href="#by-job">Compare brands by job</a><a class="pg-btn pg-btn--line" href="#brands">Brands</a></div>
-      </div>
-    </div>
-  </div>
-</header>`;
-  const brands = `<section class="pg-sec pg-sec--stone pr-bsec" id="brands" aria-labelledby="pr-b-h">
-  <div class="pg-wrap">
-    ${secHead({ label: "Brands", title: "The brands in our methods guide.", id: "pr-b-h" })}
-    ${brandsMarqueeHtml()}
+    ${secHead({ label: "Brands", title: `The brands in our <span class="pg-acc">methods guide.</span>`, id: "pr-b-h", center: true, extra: `<a class="pg-link" href="/waterproofing#methods" data-internal>Open the methods guide${arrow}</a>` })}
+    <div data-rv>${brandsMarqueeHtml()}</div>
   </div>
 </section>`;
   return `${head}
@@ -202,216 +243,118 @@ ${ctaBand(d.contact, {
 ${enquiryMarkup(d.contact)}`;
 }
 
+/* the browser's own lists (before the page's scripts draw theirs): a chevron drawn in CSS, so it takes the theme's colour */
+const CHEV_BG = `background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-repeat:no-repeat;background-size:5px 5px,5px 5px`;
+
 export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS + `
-.pr-head{border-bottom:1px solid var(--line);padding-bottom:clamp(1.6rem,4vh,2.6rem)}
-.pr-bsec{padding-block:clamp(2rem,5vh,3.5rem);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.pr-bsec .pg-shead{margin-bottom:1.4rem}
-.pr-headgrid{display:grid;grid-template-columns:minmax(0,1.2fr) auto;align-items:end;gap:1.4rem clamp(2rem,6vw,7rem)}
-.pr-headgrid .pg-mark{margin-bottom:.9rem}
-.pr-headgrid .pg-h1{max-width:20ch}
-.pr-headside .pg-intro{margin-top:0}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-/* same job, different brands: the jobs on the left; the chosen job's products as chips by brand, and two of them head to head */
-.fo{display:grid;grid-template-columns:minmax(14rem,17rem) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.6rem);align-items:start}
-.fo-jobs{position:sticky;top:calc(var(--nav-bar,64px) + 1.2rem)}
-.fo-glist{display:flex;flex-direction:column;gap:1rem;margin:0;padding:0;list-style:none}
-.fo-gname{margin:0 0 .3rem;padding-left:.8rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.fo-group ul{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
-.fo-tab{display:flex;align-items:center;justify-content:space-between;gap:.8rem;min-height:2.5rem;padding:.45rem .8rem;border-radius:6px;font-size:var(--fs-body);line-height:1.3;color:var(--ink2);text-decoration:none;transition:background-color .2s,color .2s}
-.fo-tab:hover{background:color-mix(in srgb,var(--theme-ink) 6%,transparent);color:var(--ink)}
-.fo-tab[aria-current=true]{background:var(--navy);color:var(--theme-on-dark);font-weight:600}
-.fo-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.fo-tn{min-width:0}
-.fo-tc{flex:none;min-width:1.6rem;font-weight:500;font-variant-numeric:tabular-nums;text-align:right;color:var(--mute)}
-.fo-tab[aria-current=true] .fo-tc{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
-
-/* a job */
-.fo-panel{padding:clamp(1.2rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -50px color-mix(in srgb,var(--theme-ink) 55%,transparent);scroll-margin-top:calc(var(--nav-bar,64px) + 1rem)}
-.fo-panel + .fo-panel{margin-top:1.2rem}
-.fo-ph{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:.8rem 1.4rem}
-.fo-jt{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25;letter-spacing:-.01em}
-.fo-k{margin:.3rem 0 0;font-size:var(--fs-body);color:var(--mute)}
-.fo-all,.fo-rate{display:inline-flex;align-items:center;gap:.45rem;border-radius:6px;background:color-mix(in srgb,var(--theme-whatsapp) 12%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-whatsapp-dark) 32%,transparent);font-size:var(--fs-body);font-weight:600;color:var(--theme-whatsapp-dark);text-decoration:none;white-space:nowrap;transition:background-color .2s,color .2s,box-shadow .2s}
-.fo-all{height:2.6rem;padding:0 1rem}
-.fo-rate{height:2.2rem;padding:0 .75rem}
-.fo-all:hover,.fo-rate:hover{background:var(--theme-whatsapp);box-shadow:none;color:var(--theme-white)}
-.fo-all .pg-ar,.fo-rate .pg-ar{width:1rem;height:1rem}
-.fo-all:focus-visible,.fo-rate:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.fo-packs{display:inline-flex;flex-wrap:wrap;gap:.3rem}
-.fo-packs > span{display:inline-flex;align-items:center;gap:.35rem;height:2rem;padding:0 .6rem 0 .45rem;border-radius:8px;background:var(--sand);font-weight:500;color:var(--ink)}
-.fo-packs svg{width:1.1rem;height:1.1rem;color:var(--c,var(--water))}
-.fo-note{margin:1rem 0 0;font-size:var(--fs-body);color:var(--mute)}
-
-/* head to head: the products as chips, brand by brand; two picked face each other across a spine */
-.h2-pick{margin-top:1.3rem}
-.h2-pk{margin:0 0 .6rem;font-size:var(--fs-body);font-weight:600;color:var(--ink2)}
-.h2-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.7rem}
-.h2-brand{padding:.75rem .7rem .7rem;border-radius:12px;background:color-mix(in srgb,var(--theme-ink) 3.5%,transparent);box-shadow:inset 0 3px 0 var(--c)}
-.h2-bn{display:flex;align-items:center;gap:.5rem;margin:0 0 .5rem .2rem;font-size:var(--fs-body);font-weight:600;color:var(--ink)}
-.h2-bn i{width:.55rem;height:.55rem;border-radius:50%;background:var(--c)}
-.h2-bn span{margin-left:auto;padding-right:.2rem;font-weight:500;color:var(--mute)}
-.h2-brand ul{display:flex;flex-direction:column;gap:.35rem;margin:0;padding:0;list-style:none}
-.h2-chip{display:grid;grid-template-columns:1.6rem minmax(0,1fr) auto;align-items:center;gap:.6rem;width:100%;min-height:2.75rem;padding:.4rem .7rem .4rem .45rem;border:0;border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font:inherit;font-size:var(--fs-body);color:var(--ink);text-align:left;cursor:pointer;transition:background-color .2s,box-shadow .2s,color .2s}
-.h2-chip:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
-.h2-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.h2-tag{display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-size:var(--fs-body);font-weight:700;line-height:1}
-.h2-cn{min-width:0;font-weight:600;line-height:1.3}
-.h2-cp{color:var(--mute);white-space:nowrap}
-.h2-chip[aria-pressed=true]{background:var(--navy);box-shadow:none;color:var(--theme-white)}
-.h2-chip[aria-pressed=true] .h2-tag{background:var(--theme-surface);box-shadow:none;color:var(--navy)}
-.h2-chip[aria-pressed=true] .h2-cp{color:color-mix(in srgb,var(--theme-white) 70%,transparent)}
-
-.h2-ring{--cols:minmax(0,1fr) 9.5rem minmax(0,1fr);margin-top:1.4rem;padding:clamp(1rem,2vw,1.6rem);border-radius:14px;background:var(--paper,var(--theme-surface-2));box-shadow:inset 0 0 0 1px var(--line)}
-.h2-heads{display:grid;grid-template-columns:var(--cols);align-items:stretch}
-.h2-head{position:relative;display:flex;flex-direction:column;justify-content:center;gap:.15rem;min-width:0;padding:1rem 1.2rem;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),inset 0 4px 0 var(--c)}
-.h2-head[data-s=a]{align-items:flex-end;padding-right:3.4rem;text-align:right}
-.h2-head[data-s=b]{padding-left:3.4rem}
-.h2-side{position:absolute;top:50%;display:grid;place-items:center;width:2.1rem;height:2.1rem;margin-top:-1.05rem;border-radius:50%;background:var(--c);font-size:var(--fs-body);font-weight:700;color:var(--theme-white)}
-.h2-head[data-s=a] .h2-side{right:.9rem}
-.h2-head[data-s=b] .h2-side{left:.9rem}
-.h2-hb{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.h2-hn{margin:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
-.h2-vs{align-self:center;justify-self:center;display:grid;place-items:center;width:3.2rem;height:3.2rem;border-radius:50%;background:var(--navy);box-shadow:0 0 0 6px var(--paper,var(--theme-surface-2));font-family:var(--display);font-size:var(--fs-body);font-weight:700;color:var(--theme-on-dark)}
-/* the two sides: the brand, and a list to choose the product */
-.h2-head{cursor:pointer}
-.h2-hb{display:block}
-.h2-sel{max-width:100%;margin:0;padding:.1rem 1.6rem .1rem 0;border:0;border-radius:6px;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .1rem center/14px;font-family:var(--display);font-size:var(--fs-body);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none}
-.h2-head[data-s=a] .h2-sel{text-align:right;text-align-last:right}
-.h2-sel:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:16px;color:var(--theme-ink)}
-.h2-head:hover{box-shadow:inset 0 0 0 1.5px var(--navy),inset 0 4px 0 var(--c)}
-.h2-pk{margin:1.1rem 0 0;font-size:var(--fs-body);color:var(--mute)}
-.h2-verdict{max-width:46rem;margin:1.1rem auto .4rem;font-size:var(--fs-body);line-height:1.55;text-align:center;color:var(--ink2)}
-.h2-verdict:empty{display:none}
-.h2-rows{margin:0}
-.h2-row{position:relative;display:grid;grid-template-columns:var(--cols);align-items:start;padding:.85rem 0;border-top:1px solid var(--line)}
-.h2-row dt{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:0 .6rem;font-size:var(--fs-body);font-weight:600;line-height:1.3;text-align:center;color:var(--ink)}
-.h2-row dt em{display:none;padding:.1rem .55rem;border-radius:999px;background:color-mix(in srgb,var(--theme-ink) 7%,transparent);font-style:normal;font-weight:500;color:var(--mute)}
-.h2-row dd{grid-row:1;min-width:0;margin:0;font-size:var(--fs-body);line-height:1.5;color:var(--ink)}
-.h2-row dd[data-s=a]{grid-column:1;text-align:right}
-.h2-row dd[data-s=b]{grid-column:3}
-.h2-row.is-same dt em{display:block}
-.h2-row.is-same dd{color:var(--mute)}
-.h2-row:not(.is-same):not([data-row=packs]) dd{font-weight:500}
-.h2-uses{display:flex;flex-wrap:wrap;gap:.3rem}
-.h2-row dd[data-s=a] .h2-uses,.h2-row dd[data-s=a] .fo-packs{justify-content:flex-end}
-.h2-uses span{display:inline-flex;align-items:center;min-height:1.9rem;padding:.15rem .6rem;border-radius:7px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-weight:500;line-height:1.3;color:var(--ink)}
-.h2-uses span.is-both{background:var(--navy);box-shadow:none;color:var(--theme-on-dark)}
-.h2-none{color:var(--mute)}
-.h2-row[data-row=packs] .fo-packs svg{color:var(--mute)}
-.h2-acts{display:grid;grid-template-columns:var(--cols);padding-top:1rem;border-top:1px solid var(--line)}
-.h2-acts .fo-rate{position:relative;max-width:100%;height:auto;min-height:2.4rem;padding:.4rem .8rem;white-space:normal}
-.h2-acts .fo-rate[data-s=a]{grid-column:1;justify-self:end}
-.h2-acts .fo-rate[data-s=b]{grid-column:3;justify-self:start}
-.jb-choose{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:1.4rem clamp(2rem,5vw,4rem);margin-top:clamp(2.4rem,6vh,3.6rem);padding:clamp(1.4rem,3vw,2.2rem);border-radius:8px;background:var(--sand-2)}
-.jb-choose p{margin:.6rem 0 0;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
-.jb-choose ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.6rem;margin:0;padding:0;list-style:none}
-.jb-choose li{display:flex;flex-direction:column;gap:.25rem;padding-top:.8rem;border-top:1px solid color-mix(in srgb,var(--theme-ink) 16%,transparent);font-size:var(--fs-body);line-height:1.5}
-.jb-choose li span{color:var(--ink2)}
-
-@media (max-width:1199px){
-  .fo{grid-template-columns:minmax(12rem,15rem) minmax(0,1fr)}
-}
+/* ═══ the opening: the shared banner; the packs on the list drawn on a blueprint board ═══ */
+.pr-head .pg-h1{max-width:20ch}
+.pr-head .pg-btn--ink:hover>.pg-ar{transform:translateY(2px)}
+.pr-shelf{position:relative;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));row-gap:calc(14px + 4%);margin:0;padding:5% 5% calc(9% + 14px);aspect-ratio:4/3;overflow:hidden;border-radius:var(--r-card);background-color:var(--theme-surface-2);background-image:radial-gradient(ellipse 60% 48% at 50% 55%,var(--theme-surface) 0,transparent 72%),linear-gradient(var(--bp) 1px,transparent 1px),linear-gradient(90deg,var(--bp) 1px,transparent 1px);background-size:100% 100%,24px 24px,24px 24px;box-shadow:inset 0 0 0 1px var(--line);clip-path:polygon(var(--cut) 0,100% 0,100% 100%,0 100%,0 var(--cut))}
+/* a shelf: the packs stand on a hairline with measuring ticks under it */
+.pr-row{position:relative;display:flex;align-items:flex-end;justify-content:space-evenly;min-height:0;margin:0;padding:0;list-style:none}
+.pr-row::after{content:"";position:absolute;left:0;right:0;top:100%;height:14px;background:linear-gradient(color-mix(in srgb,var(--theme-ink) 22%,transparent),color-mix(in srgb,var(--theme-ink) 22%,transparent)) top left/100% 1px no-repeat,repeating-linear-gradient(90deg,var(--tick) 0 1px,transparent 1px 80px) top left/100% 12px no-repeat,repeating-linear-gradient(90deg,var(--tick) 0 1px,transparent 1px 40px) top left/100% 8px no-repeat,repeating-linear-gradient(90deg,var(--tick) 0 1px,transparent 1px 8px) top left/100% 5px no-repeat;pointer-events:none}
+.pr-row li{position:relative;z-index:1;flex:none;width:var(--w);max-height:100%}
+/* each drawing's floor (y 103 of 120) sits on the shelf: the picture hangs 14% of its width below the row */
+.pr-row svg{display:block;width:100%;height:auto;margin-bottom:-14%}
 @media (max-width:899px){
-  .pr-headgrid{grid-template-columns:1fr}
-  .fo{grid-template-columns:minmax(0,1fr)}
-  /* the jobs become one row of chips that scrolls sideways */
-  .fo-jobs{position:relative;top:auto;min-width:0;margin-inline:calc(-1 * var(--gutter,16px))}
-  .fo-glist{flex-direction:row;gap:.4rem;overflow-x:auto;padding:0 var(--gutter,16px) 4px;scrollbar-width:none}
-  .fo-glist::-webkit-scrollbar{display:none}
-  .fo-group{flex:none}
-  .fo-gname{display:none}
-  .fo-group ul{flex-direction:row;gap:.4rem}
-  .fo-tab{white-space:nowrap;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
-  .fo-tab[aria-current=true]{box-shadow:none}
-  .jb-choose{grid-template-columns:1fr}
-}
-@media (max-width:699px){
-  /* phones: the spine's names go above each row, the two sides below it */
-  .h2-ring{--cols:minmax(0,1fr) minmax(0,1fr);padding:.9rem .8rem}
-  .h2-heads{column-gap:1.4rem}
-  .h2-vs{position:absolute;left:50%;width:2.4rem;height:2.4rem;margin-left:-1.2rem;box-shadow:0 0 0 4px var(--paper,var(--theme-surface-2))}
-  .h2-heads{position:relative}
-  .h2-head{padding:2.6rem .8rem .8rem!important;align-items:flex-start!important;text-align:left!important}
-  .h2-side{top:.7rem;margin-top:0;width:1.7rem;height:1.7rem}
-  .h2-head[data-s=a] .h2-side{right:auto;left:.8rem}
-  .h2-row{column-gap:1rem;row-gap:.5rem}
-  .h2-row dt{grid-column:1/-1;flex-direction:row;justify-content:center}
-  .h2-row dd{grid-row:2}
-  .h2-row dd[data-s=a]{grid-column:1;text-align:left}
-  .h2-row dd[data-s=b]{grid-column:2}
-  .h2-row dd[data-s=a] .h2-uses,.h2-row dd[data-s=a] .fo-packs{justify-content:flex-start}
-  .h2-acts{column-gap:1rem}
-  .h2-acts .fo-rate[data-s=a]{justify-self:stretch;justify-content:center}
-  .h2-acts .fo-rate[data-s=b]{grid-column:2;justify-self:stretch;justify-content:center}
-  .h2-acts .fo-rate{padding:.4rem .5rem;white-space:nowrap}
-  .h2-rn{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .h2-head{justify-content:flex-start}
-  /* a row the two share is said once, across both */
-  .h2-row.is-same dd[data-s=b]{display:none}
-  .h2-row.is-same dd[data-s=a]{grid-column:1/-1;text-align:center}
-  .h2-row.is-same dd[data-s=a] .h2-uses{justify-content:center}
+  .pr-shelf{aspect-ratio:16/10;padding-inline:9%}
 }
 @media (max-width:599px){
-  .jb-choose ol{grid-template-columns:1fr}
-  .fo-panel{padding:1.1rem 1rem;border-radius:8px}
-  .fo-all{width:100%;justify-content:center}
+  /* phones: a squarer board, the lower shelf lifted clear of the fact chip */
+  .pr-shelf{aspect-ratio:4/3;padding:6% 7% 66px}
 }
 
-/* the comparison: a plain table, a list above each column to pick the product */
-.cmp-wrap{margin-top:1.2rem;overflow-x:auto;border-radius:14px;background:var(--theme-surface-2);box-shadow:inset 0 0 0 1px var(--line)}
+/* ═══ same job, different brands: the job chosen beside the heading, then one table ═══ */
+.fo-top{margin-bottom:clamp(1.6rem,4vh,2.4rem)}
+.fo-top .pg-lede{margin-top:0}
+.fo-pickjob{display:flex;flex-direction:column;gap:.4rem;width:27rem;max-width:100%}
+.fo-pickjob>span{font-size:var(--fs-body);font-weight:600;color:var(--mute)}
+.fo-pickjob select{width:100%;height:3.25rem;padding:0 2.6rem 0 1.3rem;border:0;border-radius:var(--r-pill);background-color:var(--theme-surface);${CHEV_BG};background-position:calc(100% - 1.45rem) 50%,calc(100% - 1.15rem) 50%;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 24%,transparent);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);appearance:none;-webkit-appearance:none;cursor:pointer}
+.fo-pickjob .fs{width:100%}
+.fo-pickjob .fs-btn{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 24%,transparent)}
+.fo-pickjob .fs-btn:hover{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 45%,transparent)}
+.fo-pickjob .fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
+.fo{display:block}
+/* a job: a white, chamfered panel whose head (the count and the table's head) is deep blue, hatched along its top */
+.fo-panel{position:relative;overflow:hidden;border-radius:var(--r-card);background:var(--theme-surface);box-shadow:inset 0 0 0 1px var(--line);clip-path:polygon(var(--cut) 0,100% 0,100% 100%,0 100%,0 var(--cut));scroll-margin-top:calc(var(--nav-bar,64px) + 1rem)}
+.fo-panel[hidden]{display:none}
+.fo-panel + .fo-panel{margin-top:1.4rem}
+.fo-ph{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem 1.4rem;padding:calc(1rem + 12px) clamp(1rem,2.2vw,1.6rem) .95rem;background:var(--hatch-img) 0 0/100% 12px no-repeat,var(--navy);color:var(--theme-on-dark)}
+.fo-jt{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25}
+.fo-k{margin:0;font-size:var(--fs-body);line-height:1.5;color:var(--band-mute)}
+/* asking for rates: outlined pills with the WhatsApp mark; an orange ring under the pointer */
+.fo-all,.fo-rate{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.6rem;padding:.35rem 1.15rem .35rem .95rem;border-radius:var(--r-pill);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-ink) 24%,transparent);font-size:var(--fs-body);font-weight:600;line-height:1.25;color:var(--ink);text-decoration:none;transition:box-shadow .3s var(--ease),background-color .3s var(--ease)}
+.fo-rate:hover{box-shadow:inset 0 0 0 1.5px var(--act);background:color-mix(in srgb,var(--act) 10%,transparent)}
+.fo-all{white-space:nowrap;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--theme-white) 45%,transparent);color:var(--theme-white)}
+.fo-all:hover{box-shadow:inset 0 0 0 1.5px var(--act);background:color-mix(in srgb,var(--theme-white) 6%,transparent)}
+.pg .fo-ph :focus-visible,.pg .cmp-t thead :focus-visible{outline-color:var(--theme-focus-on-dark)}
+/* the table: its head continues the navy; the two product lists are white controls in it */
+.cmp-wrap{overflow-x:auto}
 .cmp-t{width:100%;min-width:34rem;border-collapse:collapse;table-layout:fixed;font-size:var(--fs-body)}
 .cmp-t thead td,.cmp-t tbody th,.cmp-t tfoot td:first-child{width:11.5rem}
-.cmp-t th,.cmp-t td{padding:.85rem 1rem;text-align:left;vertical-align:top;line-height:1.5}
-.cmp-t thead th,.cmp-t thead td{padding-top:1rem;padding-bottom:1rem;background:var(--card);border-bottom:2px solid var(--navy)}
-.cmp-pick{display:flex;flex-direction:column;gap:.3rem}
-.cmp-pick > span{font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.cmp-pick .h2-sel{width:100%;padding:.45rem 2rem .45rem .7rem;border-radius:10px;background-color:var(--theme-white);background-position:right .6rem center;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 20%,transparent);font-size:var(--fs-body);text-align:left;text-align-last:left}
-.cmp-t tbody tr{border-bottom:1px solid var(--line)}
-.cmp-t tbody th{font-weight:600;color:var(--ink)}
-.cmp-t tbody th em{display:none;margin-top:.3rem;width:max-content;padding:.05rem .5rem;border-radius:999px;background:color-mix(in srgb,var(--theme-success) 14%,transparent);font-style:normal;font-weight:600;color:var(--theme-success-text)}
-.cmp-t tbody tr.is-same th em{display:inline-block;margin:0 0 0 .45rem;vertical-align:.05rem}
-.cmp-t tbody tr.is-same td{color:var(--mute)}
-.cmp-t tbody td{color:var(--ink)}
-.cmp-t tbody tr[data-row=brand] td{font-weight:600}
-.cmp-t tbody tr[data-row=brand] i{display:inline-block;width:.6rem;height:.6rem;margin-right:.45rem;border-radius:50%;vertical-align:.05rem}
-.cmp-t tfoot td{padding-top:1rem;padding-bottom:1rem}
-.cmp-t .fo-rate{height:auto;min-height:2.3rem;padding:.35rem .8rem;white-space:normal}
-.cmp-t .h2-rn{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.cmp-t .fo-rate{position:relative}
-
-/* the comparison on one screen: the job chosen from a list beside the heading, then one compact table */
-.fo-sec{padding-block:clamp(2.4rem,6vh,3.6rem)}
-.fo-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:1rem 2rem;margin-bottom:1.1rem}
-.fo-top .pg-h2{margin:.5rem 0 0}
-.fo-pickjob{display:flex;flex-direction:column;gap:.3rem;min-width:min(100%,24rem)}
-.fo-pickjob > span{font-size:var(--fs-body);font-weight:600;color:var(--mute)}
-.fo-pickjob select{height:2.9rem;padding:0 2.4rem 0 .9rem;border:0;border-radius:12px;background:var(--theme-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/14px;box-shadow:inset 0 0 0 1.5px var(--navy);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);appearance:none;cursor:pointer}
-.fo-pickjob select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.fo-pickjob .fs{width:100%}
-.fo-pickjob .fs-btn{box-shadow:inset 0 0 0 1.5px var(--navy),0 1px 2px color-mix(in srgb,var(--theme-ink) 6%,transparent)}
-.cmp-pick .fs-btn{min-height:2.6rem;padding:.4rem .7rem .4rem .8rem;border-radius:10px}
+.cmp-t th,.cmp-t td{padding:.85rem clamp(.85rem,1.6vw,1.3rem);text-align:left;vertical-align:top;line-height:1.5}
+.cmp-t thead th,.cmp-t thead td{padding-top:.35rem;padding-bottom:1.25rem;background:var(--navy);vertical-align:bottom}
+.cmp-pick{display:flex;flex-direction:column;gap:.45rem}
+.cmp-pick>span{font-size:var(--fs-body);font-weight:600;color:var(--band-mute)}
+.cmp-pick .h2-sel{width:100%;min-height:2.75rem;padding:.45rem 2.2rem .45rem .95rem;border:0;border-radius:var(--r-ctl);background-color:var(--theme-surface);${CHEV_BG};background-position:calc(100% - 1.15rem) 50%,calc(100% - .85rem) 50%;font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1.25;color:var(--ink);text-align:left;appearance:none;-webkit-appearance:none;cursor:pointer}
+.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:16px;color:var(--theme-ink)}
+.cmp-pick .fs-btn{min-height:2.75rem;padding:.45rem .85rem .45rem .95rem;border-radius:var(--r-ctl);box-shadow:none}
+.cmp-pick .fs-btn:hover{background:var(--theme-primary-soft);box-shadow:none}
+.cmp-pick .fs-btn[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 .cmp-pick .fs-val{white-space:normal;overflow-wrap:anywhere}
-.fo{display:block}
-.fo-panel{padding:1rem clamp(1rem,2vw,1.4rem) 1.1rem}
-.fo-ph{align-items:center}
-.fo-k{margin:0}
-.fo-all{height:2.4rem}
-.cmp-wrap{margin-top:.8rem}
-.cmp-t th,.cmp-t td{padding:.6rem .9rem}
-.cmp-t thead th,.cmp-t thead td{padding-top:.75rem;padding-bottom:.75rem}
-.cmp-t tfoot td{padding-top:.7rem;padding-bottom:.75rem}
+.cmp-t thead th[data-s=b],.cmp-t tbody td[data-s=b],.cmp-t tfoot td[data-s=b]{border-left:1px solid var(--line)}
+.cmp-t thead th[data-s=b]{border-left-color:color-mix(in srgb,var(--theme-white) 14%,transparent)}
+/* the rows: hairline-divided; a row the two share is marked "Same" in pale blue and kept quiet */
+.cmp-t tbody tr{border-top:1px solid var(--line);transition:background-color .2s var(--ease)}
+.cmp-t tbody tr:first-child{border-top:0}
+.cmp-t tbody tr:hover{background:color-mix(in srgb,var(--theme-primary-soft) 55%,transparent)}
+.cmp-t tbody th{font-weight:600;color:var(--mute)}
+.cmp-t tbody td{color:var(--ink)}
+.cmp-t tbody th em{display:none;width:max-content;padding:.1rem .55rem;border-radius:var(--r-pill);background:var(--theme-primary-soft);font-style:normal;font-weight:600;color:var(--navy)}
+.cmp-t tbody tr.is-same th em{display:inline-block;margin:0 0 0 .5rem;vertical-align:.05rem}
+.cmp-t tbody tr.is-same td{color:var(--mute)}
+.cmp-t tbody tr[data-row=brand] td{font-weight:600}
+/* the brand's mark: a small blue diamond (the scripts' brand colours are set aside) */
+.cmp-t tbody tr[data-row=brand] i{display:inline-block;width:.5rem;height:.5rem;margin:0 .65rem 0 .1rem;background:var(--accent)!important;transform:rotate(45deg);vertical-align:.12rem}
+.cmp-t tfoot tr{border-top:1px solid var(--line)}
+.cmp-t tfoot td{padding-top:.95rem;padding-bottom:1.1rem;vertical-align:middle}
+.cmp-t .fo-rate{max-width:100%;white-space:normal}
+.cmp-t .h2-rn{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (max-width:1023px){
+  /* tablets and phones: the job list goes under the heading */
+  .fo-top{grid-template-columns:minmax(0,1fr)}
+  .fo-top>.pg-sextra{justify-self:start;width:100%}
+}
+@media (max-width:767px){
+  .fo-pickjob{width:100%}
+}
 @media (max-width:699px){
-  .fo-pickjob{min-width:100%}
   /* phones: each row's name above, the two products side by side below it */
   .cmp-wrap{overflow:visible}
   .cmp-t{min-width:0;table-layout:auto}
   .cmp-t thead,.cmp-t tbody,.cmp-t tfoot{display:block}
-  .cmp-t tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:.2rem}
+  .cmp-t thead{background:var(--navy)}
+  .cmp-t tr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .cmp-t thead td:first-child,.cmp-t tfoot td:first-child{display:none}
-  .cmp-t th,.cmp-t td{width:auto!important;padding:.5rem .7rem;overflow-wrap:anywhere}
-  .cmp-t tbody th{grid-column:1 / -1;padding-bottom:0}
-  .cmp-t .fo-rate{width:100%;justify-content:center}
+  .cmp-t th,.cmp-t td{width:auto!important;padding:.55rem .8rem;overflow-wrap:anywhere}
+  .cmp-t thead th{padding-bottom:1rem}
+  .cmp-t tbody th{grid-column:1/-1;padding-top:.75rem;padding-bottom:0}
+  .cmp-t tbody td[data-s=b]{border-left:0}
+  .cmp-t .fo-rate{width:100%;padding-inline:.6rem}
+  .fo-ph{padding-inline:1rem}
+  .fo-all{width:100%}
 }
+
+/* ═══ the brands: white logo tiles, grey until the pointer is on them ═══ */
+.pr-bsec{padding-block:clamp(3rem,7vh,4.8rem)}
+.pr-bsec .pg-shead{margin-bottom:clamp(1.4rem,3vh,2rem)}
+.pr-bsec .wp-btile{border-radius:var(--r-ctl);background:var(--theme-surface);box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .3s var(--ease)}
+.pr-bsec .wp-btile:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme-ink) 30%,transparent)}
+.pr-bsec .wp-btile img{filter:grayscale(1);opacity:.75;transition:filter .3s var(--ease),opacity .3s var(--ease)}
+.pr-bsec .wp-btile:hover img{filter:none;opacity:1}
+.pr-bsec .wp-bname{color:var(--mute);transition:color .3s var(--ease)}
+.pr-bsec .wp-btile:hover .wp-bname{color:var(--ink)}
 `;
