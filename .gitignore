@@ -6,3 +6,6 @@ next-env.d.ts
 
 .preview/dist
 .preview/node_modules
+
+# API keys
+.env
