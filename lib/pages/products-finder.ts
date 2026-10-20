@@ -17,7 +17,7 @@
  * opens, and each product keeps its own rate link.
  */
 import { BRAND_LOGOS } from "../methods/brand-logos";
-import { imageSrc, mediaOf, videoSrc } from "../products/media";
+import { imageSrc, mediaOf, pdfSrc, videoSrc } from "../products/media";
 import { FAMILIES, familyOf, type Product } from "../products";
 import { brandMark, type BrandInfo, type JobView } from "../products/brands";
 import { fullName, shortName } from "../products/compare";
@@ -33,25 +33,157 @@ const tick = `<svg class="pf-tick" viewBox="0 0 16 16" aria-hidden="true"><path 
 const searchText = (p: Product) => [p.brand, p.name, p.category, p.purpose, p.areas, ...p.packs.map((k) => `${k.size} ${k.listed}`)].join(" ").toLowerCase().replace(/\s+/g, " ");
 
 
+import { getProductFeatures, getKeyBenefits, getApplications, getTypicalProperties } from "../products/popup-data";
+
 const docIco = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>`;
 const playIco = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.8v6.4l5.2-3.2z" fill="currentColor"/></svg>`;
 
-/** the viewer a card's "Product description" and "Watch video" open; the page's script fills it from the card */
-const VIEWER_HTML = `<dialog class="pv" data-pv aria-labelledby="pv-name">
-  <div class="pv-head">
-    <span class="pv-pic" data-pv-pic aria-hidden="true"></span>
-    <span class="pv-tx"><span class="pv-brand" data-pv-brand></span><span class="pv-name" id="pv-name" data-pv-name></span></span>
-    <button type="button" class="pv-x" data-pv-close aria-label="Close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+/** Upgraded product details popup modal */
+const VIEWER_HTML = `<dialog class="pv" data-pv data-lenis-prevent aria-labelledby="pv-title">
+  <button type="button" class="pv-x" data-pv-close aria-label="Close">
+    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+
+  <div class="pv-hero">
+    <!-- Left Column: Gallery -->
+    <div class="pv-gallery">
+      <div class="pv-stage-wrap">
+        <button type="button" class="pv-nav-arrow pv-nav-prev" data-pv-prev aria-label="Previous view">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="pv-nav-arrow pv-nav-next" data-pv-next aria-label="Next view">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="pv-zoom-btn" data-pv-zoom aria-label="Toggle zoom">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <div class="pv-stage" data-pv-stage>
+          <img class="pv-main-img" data-pv-main-img src="" alt="" />
+        </div>
+      </div>
+      <div class="pv-thumbs" role="group" aria-label="Product views">
+        <button type="button" class="pv-thumb is-active" data-pv-view="0" aria-label="Front View">
+          <span class="pv-thumb-box"><img data-pv-thumb-img="0" src="" alt="" /></span>
+          <span class="pv-thumb-label">Front View</span>
+        </button>
+        <button type="button" class="pv-thumb" data-pv-view="1" aria-label="Back View">
+          <span class="pv-thumb-box"><img data-pv-thumb-img="1" src="" alt="" /></span>
+          <span class="pv-thumb-label">Back View</span>
+        </button>
+        <button type="button" class="pv-thumb" data-pv-view="2" aria-label="Left View">
+          <span class="pv-thumb-box"><img data-pv-thumb-img="2" src="" alt="" /></span>
+          <span class="pv-thumb-label">Left View</span>
+        </button>
+        <button type="button" class="pv-thumb" data-pv-view="3" aria-label="Right View">
+          <span class="pv-thumb-box"><img data-pv-thumb-img="3" src="" alt="" /></span>
+          <span class="pv-thumb-label">Right View</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right Column: Product Identity & Actions -->
+    <div class="pv-info">
+      <div class="pv-badges">
+        <span class="pv-badge-cat" data-pv-cat>Waterproofing</span>
+        <span class="pv-badge-brand" data-pv-brand>RPC BuildTech</span>
+      </div>
+      <h2 class="pv-title" id="pv-title" data-pv-title></h2>
+      <p class="pv-subtitle" data-pv-subtitle></p>
+      <p class="pv-summary" data-pv-summary></p>
+
+      <div class="pv-features" data-pv-features></div>
+
+      <div class="pv-purchase-row">
+        <div class="pv-packs-block">
+          <span class="pv-packs-title">Available Pack Sizes</span>
+          <div class="pv-pack-chips" data-pv-pack-chips></div>
+        </div>
+        <button type="button" class="pv-enquire-btn" data-pv-enquire>
+          <span>Enquire About This Product</span>
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </button>
+      </div>
+    </div>
   </div>
-  <div class="pv-tabs" role="tablist">
-    <button type="button" role="tab" class="pv-tab" data-pv-tab="desc" aria-selected="true">Description</button>
-    <button type="button" role="tab" class="pv-tab" data-pv-tab="video" aria-selected="false">Video</button>
+
+  <!-- Navigation inside popup: 4 Tabs -->
+  <div class="pv-tabs-bar" role="tablist">
+    <button type="button" role="tab" class="pv-tab is-active" data-pv-tab="overview" aria-selected="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Overview</span>
+    </button>
+    <button type="button" role="tab" class="pv-tab" data-pv-tab="video" aria-selected="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+      <span>AI Video</span>
+    </button>
+    <button type="button" role="tab" class="pv-tab" data-pv-tab="tds" aria-selected="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Technical Data Sheet</span>
+    </button>
   </div>
-  <div class="pv-body">
-    <div class="pv-pane" data-pv-pane="desc" role="tabpanel"><p class="pv-desc" data-pv-desc></p></div>
+
+  <!-- Lower Section Panes -->
+  <div class="pv-content">
+    <!-- Pane 1: Overview -->
+    <div class="pv-pane" data-pv-pane="overview" role="tabpanel">
+      <div class="pv-overview-grid">
+        <div class="pv-col-desc">
+          <h3 class="pv-section-title">Product Description</h3>
+          <p class="pv-full-desc" data-pv-full-desc></p>
+          <h3 class="pv-section-title">Key Benefits</h3>
+          <ul class="pv-benefits-list" data-pv-benefits></ul>
+        </div>
+        <div class="pv-col-apps">
+          <h3 class="pv-section-title">Applications</h3>
+          <div class="pv-apps-grid" data-pv-apps></div>
+        </div>
+        <div class="pv-col-props">
+          <div class="pv-specs-card">
+            <h3 class="pv-specs-title">Typical Properties</h3>
+            <table class="pv-specs-table" data-pv-specs></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane 3: AI Video -->
     <div class="pv-pane" data-pv-pane="video" role="tabpanel" hidden>
-      <div class="pv-video" data-pv-video></div>
-      <p class="pv-none" data-pv-none hidden>${playIco}<span>The video for this product is on its way.</span></p>
+      <div class="pv-video-container" data-pv-video-box>
+        <div class="pv-video-player" data-pv-video-player></div>
+        <div class="pv-video-empty" data-pv-video-empty hidden>
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+          <p><strong>AI Product Video In Production</strong><br>Official application footage and AI-assisted technical walkthrough for this product is currently being mastered.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane 4: Technical Data Sheet -->
+    <div class="pv-pane" data-pv-pane="tds" role="tabpanel" hidden>
+      <div class="pv-tds-container" data-pv-tds-box>
+        <div class="pv-tds-topbar">
+          <div class="pv-tds-doc-meta">
+            <span class="pv-tds-tag">OFFICIAL TECHNICAL DATA SHEET (PDF)</span>
+            <h4 class="pv-tds-name" data-pv-tds-name>Document</h4>
+          </div>
+          <div class="pv-tds-actions">
+            <a class="pv-tds-action-btn pv-tds-open-btn" data-pv-tds-open href="" target="_blank" rel="noopener noreferrer">
+              <span>Open TDS</span>
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13L13 3M6 3h7v7"/></svg>
+            </a>
+            <a class="pv-tds-action-btn pv-tds-dl-btn" data-pv-tds-download href="" download>
+              <span>Download TDS</span>
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4M2 14h12"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="pv-tds-embed-wrap">
+          <iframe class="pv-tds-frame" data-pv-tds-frame src="" title="Technical Data Sheet"></iframe>
+        </div>
+      </div>
+      <div class="pv-tds-empty" data-pv-tds-empty hidden>
+        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+        <p><strong>Technical Data Sheet not available</strong><br>An official TDS for this item has not been published yet. Please contact RPC Technical Advisory for customized technical specifications.</p>
+      </div>
     </div>
   </div>
 </dialog>`;
@@ -69,7 +201,8 @@ function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
   const cat = p.category === "Construction chemical" ? "Ask us what this one is best used for" : p.category;
   const m = mediaOf(p.slug);
   const img = imageSrc(m);
-  const media = `<div class="pf-media" data-view="${p.slug}" data-view-desc="${esc(m.description ?? p.purpose)}"${img ? ` data-view-img="${esc(img)}"` : ""}${videoSrc(m) ? ` data-view-video="${esc(videoSrc(m))}"` : ""}>
+  const pdf = pdfSrc(m);
+  const media = `<div class="pf-media" data-view="${p.slug}" data-view-desc="${esc(m.description ?? p.purpose)}"${img ? ` data-view-img="${esc(img)}"` : ""}${videoSrc(m) ? ` data-view-video="${esc(videoSrc(m))}"` : ""}${pdf ? ` data-view-pdf="${esc(pdf)}"` : ""}>
           <button type="button" class="pf-vlink" data-view-go="desc">${docIco}<span>Description</span></button>
           <button type="button" class="pf-vlink" data-view-go="video">${playIco}<span>Video</span></button>
         </div>`;
@@ -77,7 +210,7 @@ function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
   <details class="pf-d">
     <summary class="pf-sum">
       <span class="pf-fam">${esc(f.label)}</span>
-      <span class="pf-ico${img ? " pf-ico--photo" : ""}" data-zoom title="View larger picture">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : packArt(p.slug, p.packs[0]?.shape ?? "bag", f.tint, p.packs[0]?.size ?? "")}</span>
+      <span class="pf-ico${img ? " pf-ico--photo" : ""}">${img ? `<img src="${esc(img)}" alt="" loading="lazy" decoding="async">` : packArt(p.slug, p.packs[0]?.shape ?? "bag", f.tint, p.packs[0]?.size ?? "")}</span>
       <span class="pf-tx"><span class="pf-name">${esc(shortName(p))}</span><span class="pf-cat">${esc(cat)}</span><span class="pf-use">${esc(p.purpose)}</span></span>
       <span class="pf-packs">${p.packs.map((k) => `<span>${esc(k.size)}</span>`).join("")}</span>
       <span class="pf-chev">${chev}</span>
@@ -86,6 +219,7 @@ function row(p: Product, c: ContactInfo, js: readonly JobView[]) {
       ${media}
     </div>
   </details>
+  <button type="button" class="pf-view-btn" data-view-go="overview" data-slug="${p.slug}" aria-label="View details for ${esc(fullName(p))}"><span>View Details</span><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
   <button type="button" class="pf-add" data-add="${p.slug}" data-label="${esc(fullName(p))}" data-packs="${esc(p.packs.map((k) => k.size).join("|"))}" aria-pressed="false" aria-label="Add ${esc(fullName(p))} to your enquiry" hidden>${plus}${tick}<span>Add</span></button>
 </li>`;
 }
@@ -139,6 +273,30 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
           <button type="button" data-view-as="table" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12M2 6.5h12M2 9.5h12M2 12.5h12" stroke-linecap="round"/></svg><span>Table</span></button>
         </div></div>
         <div class="pf-lists" data-view="grid">${lists}</div>
+        <script type="application/json" id="rpc-products-catalog">${JSON.stringify(bs.flatMap((b) => b.products).map((p) => {
+          const m = mediaOf(p.slug);
+          return {
+            slug: p.slug,
+            name: shortName(p),
+            fullName: fullName(p),
+            brand: p.brand,
+            family: p.family,
+            category: p.category,
+            purpose: p.purpose,
+            areas: p.areas,
+            customers: p.customers,
+            packs: p.packs,
+            image: imageSrc(m),
+            video: videoSrc(m),
+            pdf: pdfSrc(m),
+            pdfName: m.pdf ?? "",
+            description: m.description ?? p.purpose,
+            features: getProductFeatures(p),
+            benefits: getKeyBenefits(p),
+            applications: getApplications(p),
+            properties: getTypicalProperties(p),
+          };
+        })).replace(/</g, "\\u003c")}</script>
         ${VIEWER_HTML}
         ${ZOOM_HTML}
         <p class="pf-empty" data-empty hidden>Nothing on our list matches that. Try a shorter word, or <button type="button" data-clear>show every product</button>.</p>
@@ -239,7 +397,7 @@ export const FINDER_CSS = `
 .pf-sum::marker{content:""}
 .pf-sum:hover{background:rgba(18,34,59,.03)}
 .pf-sum:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.pf-ico{display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:4px;background:rgba(18,34,59,.05);color:var(--mute)}
+.pf-ico{display:flex;align-items:center;justify-content:center;width:2.6rem;height:2.6rem;border-radius:4px;background:rgba(18,34,59,.05);color:var(--mute);cursor:default}
 .pf-ico svg{width:1.45rem;height:1.45rem}
 .pf-tx{display:flex;flex-direction:column;min-width:0}
 .pf-name{font-size:var(--fs-body);font-weight:600;line-height:1.35}
@@ -453,7 +611,7 @@ export const FINDER_CSS = `
 .pf-ico svg.pa{width:100%;height:100%;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .pf-row:hover .pf-ico svg.pa{transform:translateY(-2px) scale(1.04)}
 .pf-ico--photo{background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
-.pf-ico img{display:block;width:100%;height:100%;padding:.3rem;box-sizing:border-box;object-fit:contain}
+.pf-ico img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;padding:.3rem;box-sizing:border-box;object-fit:contain}
 /* in an opened card: the description and the video, as two links */
 .pf-media{display:flex;gap:.5rem;padding:.3rem 0 0}
 .pf-media .pf-vlink{flex:1 1 0;justify-content:center;min-width:0}
@@ -462,36 +620,150 @@ export const FINDER_CSS = `
 .pf-vlink:hover{box-shadow:inset 0 0 0 1.5px var(--tint)}
 .pf-vlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* the viewer */
-.pv{width:min(44rem,calc(100vw - 2rem));max-width:none;max-height:calc(100svh - 2rem);margin:auto;padding:0;border:0;border-radius:16px;background:#fbf8f2;color:var(--ink);box-shadow:0 40px 80px -30px rgba(4,12,30,.6);overflow:hidden}
-.pv[open]{display:flex;flex-direction:column;animation:pv-in .25s cubic-bezier(.2,.8,.2,1)}
-.pv::backdrop{background:rgba(9,20,38,.55)}
-@keyframes pv-in{from{opacity:0;transform:translateY(12px)}}
-.pv-head{display:flex;align-items:center;gap:.9rem;padding:1rem 1rem .9rem 1.2rem;border-top:5px solid var(--tint,#2756a0)}
-.pv-pic{display:grid;place-items:center;flex:none;width:3.4rem;height:3.4rem;border-radius:10px;background:color-mix(in srgb,var(--tint,#2756a0) 12%,#fff);color:var(--tint,#2756a0);overflow:hidden}
-.pv-pic svg{width:1.7rem;height:1.7rem}
-.pv-pic svg.pa{width:100%;height:100%}
-.pv-pic img{width:100%;height:100%;object-fit:contain;background:#fff}
-.pv-tx{display:flex;flex-direction:column;min-width:0;flex:1}
-.pv-brand{font-size:var(--fs-body);color:var(--mute)}
-.pv-name{font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2}
-.pv-x{display:grid;place-items:center;flex:none;width:2.6rem;height:2.6rem;padding:0;border:0;border-radius:50%;background:rgba(18,34,59,.06);color:var(--ink);cursor:pointer}
-.pv-x:hover{background:rgba(18,34,59,.12)}
-.pv-x svg{width:1rem;height:1rem}
-.pv-tabs{display:flex;gap:.3rem;padding:0 1.2rem;border-bottom:1px solid var(--line)}
-.pv-tab{position:relative;height:2.8rem;padding:0 .8rem;border:0;background:none;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--mute);cursor:pointer}
-.pv-tab[aria-selected="true"]{color:var(--ink)}
-.pv-tab[aria-selected="true"]::after{content:"";position:absolute;left:.6rem;right:.6rem;bottom:-1px;height:2px;border-radius:2px;background:var(--tint,#2756a0)}
-.pv-tab:focus-visible,.pv-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.pv-body{min-height:11rem;padding:1.2rem 1.2rem 1.4rem;overflow-y:auto}
+/* the upgraded product details popup */
+html.pv-open,body.pv-open{overflow:hidden !important}
+.pv{position:fixed;inset:0;margin:auto;width:min(76rem,calc(100vw - 2.5rem));max-width:none;height:auto;max-height:calc(100svh - 2.5rem);padding:0;border:1px solid rgba(18,34,59,.14);border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 30px 70px -20px rgba(10,25,50,.35);overflow-y:auto;overflow-x:hidden;box-sizing:border-box;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.pv::-webkit-scrollbar{width:8px}
+.pv::-webkit-scrollbar-track{background:#f8fafc;border-radius:8px}
+.pv::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+.pv::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+.pv[open]{display:block;animation:pv-in .25s cubic-bezier(.2,.8,.2,1)}
+.pv::backdrop{background:rgba(9,20,38,.62);backdrop-filter:blur(3px)}
+@keyframes pv-in{from{opacity:0;transform:translateY(14px) scale(.99)}}
+.pv-x{position:sticky;top:1rem;right:1rem;float:right;margin-top:1rem;margin-right:1rem;margin-bottom:-2.4rem;z-index:30;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border:0;border-radius:50%;background:#f1f5f9;color:#475569;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:background-color .15s,color .15s,transform .15s}
+.pv-x:hover{background:#e2e8f0;color:#0e223d;transform:scale(1.06)}
+.pv-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* hero section */
+.pv-hero{display:grid;grid-template-columns:46% minmax(0,54%);gap:1.8rem;padding:1.6rem 1.8rem 1.2rem;align-items:start;background:#fff;clear:both}
+.pv-gallery{display:flex;flex-direction:column;gap:.75rem}
+.pv-stage-wrap{position:relative;width:100%;height:320px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pv-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box}
+.pv-main-img{max-width:92%;max-height:92%;object-fit:contain;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.pv-nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border-radius:50%;background:#fff;border:1px solid #e2e8f0;box-shadow:0 4px 12px rgba(14,34,61,.12);color:#334155;cursor:pointer;transition:all .15s}
+.pv-nav-arrow:hover{background:#f8fafc;color:#0e223d;box-shadow:0 6px 16px rgba(14,34,61,.18)}
+.pv-nav-arrow:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pv-nav-prev{left:.75rem}
+.pv-nav-next{right:.75rem}
+.pv-zoom-btn{position:absolute;bottom:.75rem;right:.75rem;z-index:5;display:grid;place-items:center;width:2.2rem;height:2.2rem;padding:0;border-radius:8px;background:rgba(255,255,255,.92);border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(14,34,61,.08);color:#475569;cursor:pointer;transition:all .15s}
+.pv-zoom-btn:hover{color:#0e223d;background:#fff}
+.pv-zoom-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.pv-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
+.pv-thumb{display:flex;flex-direction:column;align-items:center;gap:.35rem;border:0;background:none;padding:0;cursor:pointer}
+.pv-thumb-box{width:100%;height:68px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;padding:4px;box-sizing:border-box;transition:border-color .2s,box-shadow .2s}
+.pv-thumb-box img{max-width:100%;max-height:100%;object-fit:contain}
+.pv-thumb-label{font-size:.72rem;font-weight:600;color:#64748b;transition:color .2s}
+.pv-thumb.is-active .pv-thumb-box{border-color:#2756a0;box-shadow:0 0 0 1px #2756a0}
+.pv-thumb.is-active .pv-thumb-label{color:#2756a0;font-weight:700}
+.pv-thumb:hover .pv-thumb-box{border-color:#94a3b8}
+
+/* right column */
+.pv-info{display:flex;flex-direction:column;min-width:0;padding-right:2rem}
+.pv-badges{display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem}
+.pv-badge-cat{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:6px;background:#dbeafe;color:#1e40af;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.pv-badge-brand{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:6px;background:#f1f5f9;color:#475569;font-size:.75rem;font-weight:600}
+.pv-title{margin:0;font-size:1.75rem;font-weight:800;color:#0e223d;line-height:1.25;letter-spacing:-.01em}
+.pv-subtitle{margin:.2rem 0 .55rem;font-size:.95rem;font-weight:500;color:#64748b;line-height:1.4}
+.pv-summary{margin:0 0 .9rem;font-size:.88rem;color:#334155;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+.pv-features{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;margin-bottom:1.1rem}
+.pv-feat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.3rem;padding:.55rem .3rem;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0}
+.pv-feat-ico{display:flex;align-items:center;justify-content:center}
+.pv-feat-ico svg{width:22px;height:22px;color:#2756a0}
+.pv-feat-title{font-size:.72rem;font-weight:600;color:#334155;line-height:1.25}
+
+.pv-purchase-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem;margin-top:auto}
+.pv-packs-block{display:flex;flex-direction:column;gap:.35rem}
+.pv-packs-title{font-size:.82rem;font-weight:700;color:#0e223d}
+.pv-pack-chips{display:flex;gap:.4rem;flex-wrap:wrap}
+.pv-pack-chip{height:2.1rem;padding:0 .75rem;border-radius:6px;border:1.5px solid #cbd5e1;background:#fff;color:#334155;font-size:.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;transition:all .15s}
+.pv-pack-chip.is-active{background:#0e223d;color:#fff;border-color:#0e223d}
+.pv-pack-chip:hover:not(.is-active){border-color:#94a3b8;background:#f8fafc}
+.pv-enquire-btn{display:inline-flex;align-items:center;gap:.5rem;height:2.55rem;padding:0 1.35rem;border-radius:8px;background:var(--color-rpc,#2756a0);color:#fff;border:0;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;box-shadow:0 2px 6px rgba(39,86,160,.22)}
+.pv-enquire-btn:hover{background:#1e40af;transform:translateY(-1px);box-shadow:0 4px 14px rgba(39,86,160,.35)}
+.pv-enquire-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* tabs bar sticky on scroll */
+.pv-tabs-bar{position:sticky;top:0;z-index:20;display:flex;gap:2rem;padding:0 1.8rem;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;background:rgba(255,255,255,.98);backdrop-filter:blur(8px)}
+.pv-tab{position:relative;display:inline-flex;align-items:center;gap:.5rem;height:3.2rem;border:0;background:none;font:inherit;font-size:.92rem;font-weight:600;color:#64748b;cursor:pointer;transition:color .15s}
+.pv-tab svg{width:18px;height:18px;flex:none}
+.pv-tab.is-active{color:#2756a0}
+.pv-tab.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:#2756a0}
+.pv-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* content area */
+.pv-content{padding:1.6rem 1.8rem 2.2rem;overflow:visible;box-sizing:border-box}
 .pv-pane[hidden]{display:none}
-.pv-desc{margin:0;font-size:var(--fs-body);line-height:1.65;white-space:pre-line}
-.pv-video video,.pv-video iframe{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:10px;background:#000}
-.pv-none{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin:0;padding:2.4rem 1rem;border-radius:10px;background:color-mix(in srgb,var(--tint,#2756a0) 7%,#fff);font-size:var(--fs-body);color:var(--mute);text-align:center}
-.pv-none[hidden]{display:none}
-.pv-none svg{width:2.2rem;height:2.2rem;color:var(--tint,#2756a0)}
+
+/* overview pane */
+.pv-overview-grid{display:grid;grid-template-columns:1.25fr 1.15fr 1fr;gap:1.8rem;align-items:start}
+.pv-section-title{font-size:1.02rem;font-weight:700;color:#0e223d;margin:0 0 .6rem}
+.pv-full-desc{font-size:.85rem;color:#475569;line-height:1.6;margin:0 0 1.1rem}
+.pv-benefits-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem}
+.pv-benefit-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.82rem;color:#334155;line-height:1.4}
+.pv-benefit-check{flex:none;width:17px;height:17px;border-radius:4px;background:#2756a0;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.pv-benefit-check svg{width:11px;height:11px}
+
+.pv-apps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
+.pv-app-card{display:flex;flex-direction:column;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc}
+.pv-app-img{width:100%;height:82px;object-fit:cover;display:block}
+.pv-app-label{padding:.4rem .5rem;font-size:.78rem;font-weight:600;color:#334155;text-align:center}
+
+.pv-specs-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.1rem}
+.pv-specs-title{font-size:.95rem;font-weight:700;color:#0e223d;margin:0 0 .65rem}
+.pv-specs-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.pv-specs-table tr{border-top:1px solid #e2e8f0}
+.pv-specs-table tr:first-child{border-top:0}
+.pv-specs-table th{text-align:left;padding:.45rem .4rem .45rem 0;color:#64748b;font-weight:500}
+.pv-specs-table td{text-align:left;padding:.45rem 0 .45rem .4rem;color:#0e223d;font-weight:600}
+
+/* 4-side images pane */
+.pv-gallery-view-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem;padding:1rem 0}
+.pv-gallery-stage{width:100%;max-width:520px;height:340px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;padding:1.5rem;box-sizing:border-box}
+.pv-gallery-main-img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .4s ease}
+.pv-gallery-angles-bar{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+.pv-angle-btn{height:2.3rem;padding:0 1rem;border-radius:8px;border:1.5px solid #cbd5e1;background:#fff;color:#334155;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .15s}
+.pv-angle-btn.is-active{background:#2756a0;color:#fff;border-color:#2756a0}
+.pv-angle-btn:hover:not(.is-active){background:#f8fafc;border-color:#94a3b8}
+
+/* video pane */
+.pv-video-container{display:flex;flex-direction:column;align-items:center;width:100%}
+.pv-video-player{width:100%;max-width:720px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.pv-video-player video,.pv-video-player iframe{width:100%;height:100%;border:0;display:block}
+.pv-video-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:3rem 1.5rem;border-radius:12px;background:#f8fafc;border:1px dashed #cbd5e1;text-align:center;color:#64748b;width:100%;max-width:600px}
+.pv-video-empty svg{color:#2756a0}
+
+/* tds pane */
+.pv-tds-container{display:flex;flex-direction:column;gap:1rem;width:100%}
+.pv-tds-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1.2rem;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0}
+.pv-tds-tag{font-size:.7rem;font-weight:700;color:#2756a0;letter-spacing:.05em}
+.pv-tds-name{margin:.15rem 0 0;font-size:.96rem;font-weight:700;color:#0e223d}
+.pv-tds-actions{display:flex;gap:.6rem}
+.pv-tds-action-btn{display:inline-flex;align-items:center;gap:.45rem;height:2.3rem;padding:0 1rem;border-radius:8px;font-size:.84rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s}
+.pv-tds-open-btn{background:#fff;border:1.5px solid #2756a0;color:#2756a0}
+.pv-tds-open-btn:hover{background:#2756a0;color:#fff}
+.pv-tds-dl-btn{background:#2756a0;border:1.5px solid #2756a0;color:#fff}
+.pv-tds-dl-btn:hover{background:#1e40af;border-color:#1e40af}
+.pv-tds-embed-wrap{width:100%;height:500px;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;background:#fff}
+.pv-tds-frame{width:100%;height:100%;border:0}
+.pv-tds-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:3rem 1.5rem;border-radius:12px;background:#f8fafc;border:1px dashed #cbd5e1;text-align:center;color:#64748b}
+
+@media (max-width:960px){
+  .pv-hero{grid-template-columns:1fr;gap:1.2rem}
+  .pv-overview-grid{grid-template-columns:1fr;gap:1.4rem}
+  .pv-stage-wrap{height:280px}
+}
 @media (max-width:599px){
-  .pv{width:100%;max-height:88svh;margin:auto auto 0;border-radius:16px 16px 0 0}
+  .pv{width:100%;max-height:92svh;margin:auto auto 0;border-radius:16px 16px 0 0}
+  .pv-hero{padding:1.2rem 1rem}
+  .pv-stage-wrap{height:220px}
+  .pv-features{grid-template-columns:repeat(2,1fr)}
+  .pv-purchase-row{flex-direction:column;align-items:stretch}
+  .pv-enquire-btn{justify-content:center}
+  .pv-tabs-bar{padding:0 1rem;gap:1rem;overflow-x:auto}
+  .pv-tab{height:2.8rem;font-size:.85rem;white-space:nowrap}
+  .pv-content{padding:1.2rem 1rem 1.4rem}
 }
 @media (prefers-reduced-motion:reduce){.pv[open]{animation:none}}
 
@@ -522,9 +794,8 @@ export const FINDER_CSS = `
 /* polish: a card lifts a little on hover; an added card is outlined and its picture marked; the picture sits in a calm, even box */
 .pf-row{transition:box-shadow .25s,transform .25s}
 @media (hover:hover){.pf-row:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px rgba(18,34,59,.28),0 18px 34px -24px rgba(18,34,59,.55)}}
-.pf-row:has(.pf-add.is-on){box-shadow:inset 0 0 0 1.5px var(--navy)}
-.pf-ico{position:relative;border-radius:14px}
-.pf-ico--photo img{padding:0;object-fit:cover;border-radius:13px}
+.pf-ico{position:relative;display:flex;align-items:center;justify-content:center;border-radius:14px;overflow:hidden;cursor:default}
+.pf-ico--photo img{width:100%;height:100%;max-width:100%;max-height:100%;padding:.4rem;box-sizing:border-box;object-fit:contain;border-radius:10px}
 .pf-row:has(.pf-add.is-on) .pf-ico::after{content:"";position:absolute;top:-.35rem;left:-.35rem;width:1.35rem;height:1.35rem;border-radius:50%;background:var(--navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4 6.6 11.4 12.6 4.8' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/70%;box-shadow:0 0 0 2px #fbf8f2}
 .pf-add.is-on:hover{background:var(--accent)}
 .pf-more{height:2.8rem;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(18,34,59,.16)}
@@ -533,21 +804,21 @@ export const FINDER_CSS = `
 @media (prefers-reduced-motion:reduce){.pf-row,.pf-row:hover{transition:none;transform:none}}
 
 /* a card's picture opens larger */
-.pf-ico[data-zoom]{cursor:zoom-in}
-.pz{width:min(34rem,calc(100vw - 2rem));max-width:none;max-height:calc(100svh - 2rem);margin:auto;padding:0;border:0;border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 40px 80px -30px rgba(4,12,30,.6);overflow:hidden}
-.pz[open]{animation:pz-in .25s cubic-bezier(.2,.8,.2,1)}
-.pz::backdrop{background:rgba(9,20,38,.6)}
+.pf-ico{cursor:default}
+.pz{display:none;width:min(32rem,calc(100vw - 2rem));height:min(37rem,calc(100svh - 3rem));max-width:none;max-height:none;margin:auto;padding:0;border:0;border-radius:20px;background:#fff;color:var(--ink);box-shadow:0 40px 80px -30px rgba(4,12,30,.6);overflow:hidden;box-sizing:border-box}
+.pz[open]{display:flex;flex-direction:column;animation:pz-in .25s cubic-bezier(.2,.8,.2,1)}
+.pz::backdrop{background:rgba(9,20,38,.6);backdrop-filter:blur(3px)}
 @keyframes pz-in{from{opacity:0;transform:scale(.96)}}
-.pz-x{position:absolute;top:.8rem;right:.8rem;z-index:1;display:grid;place-items:center;width:2.6rem;height:2.6rem;padding:0;border:0;border-radius:50%;background:rgba(18,34,59,.07);color:var(--ink);cursor:pointer}
+.pz-x{position:absolute;top:.9rem;right:.9rem;z-index:2;display:grid;place-items:center;width:2.5rem;height:2.5rem;padding:0;border:0;border-radius:50%;background:rgba(18,34,59,.07);color:var(--ink);cursor:pointer;transition:background-color .15s}
 .pz-x:hover{background:rgba(18,34,59,.14)}
 .pz-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .pz-x svg{width:1rem;height:1rem}
-.pz-pic{display:grid;place-items:center;aspect-ratio:1;max-height:calc(100svh - 9rem);background:radial-gradient(circle at 50% 40%,#fff 0,color-mix(in srgb,var(--tint,#2756a0) 8%,#fff) 75%)}
+.pz-pic{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:2.6rem 2.2rem 1.4rem;box-sizing:border-box;background:radial-gradient(circle at 50% 45%,#fff 0,color-mix(in srgb,var(--tint,#2756a0) 8%,#fff) 75%)}
 .pz-pic img{display:block;width:100%;height:100%;object-fit:contain}
-.pz-pic svg{width:78%;height:78%}
-.pz-cap{display:flex;flex-direction:column;gap:.1rem;margin:0;padding:1rem 1.2rem 1.2rem;border-top:1px solid var(--line)}
-.pz-name{font-size:var(--fs-body);font-weight:700}
-.pz-sub{font-size:var(--fs-body);color:var(--mute)}
+.pz-pic svg{width:70%;height:70%;max-width:100%;max-height:100%}
+.pz-cap{flex:none;min-height:4.8rem;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:.25rem;margin:0;padding:1rem 1.4rem 1.1rem;border-top:1px solid var(--line);background:#fff}
+.pz-name{font-size:1.02rem;font-weight:700;color:var(--ink);line-height:1.25}
+.pz-sub{font-size:.88rem;color:var(--mute);line-height:1.35}
 @media (prefers-reduced-motion:reduce){.pz[open]{animation:none}}
 
 /* catalogue finish: every brand heading reads logo, name, count; the card's pack drawing drops its tiny size label (the size is in the chip below, and the larger picture shows it) */
@@ -635,9 +906,9 @@ export const FINDER_CSS = `
 @media (hover:hover){.pf-lists:not([data-view="table"]) .pf-row:hover{box-shadow:0 0 0 1px rgba(18,34,59,.16),0 20px 36px -26px rgba(18,34,59,.55)}}
 .pf-lists:not([data-view="table"]) .pf-row:has(.pf-add.is-on){box-shadow:0 0 0 1.5px var(--navy),0 12px 28px -24px rgba(18,34,59,.6)}
 .pf-lists:not([data-view="table"]) .pf-fam{color:var(--mute)}
-.pf-lists:not([data-view="table"]) .pf-fam::before{content:"";flex:none;width:.55rem;height:.55rem;border-radius:50%;background:var(--tint);box-shadow:0 0 0 3px color-mix(in srgb,var(--tint) 16%,transparent)}
+.pf-lists:not([data-view="table"]) .pf-fam::before{display:none}
 .pf-lists:not([data-view="table"]) .pf-ico{background:color-mix(in srgb,var(--tint) 7%,#f6f3ee);box-shadow:none}
-.pf-lists:not([data-view="table"]) .pf-ico--photo{background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.07)}
+.pf-lists:not([data-view="table"]) .pf-ico--photo{background:color-mix(in srgb,var(--tint) 7%,#f6f3ee);box-shadow:none}
 .pf-lists:not([data-view="table"]) .pf-packs{border-top-color:rgba(18,34,59,.07)}
 .pf-packs span{background:#f1ede5;color:var(--ink)}
 .pf-chev{border-radius:50%;transition:background-color .2s,transform .25s}
@@ -646,34 +917,46 @@ export const FINDER_CSS = `
 .pf-add:hover{background:var(--navy);box-shadow:none;color:#fff}
 .pf-add.is-on{background:var(--navy);color:#fff}
 .pf-add:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (max-width:599px){.pf-lists:not([data-view="table"]) .pf-fam{display:block}.pf-lists:not([data-view="table"]) .pf-fam::before{display:inline-block;margin:0 .5rem 0 .15rem;vertical-align:.1em}}
+@media (max-width:599px){.pf-lists:not([data-view="table"]) .pf-fam{display:block}.pf-lists:not([data-view="table"]) .pf-fam::before{display:none}}
+
+/* button: View Details */
+.pf-view-btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;height:2.6rem;padding:0 1rem;border-radius:10px;background:#0e223d;color:#fff;border:0;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:background-color .15s,transform .15s,box-shadow .15s;box-sizing:border-box;text-decoration:none}
+.pf-view-btn:hover{background:#13316c;transform:translateY(-1px);box-shadow:0 4px 12px rgba(14,34,61,.2)}
+.pf-view-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pf-view-btn svg{transition:transform .15s ease}
+.pf-view-btn:hover svg{transform:translateX(3px)}
 
 /* shop cards (cards view, every width): the picture large on top, the kind, the name in bold, the line it belongs to and its packs;
-   along the foot a full-width Add and, beside it, the arrow that opens the description and video */
-.pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:23rem;grid-column:auto}
-.pf-lists[data-view="grid"] .pf-sum{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);grid-template-areas:"ico" "fam" "tx" "packs";gap:.4rem;padding:.75rem .75rem 4.1rem;align-items:start}
-.pf-lists[data-view="grid"] .pf-ico{width:100%;height:10rem;border-radius:12px;margin-bottom:.35rem}
+   along the foot a full-width View Details button */
+.pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:23.2rem;grid-column:auto;cursor:pointer}
+.pf-lists[data-view="grid"] .pf-sum{grid-template-columns:minmax(0,1fr);grid-template-rows:10rem auto auto minmax(0,1fr);grid-template-areas:"ico" "fam" "tx" "packs";gap:.4rem;padding:.75rem .75rem 4.1rem;align-items:start}
+.pf-lists[data-view="grid"] .pf-ico{display:flex;align-items:center;justify-content:center;width:100%;height:10rem;max-height:10rem;border-radius:12px;margin-bottom:.35rem;overflow:hidden;cursor:pointer}
 .pf-lists[data-view="grid"] .pf-ico svg.pa{width:100%;height:100%}
+.pf-lists[data-view="grid"] .pf-ico img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;padding:.4rem;box-sizing:border-box}
 .pf-lists[data-view="grid"] .pf-fam{display:flex;padding:0 .2rem}
 .pf-lists[data-view="grid"] .pf-tx{padding:0 .2rem}
-.pf-lists[data-view="grid"] .pf-name{-webkit-line-clamp:2}
+.pf-lists[data-view="grid"] .pf-name{-webkit-line-clamp:2;cursor:pointer}
 .pf-lists[data-view="grid"] .pf-cat{-webkit-line-clamp:1;margin-top:.1rem}
 .pf-lists[data-view="grid"] .pf-packs{align-self:end;margin:0;padding:0 .2rem;border-top:0;flex-wrap:nowrap;overflow:hidden}
-.pf-lists[data-view="grid"] .pf-add{top:calc(var(--h) - 3.35rem);bottom:auto;left:.75rem;right:4rem;width:auto;height:2.6rem;justify-content:center;border-radius:10px;background:var(--navy);color:#fff}
-.pf-lists[data-view="grid"] .pf-add:hover{background:#13316c}
-.pf-lists[data-view="grid"] .pf-add.is-on{background:#1f6b49;color:#fff}
-.pf-lists[data-view="grid"] .pf-chev{top:calc(var(--h) - 3.35rem);right:.75rem;width:2.6rem;height:2.6rem;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);color:var(--ink)}
-.pf-lists[data-view="grid"] .pf-chev svg{width:1rem;height:1rem}
-.pf-lists[data-view="grid"] .pf-sum:hover .pf-chev{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
-.pf-lists[data-view="grid"] .pf-d[open] .pf-chev{background:var(--navy);color:#fff;box-shadow:none}
-.pf-lists[data-view="grid"] .pf-row:has(.pf-add.is-on) .pf-ico::after{left:.5rem;top:.5rem}
-.pf-lists[data-view="grid"] .pf-open{padding:.2rem .75rem .9rem}
+.pf-lists[data-view="grid"] .pf-view-btn{position:absolute;top:calc(var(--h) - 3.35rem);left:.75rem;right:.75rem;width:auto;height:2.6rem;z-index:2}
+.pf-lists[data-view="grid"] .pf-add{display:none}
+.pf-lists[data-view="grid"] .pf-chev{display:none}
+.pf-lists[data-view="grid"] .pf-open{display:none}
 @media (max-width:599px){
-  .pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:21.4rem}
-  .pf-lists[data-view="grid"] .pf-ico{height:8rem}
-  .pf-lists[data-view="grid"] .pf-sum{padding:.6rem .6rem 3.8rem;gap:.3rem}
+  .pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:21.6rem}
+  .pf-lists[data-view="grid"] .pf-sum{grid-template-rows:8rem auto auto minmax(0,1fr);padding:.6rem .6rem 3.8rem;gap:.3rem}
+  .pf-lists[data-view="grid"] .pf-ico{height:8rem;max-height:8rem}
   .pf-lists[data-view="grid"] .pf-fam{display:block}
-  .pf-lists[data-view="grid"] .pf-add{top:calc(var(--h) - 3.05rem);left:.6rem;right:3.5rem;height:2.45rem;padding:0 .5rem}
-  .pf-lists[data-view="grid"] .pf-chev{top:calc(var(--h) - 3.05rem);right:.6rem;width:2.45rem;height:2.45rem}
+  .pf-lists[data-view="grid"] .pf-view-btn{top:calc(var(--h) - 3.05rem);left:.6rem;right:.6rem;height:2.45rem;font-size:.82rem}
 }
+
+/* list view */
+.pf-lists[data-view="list"] .pf-view-btn{position:absolute;top:calc(var(--h) / 2 - 1.1rem);right:5.6rem;height:2.2rem;padding:0 .8rem;font-size:.82rem;z-index:2}
+@media (max-width:599px){
+  .pf-lists[data-view="list"] .pf-view-btn{top:auto;bottom:.75rem;right:4.8rem;height:2.1rem;padding:0 .6rem;font-size:.78rem}
+}
+
+/* table view */
+.pf-lists[data-view="table"] .pf-view-btn{display:none}
+
 `;
