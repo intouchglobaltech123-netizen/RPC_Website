@@ -321,7 +321,11 @@ export function enquiryMarkup(c: ContactInfo) {
 export const FINDER_CSS = `
 /* the finder: the filters beside the list */
 .pf{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:clamp(2rem,4vw,4rem);align-items:start}
-.pf-side{position:sticky;top:calc(var(--nav-bar,64px) + 1.2rem)}
+/* the filters stay in view and scroll on their own, apart from the products */
+.pf-side{position:sticky;top:calc(var(--nav-bar,64px) + 1.2rem);max-height:calc(100svh - var(--nav-bar,64px) - 2.4rem);overflow-y:auto;overscroll-behavior:contain;padding-right:.5rem;margin-right:-.5rem;scrollbar-width:thin;scrollbar-color:rgba(18,34,59,.22) transparent}
+.pf-side::-webkit-scrollbar{width:6px}
+.pf-side::-webkit-scrollbar-thumb{border-radius:3px;background:rgba(18,34,59,.22)}
+.pf-side::-webkit-scrollbar-track{background:transparent}
 .pf-chips{display:flex;flex-direction:column;gap:1.8rem}
 .pf-chiprow{display:flex;flex-direction:column}
 .pf-fh{margin:0 0 .3rem;padding-bottom:.55rem;border-bottom:1px solid rgba(18,34,59,.32);font-size:var(--fs-body);font-weight:600;color:var(--mute)}
@@ -576,7 +580,7 @@ export const FINDER_CSS = `
 @media (max-width:1023px){
   /* tablets and phones: the filters as two rows of chips above the list */
   .pf{grid-template-columns:minmax(0,1fr);gap:1.2rem}
-  .pf-side{position:static}
+  .pf-side{position:static;max-height:none;overflow:visible;padding-right:0;margin-right:0}
   .pf-chips{gap:.5rem}
   .pf-chiprow{flex-direction:row;gap:.4rem;overflow-x:auto;margin-inline:calc(-1 * var(--gutter,16px));padding:0 var(--gutter,16px) 2px;scrollbar-width:none}
   .pf-chiprow::-webkit-scrollbar{display:none}
