@@ -153,23 +153,6 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
 
   const youtube = (u: string) => u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
 
-  const showTab = (pv: HTMLDialogElement, tabKey: string) => {
-    const tabs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-tab]"));
-    const panes = Array.from(pv.querySelectorAll<HTMLElement>("[data-pv-pane]"));
-    tabs.forEach((t) => {
-      const match = t.dataset.pvTab === tabKey;
-      t.classList.toggle("is-active", match);
-      t.setAttribute("aria-selected", String(match));
-    });
-    panes.forEach((p) => {
-      p.hidden = p.dataset.pvPane !== tabKey;
-    });
-    const video = pv.querySelector<HTMLElement>("[data-pv-video-player]");
-    if (tabKey !== "video") {
-      video?.querySelector("video")?.pause();
-    }
-  };
-
   const applyViewAngle = (pv: HTMLDialogElement, idx: number) => {
     currentAngle = idx;
     const thumbs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-view]"));
@@ -207,7 +190,7 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
     }
   };
 
-  const open = (slug: string, initialTab: string, btn?: HTMLElement) => {
+  const open = (slug: string, _initialTab?: string, btn?: HTMLElement) => {
     const pv = getPv();
     if (!pv || !pv.isConnected || typeof pv.showModal !== "function") return;
     const catalog = getCatalog();
@@ -223,13 +206,19 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
     const catEl = pv.querySelector<HTMLElement>("[data-pv-cat]");
     if (catEl) catEl.textContent = item.category || "Waterproofing";
     const brandEl = pv.querySelector<HTMLElement>("[data-pv-brand]");
-    if (brandEl) brandEl.textContent = item.brand || "RPC";
+    if (brandEl) brandEl.textContent = item.brand || "RPC BuildTech";
     const titleEl = pv.querySelector<HTMLElement>("[data-pv-title]");
     if (titleEl) titleEl.textContent = item.fullName || item.name || "";
     const subtitleEl = pv.querySelector<HTMLElement>("[data-pv-subtitle]");
     if (subtitleEl) subtitleEl.textContent = item.purpose || item.category || "";
-    const summaryEl = pv.querySelector<HTMLElement>("[data-pv-summary]");
-    if (summaryEl) summaryEl.textContent = item.description || item.purpose || "";
+    const descEl = pv.querySelector<HTMLElement>("[data-pv-desc]");
+    if (descEl) descEl.textContent = item.description || item.purpose || "";
+
+    // Where it's used
+    const areasEl = pv.querySelector<HTMLElement>("[data-pv-areas]");
+    if (areasEl) {
+      areasEl.textContent = item.areas || "Basements, water tanks, roofs & terraces, bathrooms, balconies, and general concrete structures.";
+    }
 
     // Main image & thumbnails
     const mainImg = pv.querySelector<HTMLImageElement>("[data-pv-main-img]");
@@ -251,69 +240,22 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
       }
     }
 
-    // 4 Features in hero
-    const featBox = pv.querySelector<HTMLElement>("[data-pv-features]");
-    if (featBox && Array.isArray(item.features)) {
-      featBox.innerHTML = item.features
-        .map(
-          (f: any) =>
-            `<div class="pv-feat"><span class="pv-feat-ico">${f.icon}</span><span class="pv-feat-title">${f.title}</span></div>`,
-        )
-        .join("");
-    }
-
-    // Pack sizes in hero
+    // Pack sizes
     const packBox = pv.querySelector<HTMLElement>("[data-pv-pack-chips]");
-    if (packBox && Array.isArray(item.packs)) {
-      packBox.innerHTML = item.packs
-        .map(
-          (k: any, idx: number) =>
-            `<button type="button" class="pv-pack-chip${idx === 0 ? " is-active" : ""}" data-pack="${k.size}">${k.size}</button>`,
-        )
-        .join("");
+    if (packBox) {
+      if (Array.isArray(item.packs) && item.packs.length > 0) {
+        packBox.innerHTML = item.packs
+          .map(
+            (k: any, idx: number) =>
+              `<button type="button" class="pv-pack-chip${idx === 0 ? " is-active" : ""}" data-pack="${k.size}">${k.size}</button>`,
+          )
+          .join("");
+      } else {
+        packBox.innerHTML = `<button type="button" class="pv-pack-chip is-active" data-pack="Standard">Standard</button>`;
+      }
     }
 
-    // Overview Tab: description, benefits, applications, typical properties
-    const fullDescEl = pv.querySelector<HTMLElement>("[data-pv-full-desc]");
-    if (fullDescEl) fullDescEl.textContent = item.description || item.purpose || "";
-
-    const benefitsEl = pv.querySelector<HTMLElement>("[data-pv-benefits]");
-    if (benefitsEl && Array.isArray(item.benefits)) {
-      benefitsEl.innerHTML = item.benefits
-        .map(
-          (b: string) =>
-            `<li class="pv-benefit-item"><span class="pv-benefit-check"><svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span>${b}</span></li>`,
-        )
-        .join("");
-    }
-
-    const appsEl = pv.querySelector<HTMLElement>("[data-pv-apps]");
-    if (appsEl && Array.isArray(item.applications)) {
-      appsEl.innerHTML = item.applications
-        .map(
-          (a: any) =>
-            `<div class="pv-app-card"><img class="pv-app-img" src="${a.image}" alt="${a.name}" loading="lazy"><span class="pv-app-label">${a.name}</span></div>`,
-        )
-        .join("");
-    }
-
-    const specsTable = pv.querySelector<HTMLElement>("[data-pv-specs]");
-    if (specsTable && Array.isArray(item.properties)) {
-      specsTable.innerHTML = item.properties
-        .map((p: any) => `<tr><th>${p.label}</th><td>${p.value}</td></tr>`)
-        .join("");
-    }
-
-    // 4-Side Images Tab
-    const galleryImg = pv.querySelector<HTMLImageElement>("[data-pv-gallery-img]");
-    if (galleryImg) {
-      galleryImg.src = item.image || "/icon.svg";
-      galleryImg.alt = item.name || "";
-      galleryImg.style.transform = "none";
-      galleryImg.style.filter = "none";
-    }
-
-    // AI Video Tab
+    // AI Video
     const videoPlayer = pv.querySelector<HTMLElement>("[data-pv-video-player]");
     const videoEmpty = pv.querySelector<HTMLElement>("[data-pv-video-empty]");
     if (videoPlayer && videoEmpty) {
@@ -344,39 +286,21 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
       }
     }
 
-    // Technical Data Sheet Tab
-    const tdsBox = pv.querySelector<HTMLElement>("[data-pv-tds-box]");
-    const tdsEmpty = pv.querySelector<HTMLElement>("[data-pv-tds-empty]");
-    const tdsName = pv.querySelector<HTMLElement>("[data-pv-tds-name]");
-    const tdsOpen = pv.querySelector<HTMLAnchorElement>("[data-pv-tds-open]");
-    const tdsDownload = pv.querySelector<HTMLAnchorElement>("[data-pv-tds-download]");
-    const tdsFrame = pv.querySelector<HTMLIFrameElement>("[data-pv-tds-frame]");
-
-    if (item.pdf) {
-      if (tdsName) tdsName.textContent = item.pdfName || `${item.name} Technical Data Sheet`;
-      if (tdsOpen) tdsOpen.href = item.pdf;
-      if (tdsDownload) {
-        tdsDownload.href = item.pdf;
-        tdsDownload.setAttribute("download", item.pdfName || `${item.slug}-tds.pdf`);
+    // Technical Data Sheet button
+    const dsBtn = pv.querySelector<HTMLAnchorElement>("[data-pv-datasheet]");
+    if (dsBtn) {
+      if (item.pdf) {
+        dsBtn.href = item.pdf;
+        dsBtn.setAttribute("target", "_blank");
+        dsBtn.classList.remove("is-disabled");
+        dsBtn.removeAttribute("aria-disabled");
+      } else {
+        dsBtn.removeAttribute("href");
+        dsBtn.classList.add("is-disabled");
+        dsBtn.setAttribute("aria-disabled", "true");
       }
-      if (tdsFrame) tdsFrame.src = item.pdf;
-      if (tdsBox) tdsBox.hidden = false;
-      if (tdsEmpty) tdsEmpty.hidden = true;
-    } else {
-      if (tdsBox) tdsBox.hidden = true;
-      if (tdsEmpty) tdsEmpty.hidden = false;
     }
 
-    const tabMap: Record<string, string> = {
-      desc: "overview",
-      overview: "overview",
-      gallery: "overview",
-      "4side": "overview",
-      video: "video",
-      tds: "tds",
-      pdf: "tds",
-    };
-    showTab(pv, tabMap[initialTab] || "overview");
     applyViewAngle(pv, 0);
 
     if (env?.lock) env.lock(true);
@@ -410,24 +334,10 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
         return;
       }
 
-      // Tab switcher
-      const tabBtn = target.closest<HTMLButtonElement>("[data-pv-tab]");
-      if (tabBtn && tabBtn.dataset.pvTab) {
-        showTab(pv, tabBtn.dataset.pvTab);
-        return;
-      }
-
       // Upper gallery thumbnails
       const thumb = target.closest<HTMLButtonElement>("[data-pv-view]");
       if (thumb && thumb.dataset.pvView !== undefined) {
         applyViewAngle(pv, Number(thumb.dataset.pvView));
-        return;
-      }
-
-      // 4-side images angle buttons
-      const angleBtn = target.closest<HTMLButtonElement>("[data-pv-set-angle]");
-      if (angleBtn && angleBtn.dataset.pvSetAngle !== undefined) {
-        applyViewAngle(pv, Number(angleBtn.dataset.pvSetAngle));
         return;
       }
 
@@ -456,11 +366,11 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
         return;
       }
 
-      // Enquire button
-      const enqBtn = target.closest<HTMLButtonElement>("[data-pv-enquire]");
-      if (enqBtn && currentProduct) {
+      // Ask for a Rate / Enquire button
+      const rateBtn = target.closest<HTMLButtonElement>("[data-pv-rate], [data-pv-enquire]");
+      if (rateBtn && currentProduct) {
         const activePack = pv.querySelector(".pv-pack-chip.is-active")?.textContent?.trim() || currentProduct.packs?.[0]?.size || "";
-        const text = `Hi RPC Constructions, I am interested in ${currentProduct.fullName || currentProduct.name} (${activePack}). Please share pricing and availability.`;
+        const text = `Hi RPC Constructions, I would like to enquire about ${currentProduct.fullName || currentProduct.name} (${activePack}). Please share pricing and availability.`;
         const waUrl = `https://wa.me/919047012345?text=${encodeURIComponent(text)}`;
         window.open(waUrl, "_blank", "noopener,noreferrer");
         return;
@@ -475,8 +385,6 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
       pv.querySelector<HTMLElement>("[data-pv-video-player]")?.replaceChildren();
-      const frame = pv.querySelector<HTMLIFrameElement>("[data-pv-tds-frame]");
-      if (frame) frame.src = "";
       from?.focus();
     });
   }

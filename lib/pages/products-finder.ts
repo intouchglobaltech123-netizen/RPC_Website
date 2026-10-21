@@ -44,8 +44,8 @@ const VIEWER_HTML = `<dialog class="pv" data-pv data-lenis-prevent aria-labelled
     <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
   </button>
 
-  <div class="pv-hero">
-    <!-- Left Column: Gallery -->
+  <div class="pv-layout">
+    <!-- LEFT COLUMN: Gallery -->
     <div class="pv-gallery">
       <div class="pv-stage-wrap">
         <button type="button" class="pv-nav-arrow pv-nav-prev" data-pv-prev aria-label="Previous view">
@@ -81,108 +81,57 @@ const VIEWER_HTML = `<dialog class="pv" data-pv data-lenis-prevent aria-labelled
       </div>
     </div>
 
-    <!-- Right Column: Product Identity & Actions -->
-    <div class="pv-info">
+    <!-- RIGHT COLUMN: Details & Actions -->
+    <div class="pv-details">
+      <!-- Badges -->
       <div class="pv-badges">
         <span class="pv-badge-cat" data-pv-cat>Waterproofing</span>
         <span class="pv-badge-brand" data-pv-brand>RPC BuildTech</span>
       </div>
+
+      <!-- Title & Subtitle -->
       <h2 class="pv-title" id="pv-title" data-pv-title></h2>
       <p class="pv-subtitle" data-pv-subtitle></p>
-      <p class="pv-summary" data-pv-summary></p>
 
-      <div class="pv-features" data-pv-features></div>
+      <!-- Short Description -->
+      <p class="pv-desc" data-pv-desc></p>
 
-      <div class="pv-purchase-row">
-        <div class="pv-packs-block">
-          <span class="pv-packs-title">Available Pack Sizes</span>
-          <div class="pv-pack-chips" data-pv-pack-chips></div>
+      <!-- Where it's used -->
+      <div class="pv-meta-row pv-row-used">
+        <span class="pv-meta-label">Where it's used</span>
+        <span class="pv-meta-val" data-pv-areas></span>
+      </div>
+
+      <!-- Packs -->
+      <div class="pv-meta-row pv-row-packs">
+        <span class="pv-meta-label">Packs</span>
+        <div class="pv-pack-chips" data-pv-pack-chips></div>
+      </div>
+
+      <!-- AI Product Video -->
+      <div class="pv-video-sec">
+        <h3 class="pv-video-title">AI Product Video</h3>
+        <div class="pv-video-box" data-pv-video-box>
+          <div class="pv-video-player" data-pv-video-player></div>
+          <div class="pv-video-empty" data-pv-video-empty hidden>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+            <span>Video coming soon</span>
+          </div>
         </div>
-        <button type="button" class="pv-enquire-btn" data-pv-enquire>
-          <span>Enquire About This Product</span>
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </div>
+
+      <!-- Bottom Buttons -->
+      <div class="pv-actions">
+        <button type="button" class="pv-rate-btn" data-pv-rate>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg>
+          <span>Enquire Now</span>
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Navigation inside popup: 4 Tabs -->
-  <div class="pv-tabs-bar" role="tablist">
-    <button type="button" role="tab" class="pv-tab is-active" data-pv-tab="overview" aria-selected="true">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Overview</span>
-    </button>
-    <button type="button" role="tab" class="pv-tab" data-pv-tab="video" aria-selected="false">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
-      <span>AI Video</span>
-    </button>
-    <button type="button" role="tab" class="pv-tab" data-pv-tab="tds" aria-selected="false">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      <span>Technical Data Sheet</span>
-    </button>
-  </div>
-
-  <!-- Lower Section Panes -->
-  <div class="pv-content">
-    <!-- Pane 1: Overview -->
-    <div class="pv-pane" data-pv-pane="overview" role="tabpanel">
-      <div class="pv-overview-grid">
-        <div class="pv-col-desc">
-          <h3 class="pv-section-title">Product Description</h3>
-          <p class="pv-full-desc" data-pv-full-desc></p>
-          <h3 class="pv-section-title">Key Benefits</h3>
-          <ul class="pv-benefits-list" data-pv-benefits></ul>
-        </div>
-        <div class="pv-col-apps">
-          <h3 class="pv-section-title">Applications</h3>
-          <div class="pv-apps-grid" data-pv-apps></div>
-        </div>
-        <div class="pv-col-props">
-          <div class="pv-specs-card">
-            <h3 class="pv-specs-title">Typical Properties</h3>
-            <table class="pv-specs-table" data-pv-specs></table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pane 3: AI Video -->
-    <div class="pv-pane" data-pv-pane="video" role="tabpanel" hidden>
-      <div class="pv-video-container" data-pv-video-box>
-        <div class="pv-video-player" data-pv-video-player></div>
-        <div class="pv-video-empty" data-pv-video-empty hidden>
-          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
-          <p><strong>AI Product Video In Production</strong><br>Official application footage and AI-assisted technical walkthrough for this product is currently being mastered.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Pane 4: Technical Data Sheet -->
-    <div class="pv-pane" data-pv-pane="tds" role="tabpanel" hidden>
-      <div class="pv-tds-container" data-pv-tds-box>
-        <div class="pv-tds-topbar">
-          <div class="pv-tds-doc-meta">
-            <span class="pv-tds-tag">OFFICIAL TECHNICAL DATA SHEET (PDF)</span>
-            <h4 class="pv-tds-name" data-pv-tds-name>Document</h4>
-          </div>
-          <div class="pv-tds-actions">
-            <a class="pv-tds-action-btn pv-tds-open-btn" data-pv-tds-open href="" target="_blank" rel="noopener noreferrer">
-              <span>Open TDS</span>
-              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13L13 3M6 3h7v7"/></svg>
-            </a>
-            <a class="pv-tds-action-btn pv-tds-dl-btn" data-pv-tds-download href="" download>
-              <span>Download TDS</span>
-              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4M2 14h12"/></svg>
-            </a>
-          </div>
-        </div>
-        <div class="pv-tds-embed-wrap">
-          <iframe class="pv-tds-frame" data-pv-tds-frame src="" title="Technical Data Sheet"></iframe>
-        </div>
-      </div>
-      <div class="pv-tds-empty" data-pv-tds-empty hidden>
-        <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
-        <p><strong>Technical Data Sheet not available</strong><br>An official TDS for this item has not been published yet. Please contact RPC Technical Advisory for customized technical specifications.</p>
+        <a class="pv-datasheet-btn" data-pv-datasheet href="" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Data Sheet</span>
+        </a>
       </div>
     </div>
   </div>
@@ -622,148 +571,86 @@ export const FINDER_CSS = `
 
 /* the upgraded product details popup */
 html.pv-open,body.pv-open{overflow:hidden !important}
-.pv{position:fixed;inset:0;margin:auto;width:min(76rem,calc(100vw - 2.5rem));max-width:none;height:auto;max-height:calc(100svh - 2.5rem);padding:0;border:1px solid rgba(18,34,59,.14);border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 30px 70px -20px rgba(10,25,50,.35);overflow-y:auto;overflow-x:hidden;box-sizing:border-box;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-.pv::-webkit-scrollbar{width:8px}
-.pv::-webkit-scrollbar-track{background:#f8fafc;border-radius:8px}
-.pv::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
-.pv::-webkit-scrollbar-thumb:hover{background:#94a3b8}
-.pv[open]{display:block;animation:pv-in .25s cubic-bezier(.2,.8,.2,1)}
+.pv{position:fixed;inset:0;margin:auto;width:min(68rem,calc(100vw - 2.5rem));max-width:none;height:fit-content;max-height:min(94svh,680px);padding:1.4rem 1.6rem;border:1px solid #e2e8f0;border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 25px 60px -15px rgba(10,25,50,.32);overflow:hidden !important;box-sizing:border-box}
+.pv[open]{display:block;animation:pv-in .2s cubic-bezier(.2,.8,.2,1)}
 .pv::backdrop{background:rgba(9,20,38,.62);backdrop-filter:blur(3px)}
-@keyframes pv-in{from{opacity:0;transform:translateY(14px) scale(.99)}}
-.pv-x{position:sticky;top:1rem;right:1rem;float:right;margin-top:1rem;margin-right:1rem;margin-bottom:-2.4rem;z-index:30;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border:0;border-radius:50%;background:#f1f5f9;color:#475569;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:background-color .15s,color .15s,transform .15s}
+@keyframes pv-in{from{opacity:0;transform:translateY(12px) scale(.99)}}
+.pv-x{position:absolute;top:1rem;right:1rem;z-index:30;display:grid;place-items:center;width:2.2rem;height:2.2rem;padding:0;border:0;border-radius:50%;background:#f1f5f9;color:#475569;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);transition:all .15s}
 .pv-x:hover{background:#e2e8f0;color:#0e223d;transform:scale(1.06)}
 .pv-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* hero section */
-.pv-hero{display:grid;grid-template-columns:46% minmax(0,54%);gap:1.8rem;padding:1.6rem 1.8rem 1.2rem;align-items:start;background:#fff;clear:both}
-.pv-gallery{display:flex;flex-direction:column;gap:.75rem}
-.pv-stage-wrap{position:relative;width:100%;height:320px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.pv-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box}
+/* two-column layout */
+.pv-layout{display:grid;grid-template-columns:45% minmax(0,55%);gap:1.8rem;align-items:start}
+
+/* left column: gallery */
+.pv-gallery{display:flex;flex-direction:column;gap:.7rem}
+.pv-stage-wrap{position:relative;width:100%;height:380px;border-radius:14px;background:#f1f3f5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pv-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1.2rem;box-sizing:border-box}
 .pv-main-img{max-width:92%;max-height:92%;object-fit:contain;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-.pv-nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border-radius:50%;background:#fff;border:1px solid #e2e8f0;box-shadow:0 4px 12px rgba(14,34,61,.12);color:#334155;cursor:pointer;transition:all .15s}
-.pv-nav-arrow:hover{background:#f8fafc;color:#0e223d;box-shadow:0 6px 16px rgba(14,34,61,.18)}
+.pv-nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;display:grid;place-items:center;width:2.2rem;height:2.2rem;padding:0;border-radius:50%;background:#fff;border:1px solid #e2e8f0;box-shadow:0 3px 10px rgba(14,34,61,.12);color:#334155;cursor:pointer;transition:all .15s}
+.pv-nav-arrow:hover{background:#f8fafc;color:#0e223d}
 .pv-nav-arrow:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .pv-nav-prev{left:.75rem}
 .pv-nav-next{right:.75rem}
-.pv-zoom-btn{position:absolute;bottom:.75rem;right:.75rem;z-index:5;display:grid;place-items:center;width:2.2rem;height:2.2rem;padding:0;border-radius:8px;background:rgba(255,255,255,.92);border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(14,34,61,.08);color:#475569;cursor:pointer;transition:all .15s}
-.pv-zoom-btn:hover{color:#0e223d;background:#fff}
+.pv-zoom-btn{position:absolute;bottom:.75rem;right:.75rem;z-index:5;display:grid;place-items:center;width:2.1rem;height:2.1rem;padding:0;border-radius:6px;background:#fff;border:1px solid #e2e8f0;box-shadow:0 2px 6px rgba(14,34,61,.1);color:#64748b;cursor:pointer;transition:all .15s}
+.pv-zoom-btn:hover{color:#0e223d}
 .pv-zoom-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.pv-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
-.pv-thumb{display:flex;flex-direction:column;align-items:center;gap:.35rem;border:0;background:none;padding:0;cursor:pointer}
-.pv-thumb-box{width:100%;height:68px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;padding:4px;box-sizing:border-box;transition:border-color .2s,box-shadow .2s}
+.pv-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem}
+.pv-thumb{display:flex;flex-direction:column;align-items:center;gap:.3rem;border:0;background:none;padding:0;cursor:pointer}
+.pv-thumb-box{width:100%;height:68px;border-radius:8px;border:1.5px solid #e2e8f0;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:4px;box-sizing:border-box;transition:all .15s}
 .pv-thumb-box img{max-width:100%;max-height:100%;object-fit:contain}
-.pv-thumb-label{font-size:.72rem;font-weight:600;color:#64748b;transition:color .2s}
-.pv-thumb.is-active .pv-thumb-box{border-color:#2756a0;box-shadow:0 0 0 1px #2756a0}
+.pv-thumb-label{font-size:.72rem;font-weight:600;color:#64748b;transition:color .15s}
+.pv-thumb.is-active .pv-thumb-box{border:2px solid #2756a0;box-shadow:0 0 0 1px #2756a0}
 .pv-thumb.is-active .pv-thumb-label{color:#2756a0;font-weight:700}
-.pv-thumb:hover .pv-thumb-box{border-color:#94a3b8}
+.pv-thumb:hover:not(.is-active) .pv-thumb-box{border-color:#94a3b8}
 
-/* right column */
-.pv-info{display:flex;flex-direction:column;min-width:0;padding-right:2rem}
-.pv-badges{display:flex;align-items:center;gap:.5rem;margin-bottom:.45rem}
-.pv-badge-cat{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:6px;background:#dbeafe;color:#1e40af;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.pv-badge-brand{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:6px;background:#f1f5f9;color:#475569;font-size:.75rem;font-weight:600}
-.pv-title{margin:0;font-size:1.75rem;font-weight:800;color:#0e223d;line-height:1.25;letter-spacing:-.01em}
-.pv-subtitle{margin:.2rem 0 .55rem;font-size:.95rem;font-weight:500;color:#64748b;line-height:1.4}
-.pv-summary{margin:0 0 .9rem;font-size:.88rem;color:#334155;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* right column: details */
+.pv-details{display:flex;flex-direction:column;min-width:0;padding-right:2.4rem}
+.pv-badges{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+.pv-badge-cat{display:inline-flex;align-items:center;padding:.2rem .65rem;border-radius:999px;background:#fef3c7;color:#b45309;font-size:.72rem;font-weight:600}
+.pv-badge-brand{display:inline-flex;align-items:center;padding:.2rem .65rem;border-radius:999px;background:#eff6ff;color:#1e40af;font-size:.72rem;font-weight:600}
+.pv-title{margin:0;font-size:1.75rem;font-weight:800;color:#0e223d;line-height:1.2;letter-spacing:-.01em}
+.pv-subtitle{margin:.15rem 0 .5rem;font-size:.92rem;font-weight:500;color:#64748b;line-height:1.35}
+.pv-desc{margin:0 0 .9rem;font-size:.82rem;color:#475569;line-height:1.5}
 
-.pv-features{display:grid;grid-template-columns:repeat(4,1fr);gap:.45rem;margin-bottom:1.1rem}
-.pv-feat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.3rem;padding:.55rem .3rem;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0}
-.pv-feat-ico{display:flex;align-items:center;justify-content:center}
-.pv-feat-ico svg{width:22px;height:22px;color:#2756a0}
-.pv-feat-title{font-size:.72rem;font-weight:600;color:#334155;line-height:1.25}
+.pv-meta-row{display:grid;grid-template-columns:105px minmax(0,1fr);align-items:start;gap:.8rem;margin-bottom:.75rem}
+.pv-meta-label{font-size:.82rem;font-weight:700;color:#0e223d;line-height:1.4}
+.pv-meta-val{font-size:.82rem;color:#475569;line-height:1.45}
 
-.pv-purchase-row{display:flex;align-items:flex-end;justify-content:space-between;gap:.8rem;margin-top:auto}
-.pv-packs-block{display:flex;flex-direction:column;gap:.35rem}
-.pv-packs-title{font-size:.82rem;font-weight:700;color:#0e223d}
 .pv-pack-chips{display:flex;gap:.4rem;flex-wrap:wrap}
-.pv-pack-chip{height:2.1rem;padding:0 .75rem;border-radius:6px;border:1.5px solid #cbd5e1;background:#fff;color:#334155;font-size:.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;transition:all .15s}
+.pv-pack-chip{height:2.15rem;padding:0 .85rem;border-radius:6px;border:1px solid #e2e8f0;background:#fff;color:#334155;font-size:.82rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;transition:all .15s}
 .pv-pack-chip.is-active{background:#0e223d;color:#fff;border-color:#0e223d}
 .pv-pack-chip:hover:not(.is-active){border-color:#94a3b8;background:#f8fafc}
-.pv-enquire-btn{display:inline-flex;align-items:center;gap:.5rem;height:2.55rem;padding:0 1.35rem;border-radius:8px;background:var(--color-rpc,#2756a0);color:#fff;border:0;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;box-shadow:0 2px 6px rgba(39,86,160,.22)}
-.pv-enquire-btn:hover{background:#1e40af;transform:translateY(-1px);box-shadow:0 4px 14px rgba(39,86,160,.35)}
-.pv-enquire-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* tabs bar sticky on scroll */
-.pv-tabs-bar{position:sticky;top:0;z-index:20;display:flex;gap:2rem;padding:0 1.8rem;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;background:rgba(255,255,255,.98);backdrop-filter:blur(8px)}
-.pv-tab{position:relative;display:inline-flex;align-items:center;gap:.5rem;height:3.2rem;border:0;background:none;font:inherit;font-size:.92rem;font-weight:600;color:#64748b;cursor:pointer;transition:color .15s}
-.pv-tab svg{width:18px;height:18px;flex:none}
-.pv-tab.is-active{color:#2756a0}
-.pv-tab.is-active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;border-radius:2px;background:#2756a0}
-.pv-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-
-/* content area */
-.pv-content{padding:1.6rem 1.8rem 2.2rem;overflow:visible;box-sizing:border-box}
-.pv-pane[hidden]{display:none}
-
-/* overview pane */
-.pv-overview-grid{display:grid;grid-template-columns:1.25fr 1.15fr 1fr;gap:1.8rem;align-items:start}
-.pv-section-title{font-size:1.02rem;font-weight:700;color:#0e223d;margin:0 0 .6rem}
-.pv-full-desc{font-size:.85rem;color:#475569;line-height:1.6;margin:0 0 1.1rem}
-.pv-benefits-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.5rem}
-.pv-benefit-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.82rem;color:#334155;line-height:1.4}
-.pv-benefit-check{flex:none;width:17px;height:17px;border-radius:4px;background:#2756a0;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.pv-benefit-check svg{width:11px;height:11px}
-
-.pv-apps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
-.pv-app-card{display:flex;flex-direction:column;border-radius:8px;overflow:hidden;border:1px solid #e2e8f0;background:#f8fafc}
-.pv-app-img{width:100%;height:82px;object-fit:cover;display:block}
-.pv-app-label{padding:.4rem .5rem;font-size:.78rem;font-weight:600;color:#334155;text-align:center}
-
-.pv-specs-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:1.1rem}
-.pv-specs-title{font-size:.95rem;font-weight:700;color:#0e223d;margin:0 0 .65rem}
-.pv-specs-table{width:100%;border-collapse:collapse;font-size:.82rem}
-.pv-specs-table tr{border-top:1px solid #e2e8f0}
-.pv-specs-table tr:first-child{border-top:0}
-.pv-specs-table th{text-align:left;padding:.45rem .4rem .45rem 0;color:#64748b;font-weight:500}
-.pv-specs-table td{text-align:left;padding:.45rem 0 .45rem .4rem;color:#0e223d;font-weight:600}
-
-/* 4-side images pane */
-.pv-gallery-view-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem;padding:1rem 0}
-.pv-gallery-stage{width:100%;max-width:520px;height:340px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;padding:1.5rem;box-sizing:border-box}
-.pv-gallery-main-img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .4s ease}
-.pv-gallery-angles-bar{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
-.pv-angle-btn{height:2.3rem;padding:0 1rem;border-radius:8px;border:1.5px solid #cbd5e1;background:#fff;color:#334155;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .15s}
-.pv-angle-btn.is-active{background:#2756a0;color:#fff;border-color:#2756a0}
-.pv-angle-btn:hover:not(.is-active){background:#f8fafc;border-color:#94a3b8}
-
-/* video pane */
-.pv-video-container{display:flex;flex-direction:column;align-items:center;width:100%}
-.pv-video-player{width:100%;max-width:720px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.pv-video-sec{margin:.45rem 0 .95rem;display:flex;flex-direction:column;gap:.35rem}
+.pv-video-title{margin:0;font-size:.88rem;font-weight:700;color:#0e223d}
+.pv-video-box{width:100%;height:155px;border-radius:10px;overflow:hidden;background:#000;box-shadow:0 3px 12px rgba(0,0,0,.15);position:relative}
+.pv-video-player{width:100%;height:100%}
 .pv-video-player video,.pv-video-player iframe{width:100%;height:100%;border:0;display:block}
-.pv-video-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:3rem 1.5rem;border-radius:12px;background:#f8fafc;border:1px dashed #cbd5e1;text-align:center;color:#64748b;width:100%;max-width:600px}
-.pv-video-empty svg{color:#2756a0}
+.pv-video-empty{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;height:100%;background:#f8fafc;border:1px dashed #cbd5e1;color:#64748b;font-size:.82rem;font-weight:500}
 
-/* tds pane */
-.pv-tds-container{display:flex;flex-direction:column;gap:1rem;width:100%}
-.pv-tds-topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1.2rem;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0}
-.pv-tds-tag{font-size:.7rem;font-weight:700;color:#2756a0;letter-spacing:.05em}
-.pv-tds-name{margin:.15rem 0 0;font-size:.96rem;font-weight:700;color:#0e223d}
-.pv-tds-actions{display:flex;gap:.6rem}
-.pv-tds-action-btn{display:inline-flex;align-items:center;gap:.45rem;height:2.3rem;padding:0 1rem;border-radius:8px;font-size:.84rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s}
-.pv-tds-open-btn{background:#fff;border:1.5px solid #2756a0;color:#2756a0}
-.pv-tds-open-btn:hover{background:#2756a0;color:#fff}
-.pv-tds-dl-btn{background:#2756a0;border:1.5px solid #2756a0;color:#fff}
-.pv-tds-dl-btn:hover{background:#1e40af;border-color:#1e40af}
-.pv-tds-embed-wrap{width:100%;height:500px;border-radius:10px;border:1px solid #e2e8f0;overflow:hidden;background:#fff}
-.pv-tds-frame{width:100%;height:100%;border:0}
-.pv-tds-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:3rem 1.5rem;border-radius:12px;background:#f8fafc;border:1px dashed #cbd5e1;text-align:center;color:#64748b}
+.pv-actions{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.4rem}
+.pv-rate-btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;height:2.65rem;padding:0 1.2rem;border-radius:8px;background:#2756a0;color:#fff;border:0;font:inherit;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;box-shadow:0 2px 8px rgba(39,86,160,.28)}
+.pv-rate-btn:hover{background:#1d4684;transform:translateY(-1px);box-shadow:0 4px 14px rgba(39,86,160,.38)}
+.pv-rate-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.pv-datasheet-btn{display:inline-flex;align-items:center;justify-content:center;gap:.6rem;height:2.65rem;padding:0 1.2rem;border-radius:8px;background:#fff;color:#0e223d;border:1.5px solid #cbd5e1;font:inherit;font-size:.88rem;font-weight:600;text-decoration:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.pv-datasheet-btn:hover{border-color:#0e223d;background:#f8fafc}
+.pv-datasheet-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pv-datasheet-btn.is-disabled{opacity:.45;pointer-events:none;background:#f1f5f9;border-color:#e2e8f0;color:#94a3b8}
 
 @media (max-width:960px){
-  .pv-hero{grid-template-columns:1fr;gap:1.2rem}
-  .pv-overview-grid{grid-template-columns:1fr;gap:1.4rem}
+  .pv{max-height:92svh;overflow-y:auto !important}
+  .pv-layout{grid-template-columns:1fr;gap:1.2rem}
+  .pv-details{padding-right:0}
   .pv-stage-wrap{height:280px}
 }
 @media (max-width:599px){
-  .pv{width:100%;max-height:92svh;margin:auto auto 0;border-radius:16px 16px 0 0}
-  .pv-hero{padding:1.2rem 1rem}
+  .pv{width:100%;height:92svh;max-height:92svh;margin:auto auto 0;border-radius:16px 16px 0 0;padding:1.2rem 1rem}
   .pv-stage-wrap{height:220px}
-  .pv-features{grid-template-columns:repeat(2,1fr)}
-  .pv-purchase-row{flex-direction:column;align-items:stretch}
-  .pv-enquire-btn{justify-content:center}
-  .pv-tabs-bar{padding:0 1rem;gap:1rem;overflow-x:auto}
-  .pv-tab{height:2.8rem;font-size:.85rem;white-space:nowrap}
-  .pv-content{padding:1.2rem 1rem 1.4rem}
+  .pv-actions{grid-template-columns:1fr}
+  .pv-meta-row{grid-template-columns:1fr;gap:.25rem}
 }
 @media (prefers-reduced-motion:reduce){.pv[open]{animation:none}}
 
