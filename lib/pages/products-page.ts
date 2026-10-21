@@ -74,7 +74,7 @@ export function mountProducts(root: HTMLElement, env: PageEnv = {}): Off {
   on(window, "hashchange", fromHash);
   fromHash();
   offs.push(mountEnquiry(root));
-  mountViewer(root, on);
+  mountViewer(root, on, env);
   mountZoom(root, on);
   mountViews(root, on);
   return () => offs.forEach((f) => f());
@@ -120,28 +120,11 @@ function mountZoom(root: HTMLElement, on: On) {
     root,
     "click",
     (e) => {
-      const ico = (e.target as Element).closest<HTMLElement>("[data-zoom]");
-      const row = ico?.closest<HTMLElement>(".pf-row");
-      if (!ico || !row) return;
-      // the picture sits in the card's summary: open the picture, not the card
-      e.preventDefault();
-      e.stopPropagation();
-      pz.style.setProperty("--tint", row.style.getPropertyValue("--tint"));
-      pic.replaceChildren();
-      const img = ico.querySelector("img");
-      if (img) {
-        const big = document.createElement("img");
-        big.src = img.currentSrc || img.src;
-        big.alt = row.querySelector(".pf-name")?.textContent ?? "";
-        pic.append(big);
-      } else {
-        const art = ico.querySelector("svg");
-        if (art) pic.append(art.cloneNode(true));
+      const ico = (e.target as Element).closest<HTMLElement>(".pf-ico");
+      if (ico) {
+        // pictures are now displayed fully on the card; do not open pop-up
+        e.preventDefault();
       }
-      const brand = row.closest("section")?.querySelector(".pf-bhn")?.textContent?.trim();
-      name.textContent = [brand, row.querySelector(".pf-name")?.textContent].filter(Boolean).join(" ");
-      sub.textContent = [row.querySelector(".pf-cat")?.textContent, Array.from(row.querySelectorAll(".pf-packs span"), (x) => x.textContent).join(" · ")].filter(Boolean).join(" — ");
-      pz.showModal();
     },
     { capture: true },
   );
@@ -151,70 +134,382 @@ function mountZoom(root: HTMLElement, on: On) {
   });
 }
 
-/** "Product description" and "Watch video" in an opened card: a viewer with the two as tabs */
-function mountViewer(root: HTMLElement, on: On) {
-  const pv = root.querySelector<HTMLDialogElement>("[data-pv]");
-  if (!pv || typeof pv.showModal !== "function") return;
-  const $ = (k: string) => pv.querySelector<HTMLElement>(`[data-pv-${k}]`)!;
-  const pic = $("pic"),
-    brand = $("brand"),
-    name = $("name"),
-    desc = $("desc"),
-    video = $("video"),
-    none = $("none");
-  const tabs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-tab]"));
-  const panes = Array.from(pv.querySelectorAll<HTMLElement>("[data-pv-pane]"));
+/** Upgraded product details popup controller */
+function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
+  const getPv = () => root.querySelector<HTMLDialogElement>("[data-pv]") ?? document.querySelector<HTMLDialogElement>("[data-pv]");
   let from: HTMLElement | null = null;
-  const show = (k: string) => {
-    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.pvTab === k)));
-    panes.forEach((p) => (p.hidden = p.dataset.pvPane !== k));
-    if (k !== "video") video.querySelector("video")?.pause();
-  };
-  const youtube = (u: string) => u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
-  const open = (box: HTMLElement, k: string, btn: HTMLElement) => {
-    const row = box.closest<HTMLElement>(".pf-row");
-    if (!row) return;
-    from = btn;
-    pv.style.setProperty("--tint", row.style.getPropertyValue("--tint"));
-    pic.replaceChildren(...Array.from(row.querySelector(".pf-ico")?.childNodes ?? [], (n) => n.cloneNode(true)));
-    brand.textContent = row.closest("section")?.querySelector(".pf-bhn")?.textContent?.trim() ?? "";
-    name.textContent = row.querySelector(".pf-name")?.textContent ?? "";
-    desc.textContent = box.dataset.viewDesc ?? "";
-    video.replaceChildren();
-    const src = box.dataset.viewVideo ?? "";
-    const yt = src && youtube(src);
-    if (yt) {
-      const f = document.createElement("iframe");
-      f.src = `https://www.youtube-nocookie.com/embed/${yt}`;
-      f.title = `${name.textContent} video`;
-      f.allow = "encrypted-media; picture-in-picture; fullscreen";
-      f.loading = "lazy";
-      video.append(f);
-    } else if (src) {
-      const v = document.createElement("video");
-      v.src = src;
-      v.controls = true;
-      v.playsInline = true;
-      v.preload = "metadata";
-      video.append(v);
+  let currentProduct: any = null;
+  let currentAngle = 0;
+  let isZoomed = false;
+
+  const getCatalog = () => {
+    try {
+      const el = document.getElementById("rpc-products-catalog");
+      return el ? JSON.parse(el.textContent || "[]") : [];
+    } catch {
+      return [];
     }
-    none.hidden = Boolean(src);
-    show(k);
-    pv.showModal();
   };
+
+  const youtube = (u: string) => u.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/)?.[1];
+
+  const showTab = (pv: HTMLDialogElement, tabKey: string) => {
+    const tabs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-tab]"));
+    const panes = Array.from(pv.querySelectorAll<HTMLElement>("[data-pv-pane]"));
+    tabs.forEach((t) => {
+      const match = t.dataset.pvTab === tabKey;
+      t.classList.toggle("is-active", match);
+      t.setAttribute("aria-selected", String(match));
+    });
+    panes.forEach((p) => {
+      p.hidden = p.dataset.pvPane !== tabKey;
+    });
+    const video = pv.querySelector<HTMLElement>("[data-pv-video-player]");
+    if (tabKey !== "video") {
+      video?.querySelector("video")?.pause();
+    }
+  };
+
+  const applyViewAngle = (pv: HTMLDialogElement, idx: number) => {
+    currentAngle = idx;
+    const thumbs = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-view]"));
+    thumbs.forEach((th) => {
+      th.classList.toggle("is-active", Number(th.dataset.pvView) === idx);
+    });
+    const angleBtns = Array.from(pv.querySelectorAll<HTMLButtonElement>("[data-pv-set-angle]"));
+    angleBtns.forEach((ab) => {
+      ab.classList.toggle("is-active", Number(ab.dataset.pvSetAngle) === idx);
+    });
+
+    const mainImg = pv.querySelector<HTMLImageElement>("[data-pv-main-img]");
+    const galleryImg = pv.querySelector<HTMLImageElement>("[data-pv-gallery-img]");
+
+    let transform = "none";
+    let filter = "none";
+    if (idx === 1) {
+      transform = isZoomed ? "scale(1.4) scaleX(-1)" : "scaleX(-1)";
+      filter = "contrast(1.05) brightness(0.98)";
+    } else if (idx === 2) {
+      transform = isZoomed ? "scale(1.4) perspective(700px) rotateY(-18deg)" : "perspective(700px) rotateY(-18deg)";
+    } else if (idx === 3) {
+      transform = isZoomed ? "scale(1.4) perspective(700px) rotateY(18deg)" : "perspective(700px) rotateY(18deg)";
+    } else {
+      transform = isZoomed ? "scale(1.4)" : "none";
+    }
+
+    if (mainImg) {
+      mainImg.style.transform = transform;
+      mainImg.style.filter = filter;
+    }
+    if (galleryImg) {
+      galleryImg.style.transform = transform;
+      galleryImg.style.filter = filter;
+    }
+  };
+
+  const open = (slug: string, initialTab: string, btn?: HTMLElement) => {
+    const pv = getPv();
+    if (!pv || !pv.isConnected || typeof pv.showModal !== "function") return;
+    const catalog = getCatalog();
+    const item = catalog.find((x: any) => x.slug === slug);
+    if (!item) return;
+
+    currentProduct = item;
+    currentAngle = 0;
+    isZoomed = false;
+    from = btn || null;
+
+    // Badges & Title
+    const catEl = pv.querySelector<HTMLElement>("[data-pv-cat]");
+    if (catEl) catEl.textContent = item.category || "Waterproofing";
+    const brandEl = pv.querySelector<HTMLElement>("[data-pv-brand]");
+    if (brandEl) brandEl.textContent = item.brand || "RPC";
+    const titleEl = pv.querySelector<HTMLElement>("[data-pv-title]");
+    if (titleEl) titleEl.textContent = item.fullName || item.name || "";
+    const subtitleEl = pv.querySelector<HTMLElement>("[data-pv-subtitle]");
+    if (subtitleEl) subtitleEl.textContent = item.purpose || item.category || "";
+    const summaryEl = pv.querySelector<HTMLElement>("[data-pv-summary]");
+    if (summaryEl) summaryEl.textContent = item.description || item.purpose || "";
+
+    // Main image & thumbnails
+    const mainImg = pv.querySelector<HTMLImageElement>("[data-pv-main-img]");
+    if (mainImg) {
+      mainImg.src = item.image || "/icon.svg";
+      mainImg.alt = item.name || "";
+      mainImg.style.transform = "none";
+      mainImg.style.filter = "none";
+    }
+    for (let i = 0; i < 4; i++) {
+      const thImg = pv.querySelector<HTMLImageElement>(`[data-pv-thumb-img="${i}"]`);
+      if (thImg) {
+        thImg.src = item.image || "/icon.svg";
+        thImg.alt = item.name || "";
+        if (i === 1) thImg.style.transform = "scaleX(-1)";
+        else if (i === 2) thImg.style.transform = "perspective(200px) rotateY(-18deg)";
+        else if (i === 3) thImg.style.transform = "perspective(200px) rotateY(18deg)";
+        else thImg.style.transform = "none";
+      }
+    }
+
+    // 4 Features in hero
+    const featBox = pv.querySelector<HTMLElement>("[data-pv-features]");
+    if (featBox && Array.isArray(item.features)) {
+      featBox.innerHTML = item.features
+        .map(
+          (f: any) =>
+            `<div class="pv-feat"><span class="pv-feat-ico">${f.icon}</span><span class="pv-feat-title">${f.title}</span></div>`,
+        )
+        .join("");
+    }
+
+    // Pack sizes in hero
+    const packBox = pv.querySelector<HTMLElement>("[data-pv-pack-chips]");
+    if (packBox && Array.isArray(item.packs)) {
+      packBox.innerHTML = item.packs
+        .map(
+          (k: any, idx: number) =>
+            `<button type="button" class="pv-pack-chip${idx === 0 ? " is-active" : ""}" data-pack="${k.size}">${k.size}</button>`,
+        )
+        .join("");
+    }
+
+    // Overview Tab: description, benefits, applications, typical properties
+    const fullDescEl = pv.querySelector<HTMLElement>("[data-pv-full-desc]");
+    if (fullDescEl) fullDescEl.textContent = item.description || item.purpose || "";
+
+    const benefitsEl = pv.querySelector<HTMLElement>("[data-pv-benefits]");
+    if (benefitsEl && Array.isArray(item.benefits)) {
+      benefitsEl.innerHTML = item.benefits
+        .map(
+          (b: string) =>
+            `<li class="pv-benefit-item"><span class="pv-benefit-check"><svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span>${b}</span></li>`,
+        )
+        .join("");
+    }
+
+    const appsEl = pv.querySelector<HTMLElement>("[data-pv-apps]");
+    if (appsEl && Array.isArray(item.applications)) {
+      appsEl.innerHTML = item.applications
+        .map(
+          (a: any) =>
+            `<div class="pv-app-card"><img class="pv-app-img" src="${a.image}" alt="${a.name}" loading="lazy"><span class="pv-app-label">${a.name}</span></div>`,
+        )
+        .join("");
+    }
+
+    const specsTable = pv.querySelector<HTMLElement>("[data-pv-specs]");
+    if (specsTable && Array.isArray(item.properties)) {
+      specsTable.innerHTML = item.properties
+        .map((p: any) => `<tr><th>${p.label}</th><td>${p.value}</td></tr>`)
+        .join("");
+    }
+
+    // 4-Side Images Tab
+    const galleryImg = pv.querySelector<HTMLImageElement>("[data-pv-gallery-img]");
+    if (galleryImg) {
+      galleryImg.src = item.image || "/icon.svg";
+      galleryImg.alt = item.name || "";
+      galleryImg.style.transform = "none";
+      galleryImg.style.filter = "none";
+    }
+
+    // AI Video Tab
+    const videoPlayer = pv.querySelector<HTMLElement>("[data-pv-video-player]");
+    const videoEmpty = pv.querySelector<HTMLElement>("[data-pv-video-empty]");
+    if (videoPlayer && videoEmpty) {
+      videoPlayer.replaceChildren();
+      const src = item.video || "";
+      const yt = src && youtube(src);
+      if (yt) {
+        const f = document.createElement("iframe");
+        f.src = `https://www.youtube-nocookie.com/embed/${yt}`;
+        f.title = `${item.name} video`;
+        f.allow = "encrypted-media; picture-in-picture; fullscreen";
+        f.loading = "lazy";
+        videoPlayer.append(f);
+        videoPlayer.hidden = false;
+        videoEmpty.hidden = true;
+      } else if (src) {
+        const v = document.createElement("video");
+        v.src = src;
+        v.controls = true;
+        v.playsInline = true;
+        v.preload = "metadata";
+        videoPlayer.append(v);
+        videoPlayer.hidden = false;
+        videoEmpty.hidden = true;
+      } else {
+        videoPlayer.hidden = true;
+        videoEmpty.hidden = false;
+      }
+    }
+
+    // Technical Data Sheet Tab
+    const tdsBox = pv.querySelector<HTMLElement>("[data-pv-tds-box]");
+    const tdsEmpty = pv.querySelector<HTMLElement>("[data-pv-tds-empty]");
+    const tdsName = pv.querySelector<HTMLElement>("[data-pv-tds-name]");
+    const tdsOpen = pv.querySelector<HTMLAnchorElement>("[data-pv-tds-open]");
+    const tdsDownload = pv.querySelector<HTMLAnchorElement>("[data-pv-tds-download]");
+    const tdsFrame = pv.querySelector<HTMLIFrameElement>("[data-pv-tds-frame]");
+
+    if (item.pdf) {
+      if (tdsName) tdsName.textContent = item.pdfName || `${item.name} Technical Data Sheet`;
+      if (tdsOpen) tdsOpen.href = item.pdf;
+      if (tdsDownload) {
+        tdsDownload.href = item.pdf;
+        tdsDownload.setAttribute("download", item.pdfName || `${item.slug}-tds.pdf`);
+      }
+      if (tdsFrame) tdsFrame.src = item.pdf;
+      if (tdsBox) tdsBox.hidden = false;
+      if (tdsEmpty) tdsEmpty.hidden = true;
+    } else {
+      if (tdsBox) tdsBox.hidden = true;
+      if (tdsEmpty) tdsEmpty.hidden = false;
+    }
+
+    const tabMap: Record<string, string> = {
+      desc: "overview",
+      overview: "overview",
+      gallery: "overview",
+      "4side": "overview",
+      video: "video",
+      tds: "tds",
+      pdf: "tds",
+    };
+    showTab(pv, tabMap[initialTab] || "overview");
+    applyViewAngle(pv, 0);
+
+    if (env?.lock) env.lock(true);
+    (window as any).__lenis?.stop?.();
+    document.documentElement.classList.add("pv-open", "lenis-stopped");
+    document.body.classList.add("pv-open");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    if (!pv.open) pv.showModal();
+    pv.scrollTop = 0;
+  };
+
+  // Interactions inside modal
+  const pv = getPv();
+  if (pv) {
+    // Prevent wheel and touch events inside the popup modal from bubbling to window / Lenis
+    on(pv, "wheel", (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+
+    on(pv, "touchmove", (e) => {
+      e.stopPropagation();
+    }, { passive: true });
+
+    on(pv, "click", (e) => {
+      const target = e.target as Element;
+
+      // Close button or backdrop
+      if (target === pv || target.closest("[data-pv-close]")) {
+        pv.close();
+        return;
+      }
+
+      // Tab switcher
+      const tabBtn = target.closest<HTMLButtonElement>("[data-pv-tab]");
+      if (tabBtn && tabBtn.dataset.pvTab) {
+        showTab(pv, tabBtn.dataset.pvTab);
+        return;
+      }
+
+      // Upper gallery thumbnails
+      const thumb = target.closest<HTMLButtonElement>("[data-pv-view]");
+      if (thumb && thumb.dataset.pvView !== undefined) {
+        applyViewAngle(pv, Number(thumb.dataset.pvView));
+        return;
+      }
+
+      // 4-side images angle buttons
+      const angleBtn = target.closest<HTMLButtonElement>("[data-pv-set-angle]");
+      if (angleBtn && angleBtn.dataset.pvSetAngle !== undefined) {
+        applyViewAngle(pv, Number(angleBtn.dataset.pvSetAngle));
+        return;
+      }
+
+      // Prev / Next arrows
+      if (target.closest("[data-pv-prev]")) {
+        applyViewAngle(pv, (currentAngle + 3) % 4);
+        return;
+      }
+      if (target.closest("[data-pv-next]")) {
+        applyViewAngle(pv, (currentAngle + 1) % 4);
+        return;
+      }
+
+      // Zoom toggle
+      if (target.closest("[data-pv-zoom]")) {
+        isZoomed = !isZoomed;
+        applyViewAngle(pv, currentAngle);
+        return;
+      }
+
+      // Pack chip selection
+      const chip = target.closest<HTMLButtonElement>("[data-pack]");
+      if (chip) {
+        pv.querySelectorAll(".pv-pack-chip").forEach((c) => c.classList.remove("is-active"));
+        chip.classList.add("is-active");
+        return;
+      }
+
+      // Enquire button
+      const enqBtn = target.closest<HTMLButtonElement>("[data-pv-enquire]");
+      if (enqBtn && currentProduct) {
+        const activePack = pv.querySelector(".pv-pack-chip.is-active")?.textContent?.trim() || currentProduct.packs?.[0]?.size || "";
+        const text = `Hi RPC Constructions, I am interested in ${currentProduct.fullName || currentProduct.name} (${activePack}). Please share pricing and availability.`;
+        const waUrl = `https://wa.me/919047012345?text=${encodeURIComponent(text)}`;
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+        return;
+      }
+    });
+
+    on(pv, "close", () => {
+      if (env?.lock) env.lock(false);
+      (window as any).__lenis?.start?.();
+      document.documentElement.classList.remove("pv-open", "lenis-stopped");
+      document.body.classList.remove("pv-open");
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      pv.querySelector<HTMLElement>("[data-pv-video-player]")?.replaceChildren();
+      const frame = pv.querySelector<HTMLIFrameElement>("[data-pv-tds-frame]");
+      if (frame) frame.src = "";
+      from?.focus();
+    });
+  }
+
+  // Trigger opens from cards
   on(root, "click", (e) => {
-    const b = (e.target as Element).closest<HTMLElement>("[data-view-go]");
-    const box = b?.closest<HTMLElement>("[data-view]");
-    if (b && box) open(box, b.dataset.viewGo ?? "desc", b);
-  });
-  tabs.forEach((t) => on(t, "click", () => show(t.dataset.pvTab ?? "desc")));
-  on(pv, "click", (e) => {
-    const t = e.target as Element;
-    if (t === pv || t.closest("[data-pv-close]")) pv.close();
-  });
-  on(pv, "close", () => {
-    video.replaceChildren();
-    from?.focus();
+    const target = e.target as Element;
+    // Don't intercept if clicked on the Add button or form controls
+    if (target.closest("[data-add]") || target.closest("input, select, textarea")) return;
+
+    // "View Details" button or any data-view-go element
+    const viewBtn = target.closest<HTMLElement>("[data-view-go]");
+    if (viewBtn) {
+      const slug =
+        viewBtn.dataset.slug ||
+        viewBtn.closest<HTMLElement>("[data-view]")?.dataset.view ||
+        viewBtn.closest<HTMLElement>(".pf-row")?.id;
+      if (slug) {
+        e.preventDefault();
+        open(slug, viewBtn.dataset.viewGo ?? "overview", viewBtn);
+        return;
+      }
+    }
+
+    // Clicking on the product card (picture, product title, card)
+    const card = target.closest<HTMLElement>(".pf-row");
+    if (card && card.id) {
+      if (target.closest(".pf-ico") || target.closest(".pf-name") || target.closest(".pf-cat") || target.closest(".pf-sum") || target.closest(".pf-view-btn")) {
+        e.preventDefault();
+        const btn = card.querySelector<HTMLElement>(".pf-view-btn") || card;
+        open(card.id, "overview", btn);
+      }
+    }
   });
 }
 
@@ -223,7 +518,7 @@ type On = (t: EventTarget, type: string, fn: (e: Event) => void, o?: AddEventLis
 /* ------------------------------------------------------------ who makes what, and the list */
 
 function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) => void, on: On) {
-  const none = { showProduct: () => {}, showBrand: () => {} };
+  const none = { showProduct: () => { }, showBrand: () => { } };
   const box = root.querySelector<HTMLElement>(".pf");
   if (!box) return none;
   const mx = box.querySelector<HTMLTableElement>(".pf-mx");
@@ -639,7 +934,7 @@ interface Line {
 function mountEnquiry(root: HTMLElement): Off {
   const dock = root.querySelector<HTMLElement>("[data-rl]");
   const adds = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-add]"));
-  if (!dock || !adds.length) return () => {};
+  if (!dock || !adds.length) return () => { };
   const KEY = "rpc-rate-list";
   const wa = dock.dataset.wa ?? "";
   const count = dock.querySelector<HTMLElement>("[data-rl-n]");

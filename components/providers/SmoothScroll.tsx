@@ -57,6 +57,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     }
 
     const l = new Lenis({ duration: 1.35, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, wheelMultiplier: 0.9, touchMultiplier: 1.4 });
+    (window as any).__lenis = l;
     l.on("scroll", (inst: Lenis) => {
       ScrollTrigger.update();
       sceneState.scrollVelocity = inst.velocity;
@@ -70,6 +71,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       gsap.ticker.remove(tick);
       window.removeEventListener("pointermove", onMove);
       l.destroy();
+      (window as any).__lenis = null;
       setLenis(null);
     };
   }, []);
