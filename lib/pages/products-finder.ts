@@ -267,11 +267,7 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
       <div class="pf-side">${filters(bs, total)}</div>
       <div class="pf-main">
         <label class="pf-search">${search}<span class="sr-only">Search products</span><input type="search" data-search placeholder="Search ${total} products" autocomplete="off" enterkeyhint="search"><button type="button" class="pf-x" data-clear-q aria-label="Clear the search" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label>
-        <div class="pf-state"><p class="pf-status" data-status aria-live="polite">All ${total} products, brand by brand.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button><div class="pf-views" role="group" aria-label="View products as" data-views hidden>
-          <button type="button" data-view-as="grid" aria-pressed="true"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg><span>Cards</span></button>
-          <button type="button" data-view-as="list" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2.5" width="4" height="4" rx="1"/><rect x="2" y="9.5" width="4" height="4" rx="1"/><path d="M8.5 3.5h5.5M8.5 5.8h3.5M8.5 10.5h5.5M8.5 12.8h3.5" stroke-linecap="round"/></svg><span>List</span></button>
-          <button type="button" data-view-as="table" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.5h12M2 6.5h12M2 9.5h12M2 12.5h12" stroke-linecap="round"/></svg><span>Table</span></button>
-        </div></div>
+        <div class="pf-state"><p class="pf-status" data-status aria-live="polite">Showing all ${total} products.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button></div>
         <div class="pf-lists" data-view="grid">${lists}</div>
         <script type="application/json" id="rpc-products-catalog">${JSON.stringify(bs.flatMap((b) => b.products).map((p) => {
           const m = mediaOf(p.slug);
@@ -831,13 +827,6 @@ html.pv-open,body.pv-open{overflow:hidden !important}
 }
 
 /* three ways to look at the catalogue: cards, a list, a table */
-.pf-views{display:inline-flex;gap:2px;margin-left:auto;padding:3px;border-radius:10px;background:rgba(18,34,59,.06)}
-.pf-views[hidden]{display:none}
-.pf-views button{display:inline-flex;align-items:center;gap:.4rem;height:2.3rem;padding:0 .8rem;border:0;border-radius:8px;background:transparent;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--mute);cursor:pointer;transition:background-color .2s,color .2s}
-.pf-views button:hover{color:var(--ink)}
-.pf-views button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(18,34,59,.18)}
-.pf-views button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.pf-views svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:1.4}
 .pf-use,.pf-thead{display:none}
 
 /* list: one product a row, its picture on the left, what it does under its name, the packs on the right */
@@ -894,10 +883,7 @@ html.pv-open,body.pv-open{overflow:hidden !important}
   .pf-lists[data-view="table"] .pf-row:has(.pf-name) .pf-cat{-webkit-line-clamp:1}
   .pf-lists[data-view="table"] .pf-add{right:2.6rem;height:2.1rem;padding:0 .6rem}
   .pf-lists[data-view="table"] .pf-chev{right:.6rem;background:none}
-  .pf-views{margin-left:0}
-  .pf-views button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-  .pf-views button{padding:0 .7rem}
-}
+      }
 
 /* card finish: a clean white card with a soft edge; the kind marked by a coloured dot instead of a band; the picture on a quiet tinted ground;
    neutral pack chips; Add as a soft navy button that fills when pressed */

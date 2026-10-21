@@ -9,9 +9,6 @@ import { SERVICE_CATEGORIES } from "@/lib/methods/doc";
 
 /** a service's place on the services page */
 const slug = (t: string) => t.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-/** "a, b and c" */
-const listed = (xs: readonly string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
-
 /**
  * The footer, about half a screen on a laptop, in the logo's dark blue like
  * the nav bar, rising into the page above with a waterline. On laptops four
@@ -43,11 +40,11 @@ export function Footer() {
             {/* who we are: logo and socials side by side on a phone; a strip above the columns on a tablet; the first column on laptops */}
             <div className="col-span-2 flex flex-wrap items-center justify-between gap-4 md:col-span-3 md:flex-nowrap md:justify-start md:gap-10 lg:col-span-1 lg:block">
               <Link href="/" aria-label={`${brand.name} — home`} className={`inline-block shrink-0 rounded-[12px] ${focus}`}>
-                <span className="block md:hidden"><Wordmark size="sm" /></span>
-                <span className="hidden md:block"><Wordmark size="lg" /></span>
+                <span className="block md:hidden"><Wordmark size="sm" iso /></span>
+                <span className="hidden md:block"><Wordmark size="lg" iso /></span>
               </Link>
               <p className="hidden max-w-[26rem] text-body leading-relaxed text-white/70 md:block lg:mt-4">
-                Waterproofing contractors and builders in Erode since 2012, working across {listed(contact.regions.slice(1))}.
+                Waterproofing contractors and builders in Erode.
               </p>
               <ul className="flex shrink-0 items-center gap-1.5 md:ml-auto lg:ml-0 lg:mt-5" aria-label="Follow us">
                 {socials.map((s) => (
@@ -115,7 +112,7 @@ export function Footer() {
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Clock size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.hours.replace(" IST", "")}
+                  <Clock size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.hours}
                 </li>
               </ul>
             </address>

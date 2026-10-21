@@ -146,11 +146,6 @@ export function blogIndexMarkup(d: { posts: readonly PostData[]; contact: Contac
 </section>
 ${ctaBand(d.contact, {
   title: "Have a leak we haven’t covered?",
-  steps: [
-    ["Send us a photo", "A picture of the stain, crack or damp wall on WhatsApp helps us prepare."],
-    ["We call to ask a few questions", "When it leaks, what is above it and how long it has been there."],
-    ["We confirm the cause on site", "Before suggesting any work, at a visit that costs you nothing."],
-  ],
 })}`;
 }
 
@@ -200,8 +195,8 @@ export function postMarkup(d: { post: PostData; related: readonly PostData[]; co
         }
         <div class="po-help">
           <p class="po-helph">Seeing this at home?</p>
-          <p>Send us a photo on WhatsApp, or book a visit. Inspections are free.</p>
-          <a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book an inspection${arrow}</a>
+          <p>Send us a photo on WhatsApp, or book a visit.</p>
+          <a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>
           <div class="po-quick"><a href="${tel(c.phone)}">Call</a><a href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp</a></div>
         </div>
       </aside>

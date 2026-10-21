@@ -360,7 +360,6 @@ export const highlights = [
   { title: "Engineer-led", body: "Every problem diagnosed by an engineer, not guessed at." },
   { title: "Every surface, in-house", body: "Terraces to sumps, by our own site teams." },
   { title: "One contract", body: "No gaps between waterproofing and building trades." },
-  { title: "Close to your site", body: "From Erode to Coimbatore, Tiruppur and Salem." },
 ] as const;
 
 /** Company story, vision and commitments (About page). Review wording before launch. */

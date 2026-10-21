@@ -75,5 +75,5 @@ export function productCard(slug: string): ProductCard | null {
 
 export const methodInfo = (key: string) => {
   const m = METHODS.find((x) => x.key === key);
-  return m ? { key: m.key, name: m.name, href: `/waterproofing#m-${m.key}` } : null;
+  return m ? { key: m.key, name: m.name, href: "/waterproofing" } : null;
 };

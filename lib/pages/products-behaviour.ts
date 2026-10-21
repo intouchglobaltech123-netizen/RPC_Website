@@ -205,7 +205,7 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       else if (bn && fn) line = `${prods} from ${bn} in ${fn}.`;
       else if (bn) line = `${brands.size > 1 ? prods : `All ${n}`} ${brands.size > 1 ? `from ${bn}` : `${bn} products`}.`;
       else if (fn) line = `${prods} in ${fn}, from ${listing(from)}.`;
-      else line = `All ${n} products, brand by brand.`;
+      else line = `Showing all ${n} products.`;
       status.textContent = line;
     }
     clears.forEach((c) => (c.closest("[data-empty]") ? null : (c.hidden = all)));

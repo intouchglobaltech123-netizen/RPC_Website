@@ -16,10 +16,23 @@ import { visit } from "@/lib/visit";
  * where the film stops and the hook with its two buttons comes in on the left;
  * a panel follows the film and the places under it jump to that leak (lib/monsoon).
  *
- * It opens behind the loading screen on arrival and after a refresh (the RPC
- * cube built, sealed and flown up into the top bar, components/home4/BuildLoader.tsx);
- * coming back from another page it is simply there, already playing.
+ * It opens behind the loading screen, and plays from the start, only when the
+ * home page is the page the browser loaded (arriving on it, or refreshing it):
+ * the RPC cube built, sealed and flown up into the top bar
+ * (components/home4/BuildLoader.tsx). Reached from another page, there is no
+ * loading screen and no film: it rests on the film's last frame, the dry house,
+ * with the hook showing (its places still play each leak).
  */
+
+/** the page the browser itself loaded in this tab (not one reached through the site's links) */
+function loadedHere() {
+  try {
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    return nav ? new URL(nav.name).pathname === location.pathname : true;
+  } catch {
+    return true;
+  }
+}
 export function MonsoonHero() {
   const ref = useRef<HTMLElement>(null);
   const router = useRouter();
@@ -27,8 +40,8 @@ export function MonsoonHero() {
   const html = useMemo(() => monsoonMarkup({ whatsapp: contact.whatsapp }), []);
   const loading = useRef<LoadProgress>({ share: 0, done: false });
   const controls = useRef<MonsoonControls | null>(null);
-  // back from another page (not a refresh): no loading screen
-  const [resume] = useState(() => visit.homeShown);
+  // reached from another page (not a refresh): no loading screen, the film rests on its end
+  const [resume] = useState(() => visit.homeShown || (typeof window !== "undefined" && !loadedHere()));
   const released = useRef(resume);
 
   useEffect(() => {
@@ -38,7 +51,7 @@ export function MonsoonHero() {
   useEffect(() => {
     const section = ref.current;
     if (!section) return;
-    const ctl = mountMonsoon(section, { held: !released.current });
+    const ctl = mountMonsoon(section, { held: !released.current, atEnd: resume });
     controls.current = ctl;
     // the loading screen waits for the type faces and the film's first frames, or three seconds at most
     let live = true;

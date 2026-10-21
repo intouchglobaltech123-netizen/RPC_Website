@@ -167,13 +167,20 @@ export function Nav() {
             href="/"
             aria-label={`${brand.name} — home`}
             tabIndex={visible && !open ? 0 : -1}
-            className={`rn-logo pointer-events-auto inline-flex h-12 items-center rounded-[12px] ${lightLogo ? "text-white" : "text-night"} ${focus}`}
+            className={`rn-logo pointer-events-auto inline-flex min-h-12 items-center rounded-[12px] ${lightLogo ? "text-white" : "text-night"} ${focus}`}
           >
+            {/* as big as the room beside the floating bar allows at each width */}
             <span className="flex lg:hidden">
-              <Wordmark size="sm" tile={lightLogo} />
+              <Wordmark size="lg" tile={lightLogo} iso />
             </span>
-            <span className="hidden lg:flex">
-              <Wordmark size="md" tile={lightLogo} />
+            <span className="hidden lg:flex xl:hidden">
+              <Wordmark size="md" tile={lightLogo} iso />
+            </span>
+            <span className="hidden xl:flex 2xl:hidden">
+              <Wordmark size="xl" tile={lightLogo} iso />
+            </span>
+            <span className="hidden 2xl:flex">
+              <Wordmark size="xxl" tile={lightLogo} iso />
             </span>
           </Link>
         </div>

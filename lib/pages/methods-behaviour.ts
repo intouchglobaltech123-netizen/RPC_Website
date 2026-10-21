@@ -217,7 +217,45 @@ export function mountMethods(root: HTMLElement, env: PageEnv = {}): () => void {
   } catch {
     rainData = [];
   }
-  const offs = [placeMap(root, env), cmp.off, mountRain(root, rainData), mountFilm(root)];
+  // a method's row opens its box over the place's box; the cross, Escape or picking another place closes it
+  let popFrom: HTMLElement | null = null;
+  const closePops = (back = false) => {
+    root.querySelectorAll<HTMLElement>(".wpx-pop:not([hidden])").forEach((p) => (p.hidden = true));
+    if (back) popFrom?.focus();
+    popFrom = null;
+  };
+  const onPop = (e: Event) => {
+    const t = e.target as Element;
+    const open = t.closest<HTMLElement>("[data-pop]");
+    if (open) {
+      const pop = root.querySelector<HTMLElement>(`#${CSS.escape(open.dataset.pop!)}`);
+      if (!pop) return;
+      closePops();
+      pop.hidden = false;
+      popFrom = open;
+      // keep it to the box: if it would need to scroll, leave out the picture, then the "used for" line, then tighten the gaps
+      const body = pop.querySelector<HTMLElement>(".wpx-popb");
+      pop.classList.remove("is-t1", "is-t2", "is-t3");
+      for (const step of ["is-t1", "is-t2", "is-t3"]) {
+        if (!body || body.scrollHeight <= body.clientHeight + 1) break;
+        pop.classList.add(step);
+      }
+      pop.querySelector<HTMLElement>(".wpx-popb")?.scrollTo(0, 0);
+      pop.querySelector<HTMLElement>("[data-pop-close]")?.focus({ preventScroll: true });
+      return;
+    }
+    if (t.closest("[data-pop-close]")) closePops(true);
+    else if (t.closest(".wpx-tab,.wpx-spot")) closePops();
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape" && root.querySelector(".wpx-pop:not([hidden])")) closePops(true);
+  };
+  root.addEventListener("click", onPop);
+  document.addEventListener("keydown", onKey);
+  const offs = [placeMap(root, env), cmp.off, mountRain(root, rainData), mountFilm(root), () => {
+    root.removeEventListener("click", onPop);
+    document.removeEventListener("keydown", onKey);
+  }];
   return () => {
     root.removeEventListener("click", onClickFirst, true);
     root.removeEventListener("click", onClick);
@@ -230,76 +268,27 @@ export function mountMethods(root: HTMLElement, env: PageEnv = {}): () => void {
 /* ------------------------------------------------------------ the film */
 
 /**
- * The land-to-roof film runs with the scroll: as the page moves through its
- * section the film moves through its stages, eased so a flick of the wheel
- * glides rather than jumps. Where people ask for less motion it stays still.
+ * The monsoon house film from the home page's opening, playing on a loop. It
+ * plays only while it is on screen, and where people ask for less motion it
+ * stays on its first frame.
  */
 function mountFilm(root: HTMLElement): () => void {
-  const sec = root.querySelector<HTMLElement>("[data-film-scroll]");
-  const vid = sec?.querySelector<HTMLVideoElement>("video[data-film]");
-  const bar = sec?.querySelector<HTMLElement>(".wp-fbar");
-  if (!sec || !vid || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
-  let raf = 0;
-  let shown = 0;
-  let ready = false;
-  const target = () => {
-    const r = sec.getBoundingClientRect();
-    const run = r.height - window.innerHeight;
-    return Math.min(1, Math.max(0, run > 0 ? -r.top / run : 0));
-  };
-  const tick = () => {
-    raf = 0;
-    const p = target();
-    shown += (p - shown) * 0.18;
-    if (Math.abs(p - shown) < 0.001) shown = p;
-    bar?.style.setProperty("--p", shown.toFixed(4));
-    if (ready && vid.duration) {
-      const t = shown * (vid.duration - 0.05);
-      if (Math.abs(vid.currentTime - t) > 0.02) vid.currentTime = t;
-    }
-    if (shown !== p) raf = requestAnimationFrame(tick);
-  };
-  const kick = () => {
-    if (!raf) raf = requestAnimationFrame(tick);
-  };
-  const onMeta = () => {
-    ready = true;
-    kick();
-  };
-  // phones only show frames of a video that has started once: start it and stop it straight away
-  const prime = () => void vid.play().then(() => vid.pause()).catch(() => {});
-  vid.addEventListener("loadedmetadata", onMeta);
-  // the whole film is fetched once and played from memory, so every scroll step can jump straight to its frame
-  let blobUrl = "";
-  let gone = false;
-  const sources = Array.from(vid.querySelectorAll("source"));
-  const pick = sources.find((x) => vid.canPlayType(x.type)) ?? sources[0];
-  if (pick)
-    void fetch(pick.src)
-      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
-      .then((b) => {
-        if (gone) return;
-        blobUrl = URL.createObjectURL(b);
-        ready = false;
-        vid.src = blobUrl;
-        vid.load();
-        prime();
-      })
-      .catch(() => {
-        if (vid.readyState >= 1) onMeta();
-        prime();
-      });
-  window.addEventListener("scroll", kick, { passive: true });
-  window.addEventListener("resize", kick);
-  kick();
-  return () => {
-    gone = true;
-    if (blobUrl) URL.revokeObjectURL(blobUrl);
-    cancelAnimationFrame(raf);
-    vid.removeEventListener("loadedmetadata", onMeta);
-    window.removeEventListener("scroll", kick);
-    window.removeEventListener("resize", kick);
-  };
+  const vid = root.querySelector<HTMLVideoElement>("video[data-loop]");
+  if (!vid) return () => {};
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    vid.removeAttribute("autoplay");
+    vid.pause();
+    return () => {};
+  }
+  const io = new IntersectionObserver(
+    ([e]) => {
+      if (e?.isIntersecting) void vid.play().catch(() => {});
+      else vid.pause();
+    },
+    { threshold: 0.2 },
+  );
+  io.observe(vid);
+  return () => io.disconnect();
 }
 
 /* ------------------------------------------------------------ the method picker */

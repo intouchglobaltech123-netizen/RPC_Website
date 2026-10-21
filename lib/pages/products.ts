@@ -22,9 +22,10 @@ import { FANCY_SELECT_CSS } from "./fancy-select";
 import { PRODUCT_COUNT, rateLink, type Product } from "../products";
 import { brandInfo, brandMark, jobGroup, jobs, type JobView } from "../products/brands";
 import { cap, fullName, shortName, useTerms, usesNote } from "../products/compare";
-import { arrow, ctaBand, esc, listing, mark, secHead, type ContactInfo } from "./kit";
+import { arrow, ctaBand, esc, listing, mark, type ContactInfo } from "./kit";
 import { enquiryMarkup, FINDER_CSS, finderMarkup } from "./products-finder";
-import { brandsMarqueeHtml, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
+import { BRAND_LOGOS, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
+import { brandDropdown, COMPARE_CSS, type CmpBrand } from "./products-compare";
 
 export interface ProductsData {
   products: readonly Product[];
@@ -108,33 +109,44 @@ function compareRows(a: Side, b: Side) {
  * the product, and the table below says, row by row, what each is; rows the
  * two share are marked "Same".
  */
-function faceOff(j: JobView, c: ContactInfo) {
+/** one job's comparison; `hidden` until its job is picked, so only one shows at a time, scripts or not */
+function faceOff(j: JobView, c: ContactInfo, hidden = false) {
   const n = j.products.length;
   const pa = j.brands[0]!.products[0]!;
   const pb = j.brands[1]!.products[0]!;
   const sides: Record<string, Side> = Object.fromEntries(j.products.map((p) => [p.slug, sideOf(p, c)]));
   const A = sides[pa.slug]!;
   const B = sides[pb.slug]!;
-  // every product of the job in one list, brand by brand, for each column to pick from
-  const options = (sel: string) =>
-    j.brands.map((br) => `<optgroup label="${esc(br.name)}">${br.products.map((p) => `<option value="${p.slug}"${p.slug === sel ? " selected" : ""}>${esc(shortName(p))}</option>`).join("")}</optgroup>`).join("");
-  const pick = (s: "a" | "b", sel: string) =>
-    `<th scope="col" data-s="${s}"><label class="cmp-pick"><span>Product ${s === "a" ? 1 : 2}</span><select class="h2-sel" data-h2="${s}">${options(sel)}</select></label></th>`;
+  // the job's brands, for the two brand lists over the table
+  const brands: CmpBrand[] = j.brands.map((br) => ({ name: br.name, logo: BRAND_LOGOS[br.name], color: brandMark(br.name), count: br.products.length }));
+  // each column picks a product of its brand: a list per brand, the one for the brand picked showing
+  const pick = (s: "a" | "b", sel: Product) =>
+    `<th scope="col" data-s="${s}"><div class="cmp-pick"><span>Product ${s === "a" ? 1 : 2}</span>${j.brands
+      .map(
+        (br) =>
+          `<div class="cmp-prod" data-for-brand="${esc(br.name)}"${br.name === sel.brand ? "" : " hidden"}>${
+            br.products.length > 1
+              ? `<label><span class="sr-only">${esc(br.name)} product</span><select class="h2-sel" data-h2="${s}">${br.products.map((p) => `<option value="${p.slug}"${p.slug === sel.slug ? " selected" : ""}>${esc(shortName(p))}</option>`).join("")}</select></label>`
+              : `<p class="cmp-one">${esc(shortName(br.products[0]!))}</p>`
+          }</div>`,
+      )
+      .join("")}</div></th>`;
   const rate = (s: "a" | "b", x: Side) =>
     `<td data-s="${s}"><a class="fo-rate" data-s="${s}" href="${esc(x.rate)}" target="_blank" rel="noopener noreferrer">Ask the rate<span class="h2-rn">for ${esc(x.n)}</span></a></td>`;
-  const data = JSON.stringify({ sides }).replace(/</g, "\\u003c");
-  return `<article class="fo-panel" id="job-${j.key}" data-job="${j.key}" data-a="${pa.slug}" data-b="${pb.slug}" aria-labelledby="fo-t-${j.key}">
+  const data = JSON.stringify({ sides, brands }).replace(/</g, "\\u003c");
+  return `<article class="fo-panel" id="job-${j.key}" data-job="${j.key}" data-a="${pa.slug}" data-b="${pb.slug}" aria-labelledby="fo-t-${j.key}"${hidden ? " hidden" : ""}>
   <header class="fo-ph">
     <div>
       <h3 class="fo-jt sr-only" id="fo-t-${j.key}">${esc(j.name)}</h3>
-      <p class="fo-k">${n} products from ${esc(listing(j.brands.map((b) => b.name)))}. Choose any two below.</p>
+      <p class="fo-k">${n} products from ${esc(listing(j.brands.map((b) => b.name)))}. Pick two brands, then a product from each.</p>
     </div>
     <a class="fo-all" href="${esc(rateLink(c.whatsapp, j.products))}" target="_blank" rel="noopener noreferrer">Ask for all ${n} rates</a>
   </header>
+  <div class="bc-picks">${brandDropdown(`bd-${j.key}-a`, "Brand 1", brands, pa.brand)}<span class="bc-vs" aria-hidden="true">vs</span>${brandDropdown(`bd-${j.key}-b`, "Brand 2", brands, pb.brand, pa.brand)}</div>
   <div class="cmp-wrap" aria-live="polite">
     <table class="cmp-t">
       <caption class="sr-only">${esc(j.name)}: two products compared</caption>
-      <thead><tr><td></td>${pick("a", pa.slug)}${pick("b", pb.slug)}</tr></thead>
+      <thead><tr><td></td>${pick("a", pa)}${pick("b", pb)}</tr></thead>
       <tbody>${compareRows(A, B)}</tbody>
       <tfoot><tr><td></td>${rate("a", A)}${rate("b", B)}</tr></tfoot>
     </table>
@@ -158,7 +170,7 @@ function byJobMarkup(js: readonly JobView[], c: ContactInfo) {
       </div>
       <label class="fo-pickjob"><span>Job</span><select data-job-select>${jobOptions}</select></label>
     </div>
-    <div class="fo"><div class="fo-stage">${js.map((j) => faceOff(j, c)).join("\n")}</div></div>
+    <div class="fo"><div class="fo-stage">${js.map((j, i) => faceOff(j, c, i > 0)).join("\n")}</div></div>
   </div>
 </section>`;
 }
@@ -176,21 +188,14 @@ export function productsPageMarkup(d: ProductsData) {
         <h1 class="pg-h1">Waterproofing products and construction chemicals, by&nbsp;brand.</h1>
       </div>
       <div class="pr-headside">
-        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#find">Find a product${arrow}</a><a class="pg-btn pg-btn--line" href="#by-job">Compare brands by job</a><a class="pg-btn pg-btn--line" href="#brands">Brands</a></div>
+        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#by-job">Compare brands${arrow}</a></div>
       </div>
     </div>
   </div>
 </header>`;
-  const brands = `<section class="pg-sec pg-sec--stone pr-bsec" id="brands" aria-labelledby="pr-b-h">
-  <div class="pg-wrap">
-    ${secHead({ label: "Brands", title: "The brands in our methods guide.", id: "pr-b-h" })}
-    ${brandsMarqueeHtml()}
-  </div>
-</section>`;
   return `${head}
 ${finderMarkup(bs, d.contact, js, PRODUCT_COUNT)}
 ${byJobMarkup(js, d.contact)}
-${brands}
 ${ctaBand(d.contact, {
   title: "Need a quantity or a rate?",
   steps: [
@@ -202,7 +207,7 @@ ${ctaBand(d.contact, {
 ${enquiryMarkup(d.contact)}`;
 }
 
-export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS + `
+export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS + COMPARE_CSS + `
 .pr-head{border-bottom:1px solid var(--line);padding-bottom:clamp(1.6rem,4vh,2.6rem)}
 .pr-bsec{padding-block:clamp(2rem,5vh,3.5rem);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .pr-bsec .pg-shead{margin-bottom:1.4rem}
@@ -228,6 +233,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 
 /* a job */
 .fo-panel{padding:clamp(1.2rem,2.2vw,1.8rem);border-radius:8px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -50px rgba(18,34,59,.55);scroll-margin-top:calc(var(--nav-bar,64px) + 1rem)}
+.fo-panel[hidden]{display:none}
 .fo-panel + .fo-panel{margin-top:1.2rem}
 .fo-ph{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:.8rem 1.4rem}
 .fo-jt{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.25;letter-spacing:-.01em}
