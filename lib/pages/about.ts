@@ -37,174 +37,48 @@ const markOf = (t: string) =>
 
 
 /**
- * The towns we work in: straight-line distance (km) and compass bearing (degrees) from the Erode
- * office, with operational corridor specializations.
+ * How to reach the office: pick a town, then one of four places people
+ * usually set out from there (its bus stand, its railway station and so on),
+ * and Google Maps shows the road route to our Perundurai Road office. The
+ * starting places are public landmarks; the routes and times are Google's.
  */
-const REACH: readonly { town: string; km: number; deg: number }[] = [
-  { town: "Erode", km: 0, deg: 0 },
-  { town: "Tiruppur", km: 48, deg: 238 },
-  { town: "Salem", km: 59, deg: 52 },
-  { town: "Coimbatore", km: 91, deg: 247 },
-  { town: "Chennai", km: 338, deg: 55 },
+const ROUTES: readonly { town: string; from: readonly (readonly [label: string, place: string])[] }[] = [
+  { town: "Erode", from: [["From the central bus stand", "Erode Central Bus Terminus, Erode"], ["From the railway station", "Erode Junction Railway Station, Erode"], ["From Perundurai", "Perundurai Bus Stand, Perundurai"], ["From Bhavani", "Bhavani Bus Stand, Bhavani"]] },
+  { town: "Tiruppur", from: [["From the new bus stand", "Tiruppur New Bus Stand, Tiruppur"], ["From the old bus stand", "Tiruppur Old Bus Stand, Tiruppur"], ["From the railway station", "Tiruppur Railway Station, Tiruppur"], ["From Avinashi", "Avinashi Bus Stand, Avinashi"]] },
+  { town: "Coimbatore", from: [["From Gandhipuram bus stand", "Gandhipuram Central Bus Stand, Coimbatore"], ["From the railway station", "Coimbatore Junction Railway Station"], ["From the airport", "Coimbatore International Airport"], ["From Ukkadam bus stand", "Ukkadam Bus Stand, Coimbatore"]] },
+  { town: "Salem", from: [["From the new bus stand", "Salem New Bus Stand, Salem"], ["From the old bus stand", "Salem Old Bus Stand, Salem"], ["From the railway station", "Salem Junction Railway Station"], ["From Five Roads", "Five Roads, Salem"]] },
+  { town: "Chennai", from: [["From Koyambedu bus stand", "Chennai Mofussil Bus Terminus, Koyambedu, Chennai"], ["From Kilambakkam bus stand", "Kilambakkam Bus Terminus, Chennai"], ["From Chennai Central station", "Chennai Central Railway Station"], ["From the airport", "Chennai International Airport"]] },
 ];
 
-const REACH_SPECS: Record<string, { transit: string; focus: string; corridor: string }> = {
-  Tiruppur: {
-    transit: "~1 hr from office",
-    focus: "Textile processing mills, industrial units & commercial roof waterproofing",
-    corridor: "Kongu Industrial Belt",
-  },
-  Salem: {
-    transit: "~1.2 hrs from office",
-    focus: "Steel & manufacturing complexes, residential developments & basements",
-    corridor: "Central Manufacturing Corridor",
-  },
-  Coimbatore: {
-    transit: "~1.8 hrs from office",
-    focus: "High-rise apartments, commercial towers, villas & deep foundation sumps",
-    corridor: "Western Commercial Hub",
-  },
-  Chennai: {
-    transit: "Scheduled dedicated site teams",
-    focus: "Coastal waterproofing systems, commercial complexes & institutional builds",
-    corridor: "Metropolitan Coastal Corridor",
-  },
-};
+const embedRoute = (from: string, to: string) => `https://maps.google.com/maps?saddr=${encodeURIComponent(from)}&daddr=${encodeURIComponent(to)}&output=embed`;
+const openRoute = (from: string, to: string) => `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=driving`;
 
-/** which way a bearing points, in words */
-const toward = (deg: number) => ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"][Math.round(deg / 45) % 8]!;
-
-/**
- * Where we work: engineered regional coverage with an illuminated Tamil Nadu
- * dispatch radar map, headquarters command card, and operational corridor cards.
- */
-function reachMarkup(regions: readonly string[], hq: string, address: string, hours: string, maps: string) {
-  const towns = REACH.filter((r) => regions.includes(r.town) && r.km).sort((x, y) => x.km - y.km);
-  const maxKm = Math.max(...towns.map((t) => t.km), 338);
-
-  const pointer = (deg: number) =>
-    `<svg class="ab-tway" viewBox="0 0 16 16" aria-hidden="true" style="transform:rotate(${deg}deg)"><path d="M8 13V3M4.2 6.8 8 3l3.8 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-
-  const card = (r: (typeof REACH)[number]) => {
-    const spec = REACH_SPECS[r.town] ?? {
-      transit: "Direct transit",
-      focus: "Waterproofing and structural engineering inspection",
-      corridor: "Regional Corridor",
-    };
-    const pct = Math.max(10, Math.round((r.km / maxKm) * 100));
-
-    return `<li class="ab-corridor-card">
-      <div class="ab-cc-top">
-        <div>
-          <span class="ab-cc-corridor">${esc(spec.corridor)}</span>
-          <h3 class="ab-cc-name">${esc(r.town)}</h3>
-        </div>
-        <div class="ab-cc-dist">
-          <span class="ab-cc-km"><b>${r.km}</b><small>km</small></span>
-          <span class="ab-cc-bearing">${pointer(r.deg)}<span>${toward(r.deg)}</span></span>
-        </div>
-      </div>
-      
-      <div class="ab-cc-meter" aria-hidden="true">
-        <div class="ab-cc-track"><div class="ab-cc-fill" style="width:${pct}%"></div></div>
-        <span class="ab-cc-transit">${esc(spec.transit)}</span>
-      </div>
-
-      <p class="ab-cc-focus">${esc(spec.focus)}</p>
-    </li>`;
-  };
-
-  const radarSvg = `<svg class="ab-radar" viewBox="0 0 500 240" role="img" aria-label="Regional coverage radar map centered on Erode">
-    <defs>
-      <radialGradient id="ab-glow" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#2756a0" stop-opacity="0.32"/>
-        <stop offset="65%" stop-color="#0b2350" stop-opacity="0.1"/>
-        <stop offset="100%" stop-color="#0b2350" stop-opacity="0"/>
-      </radialGradient>
-      <pattern id="ab-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-        <path d="M20 0H0V20" fill="none" stroke="rgba(245,240,230,0.04)" stroke-width="0.8"/>
-      </pattern>
-    </defs>
-
-    <rect width="500" height="240" rx="14" fill="#0c1b33"/>
-    <rect width="500" height="240" rx="14" fill="url(#ab-grid)"/>
-    <circle cx="250" cy="120" r="120" fill="url(#ab-glow)"/>
-
-    <circle cx="250" cy="120" r="38" class="ab-r-ring"/>
-    <circle cx="250" cy="120" r="72" class="ab-r-ring"/>
-    <circle cx="250" cy="120" r="120" class="ab-r-ring ab-r-ring--outer"/>
-
-    <line x1="70" y1="120" x2="430" y2="120" class="ab-r-cross"/>
-    <line x1="250" y1="15" x2="250" y2="225" class="ab-r-cross"/>
-
-    <text x="253" y="86" class="ab-r-tag">50 KM</text>
-    <text x="253" y="52" class="ab-r-tag">100 KM</text>
-    <text x="253" y="14" class="ab-r-tag">350 KM REACH</text>
-
-    <line x1="250" y1="120" x2="220" y2="139" class="ab-r-ray"/>
-    <line x1="250" y1="120" x2="187" y2="147" class="ab-r-ray"/>
-    <line x1="250" y1="120" x2="286" y2="92" class="ab-r-ray"/>
-    <line x1="250" y1="120" x2="347" y2="52" class="ab-r-ray ab-r-ray--chennai"/>
-
-    <circle cx="250" cy="120" r="11" class="ab-r-pulse"/>
-    <circle cx="250" cy="120" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.8"/>
-    <text x="250" y="103" text-anchor="middle" class="ab-r-hqname">ERODE (HQ)</text>
-
-    <circle cx="220" cy="139" r="4" class="ab-r-node"/>
-    <text x="224" y="156" text-anchor="middle" class="ab-r-tname">Tiruppur</text>
-    <text x="224" y="167" text-anchor="middle" class="ab-r-tdist">48 km</text>
-
-    <circle cx="187" cy="147" r="4" class="ab-r-node"/>
-    <text x="179" y="146" text-anchor="end" class="ab-r-tname">Coimbatore</text>
-    <text x="179" y="156" text-anchor="end" class="ab-r-tdist">91 km</text>
-
-    <circle cx="286" cy="92" r="4" class="ab-r-node"/>
-    <text x="294" y="91" text-anchor="start" class="ab-r-tname">Salem</text>
-    <text x="294" y="101" text-anchor="start" class="ab-r-tdist">59 km</text>
-
-    <circle cx="347" cy="52" r="4" class="ab-r-node ab-r-node--chennai"/>
-    <text x="355" y="51" text-anchor="start" class="ab-r-tname">Chennai</text>
-    <text x="355" y="61" text-anchor="start" class="ab-r-tdist">338 km</text>
-
-    <g class="ab-r-compass" transform="translate(28, 28)">
-      <circle cx="0" cy="0" r="13" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)"/>
-      <path d="M0 -9 L2.5 1.5 L0 0 L-2.5 1.5 Z" fill="#f59e0b"/>
-      <path d="M0 9 L2.5 -1.5 L0 0 L-2.5 -1.5 Z" fill="rgba(255,255,255,0.25)"/>
-      <text x="0" y="-11" text-anchor="middle" class="ab-r-north">N</text>
-    </g>
-
-    <g transform="translate(18, 226)">
-      <circle cx="3" cy="-3" r="2.5" fill="#22c55e"/>
-      <text x="11" y="0" class="ab-r-status">Active Regional Deployment Grid · Tamil Nadu</text>
-    </g>
-  </svg>`;
-
-  return `<div class="ab-reach2">
-    <div class="ab-radar-panel">
-      <div class="ab-radar-canvas-wrap">
-        ${radarSvg}
-      </div>
-      <div class="ab-hq-hud">
-        <div class="ab-hq-hud-main">
-          <div class="ab-hq-hud-title">
-            <span class="ab-hq-dot"></span>
-            <b>Head Office · ${esc(hq)}</b>
-            <span class="ab-hq-coords">11.34°N · 77.72°E</span>
-          </div>
-          <p class="ab-hq-hud-sub">${esc(address)}</p>
-        </div>
-        <div class="ab-hq-hud-actions">
-          <span class="ab-hq-hud-hrs">${esc(hours.replace(" IST", ""))}</span>
-          <a class="ab-hq-hud-btn" href="${esc(maps)}" target="_blank" rel="noopener noreferrer">
-            <span>Directions</span>
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </div>
+function routesMarkup(dest: string, regions: readonly string[]) {
+  const towns = ROUTES.filter((r) => regions.includes(r.town));
+  const first = towns[0]!;
+  const [fl, fp] = first.from[0]!;
+  const pin = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.8-4.3 4.8-8a4.8 4.8 0 0 0-9.6 0c0 3.7 4.8 8 4.8 8z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.5" r="1.7" fill="currentColor"/></svg>`;
+  const short = (l: string) => { const x = l.replace(/^From (the )?/, ""); return x.charAt(0).toUpperCase() + x.slice(1); };
+  return `<div class="ab-go" data-routes data-dest="${esc(dest)}">
+    <div class="ab-go-side">
+      <h3 class="ab-go-h">How to reach our office</h3>
+      <div class="ab-go-towns" role="tablist" aria-label="Towns">${towns
+        .map((t, i) => `<button type="button" role="tab" class="ab-go-town" data-town="${esc(t.town)}" aria-selected="${i === 0}">${esc(t.town)}</button>`)
+        .join("")}</div>
+      ${towns
+        .map(
+          (t, i) => `<ul class="ab-go-from" data-from-town="${esc(t.town)}"${i === 0 ? "" : " hidden"}>${t.from
+            .map(
+              ([label, place], j) =>
+                `<li><button type="button" class="ab-go-route" data-place="${esc(place)}" data-label="${esc(`${label.replace(/^From /, "")}, ${t.town}`)}" aria-pressed="${i === 0 && j === 0}">${pin}<span><b>${esc(short(label))}</b><small>${esc(place)}</small></span></button></li>`,
+            )
+            .join("")}</ul>`,
+        )
+        .join("")}
+      <a class="ab-go-open" href="${esc(openRoute(fp, dest))}" target="_blank" rel="noopener noreferrer" data-open>Open this route in Google Maps${arrow}</a>
     </div>
-    <div class="ab-corridors-col">
-      <ul class="ab-towns">${towns.map(card).join("")}</ul>
-      <p class="ab-rnote">Straight-line distances and compass bearings from our Perundurai Road office in Erode. Free on-site inspection anywhere around Erode and Coimbatore.</p>
+    <div class="ab-go-map">
+      <iframe title="Road route from ${esc(`${fl.replace(/^From /, "")}, ${first.town}`)} to our office" src="${esc(embedRoute(fp, dest))}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-map></iframe>
     </div>
   </div>`;
 }
@@ -219,6 +93,8 @@ export function aboutMarkup(d: AboutData) {
         ${mark("01", "About RPC Constructions")}
         <h1 class="pg-h1" data-rv="words">${words("Waterproofing and construction in Erode since&nbsp;2012.")}</h1>
         <p class="pg-intro" data-rv>We keep buildings dry. RPC Constructions repairs leaks in buildings already standing and builds new homes, offices and factories with their waterproofing designed in, from our office on Perundurai Road, Erode.</p>
+      </div>
+      <div class="ab-headside">
         <div class="pg-actions" data-rv><a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a><a class="pg-btn pg-btn--line" href="/services" data-internal>Our services</a></div>
       </div>
     </div>
@@ -265,13 +141,14 @@ export function aboutMarkup(d: AboutData) {
 
   const where = `<section class="pg-sec pg-sec--stone ab-where" aria-labelledby="ab-where-h">
   <div class="pg-wrap">
-    <div class="ab-wgrid">
-      <div class="ab-wcopy">
+    <div class="ab-whead">
+      <div>
         ${mark("04", "Where we work")}
-        <h2 class="pg-h2" id="ab-where-h">Waterproofing contractors in ${esc(listing(c.regions))}.</h2>
+        <h2 class="pg-h2" id="ab-where-h">${["One", "Two", "Three", "Four", "Five", "Six", "Seven"][c.regions.length - 1] ?? c.regions.length} towns, one office in&nbsp;${esc(hq ?? "Erode")}.</h2>
       </div>
+      <p class="ab-wlede">Waterproofing contractors in ${esc(listing(c.regions))}, working from our office at ${esc(c.address.split(",").slice(0, 2).join(",").trim())}.</p>
     </div>
-    ${reachMarkup(c.regions, hq ?? "Erode", c.address.split(",").slice(0, 2).join(",").trim(), c.hours, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.mapQuery)}`)}
+    ${routesMarkup(c.mapQuery, c.regions)}
   </div>
 </section>`;
 
@@ -282,12 +159,43 @@ export function aboutMarkup(d: AboutData) {
       ["Meet an engineer on site", "The first inspection is free, anywhere around Erode and Coimbatore."],
       ["Decide in your own time", "With the cause, the method and the price in front of you."],
     ],
+    reach: true,
   })}`;
 }
 
 export const ABOUT_CSS = `
+/* how to reach the office: towns and starting places on the left, Google's road route on the right */
+.ab-go{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.3fr);gap:0;margin-top:clamp(1rem,2.2vh,1.6rem);overflow:hidden;border-radius:18px;background:var(--card,#f5f0e6);box-shadow:inset 0 0 0 1px var(--line)}
+.ab-go-side{display:flex;flex-direction:column;gap:.9rem;padding:clamp(1.1rem,2vw,1.5rem)}
+.ab-go-k{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
+.ab-go-h{margin:0;font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
+.ab-go-towns{display:flex;flex-wrap:wrap;gap:.35rem}
+.ab-go-town{height:2.3rem;padding:0 .9rem;border:0;border-radius:999px;background:rgba(18,34,59,.06);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);cursor:pointer;transition:background-color .2s,color .2s}
+.ab-go-town:hover{background:rgba(18,34,59,.1)}
+.ab-go-town[aria-selected=true]{background:var(--navy);color:#f5f0e6}
+.ab-go-town:focus-visible,.ab-go-route:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ab-go-from{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem;margin:0;padding:0;list-style:none}
+.ab-go-from[hidden]{display:none}
+.ab-go-route{display:flex;align-items:flex-start;gap:.55rem;width:100%;height:100%;padding:.5rem .75rem;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font:inherit;text-align:left;cursor:pointer;transition:box-shadow .2s,background-color .2s}
+.ab-go-route svg{flex:none;width:1.1rem;height:1.1rem;margin-top:.15rem;color:var(--accent)}
+.ab-go-route span{display:flex;flex-direction:column;min-width:0}
+.ab-go-route b{font-size:var(--fs-body);font-weight:600;color:var(--ink)}
+.ab-go-route small{font-size:var(--fs-body);color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ab-go-route:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
+.ab-go-route[aria-pressed=true]{background:var(--navy);box-shadow:none}
+.ab-go-route[aria-pressed=true] b,.ab-go-route[aria-pressed=true] svg{color:#fff}
+.ab-go-route[aria-pressed=true] small{color:rgba(245,240,230,.7)}
+.ab-go-open{display:inline-flex;align-items:center;gap:.4rem;margin-top:auto;font-size:var(--fs-body);font-weight:600;color:var(--accent);text-decoration:none}
+.ab-go-open:hover{text-decoration:underline;text-underline-offset:3px}
+.ab-go-open .pg-ar{width:.9rem;height:.9rem}
+.ab-go-map{position:relative;min-height:21rem;background:#d9d0bf}
+.ab-go-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media (max-width:899px){.ab-go{grid-template-columns:minmax(0,1fr)}.ab-go-map{min-height:20rem}}
+
 /* the opening: the h1 and its intro */
-.ab-headgrid{max-width:52rem}
+.ab-headgrid{display:grid;grid-template-columns:minmax(0,52rem) auto;justify-content:space-between;align-items:end;gap:1.4rem clamp(2rem,5vw,5rem)}
+.ab-headside .pg-actions{flex-wrap:nowrap;justify-content:flex-end;margin:0}
+@media (max-width:1099px){.ab-headgrid{grid-template-columns:minmax(0,1fr)}.ab-headside .pg-actions{justify-content:flex-start;flex-wrap:wrap}}
 .ab-headcopy .pg-mark{margin-bottom:.9rem}
 
 /* who we are */
@@ -316,7 +224,11 @@ export const ABOUT_CSS = `
 .ab-wgrid{display:block;max-width:52rem}
 .ab-wgrid .pg-h2{margin-top:.7rem}
 .ab-wgrid .ab-p{margin:0}
-.ab-where{padding:clamp(2rem,4vh,3.2rem) 0}
+.ab-where{padding:clamp(1.6rem,3.5vh,2.6rem) 0}
+.ab-whead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.8rem 3rem;align-items:end}
+.ab-whead .pg-h2{margin-top:.6rem;max-width:16ch;text-wrap:balance}
+.ab-wlede{margin:0;max-width:34rem;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
+@media (max-width:899px){.ab-whead{grid-template-columns:minmax(0,1fr)}}
 .ab-wgrid{display:block;max-width:52rem}
 .ab-wgrid .pg-h2{margin-top:.4rem}
 .ab-reach2{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1.18fr);gap:1.2rem clamp(1.2rem,2.5vw,2rem);align-items:stretch;margin-top:clamp(1.2rem,2.5vh,2rem)}
@@ -339,13 +251,6 @@ export const ABOUT_CSS = `
 .ab-r-tdist{font-family:var(--sans);font-size:9px;font-weight:600;fill:rgba(245,240,230,.6)}
 .ab-r-north{font-family:var(--sans);font-size:7.5px;font-weight:800;fill:#f59e0b}
 .ab-r-status{font-family:var(--sans);font-size:8.5px;font-weight:500;letter-spacing:.03em;fill:rgba(245,240,230,.7)}
-/* phones: the map is small, so the town names grow, Tiruppur and Coimbatore drop below their dots, and the ring and status labels step aside */
-@media (max-width:599px){
-  .ab-r-tname{font-size:16px}
-  .ab-r-tdist{font-size:13px}
-  .ab-r-hqname{font-size:12px}
-  .ab-r-tag,.ab-r-status{display:none}
-}
 
 .ab-hq-hud{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem 1.1rem;background:rgba(18,34,59,.7);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,.08);color:#f5f0e6}
 .ab-hq-hud-main{min-width:0;display:flex;flex-direction:column;gap:.15rem}

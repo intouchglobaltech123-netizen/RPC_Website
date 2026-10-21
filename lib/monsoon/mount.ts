@@ -19,6 +19,8 @@ import { film, type ZoneKey } from "./copy";
 export interface MonsoonOptions {
   /** wait under the loading screen: the film starts on release() */
   held?: boolean;
+  /** coming back to the home page: rest on the film's last frame, the dry house, with the hook showing */
+  atEnd?: boolean;
 }
 export interface MonsoonControls {
   release(): void;
@@ -263,6 +265,19 @@ export function mountMonsoon(section: HTMLElement, opts: MonsoonOptions = {}): M
   update(true);
   if (stopped) setEnded(true, false);
 
+  if (opts.atEnd) {
+    // already played this visit: no film, just its last frame and the hook
+    live = true;
+    section.classList.add("is-live");
+    setEnded(true);
+    const toEnd = () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) video.currentTime = Math.max(0, video.duration - 0.05);
+      update(true);
+    };
+    if (video.readyState >= 1) toEnd();
+    else video.addEventListener("loadedmetadata", toEnd, { once: true });
+  }
+
   function release() {
     if (live) return;
     live = true;
@@ -270,7 +285,7 @@ export function mountMonsoon(section: HTMLElement, opts: MonsoonOptions = {}): M
     if (!stopped) video!.preload = "auto";
     sync();
   }
-  if (!opts.held) release();
+  if (!opts.held && !opts.atEnd) release();
 
   return {
     release,

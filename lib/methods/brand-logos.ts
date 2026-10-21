@@ -27,6 +27,10 @@ export const BRAND_LOGOS: Readonly<Record<string, string>> = {
   Penetron: "penetron.png",
   "MC-Bauchemie": "mc-bauchemie.png",
   Kryton: "kryton.png",
+  "Berger HomeShield": "berger-homeshield.png",
+  /** the products list's Berger products are its HomeShield range */
+  Berger: "berger-homeshield.png",
+  Renacon: "renacon.png",
 };
 
 /** Render the 2x duplicate track for infinite smooth scroll */

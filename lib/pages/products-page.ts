@@ -18,6 +18,7 @@
  * table is shown one under another, and each product keeps its rate link.
  */
 import { fancySelect } from "./fancy-select";
+import { wireDropdown, type CmpBrand } from "./products-compare";
 import { rateHref } from "../products/rate";
 import type { PageEnv } from "./behaviour";
 
@@ -76,37 +77,7 @@ export function mountProducts(root: HTMLElement, env: PageEnv = {}): Off {
   offs.push(mountEnquiry(root));
   mountViewer(root, on, env);
   mountZoom(root, on);
-  mountViews(root, on);
   return () => offs.forEach((f) => f());
-}
-
-/** cards, list or table: the visitor's choice, remembered on this device */
-function mountViews(root: HTMLElement, on: On) {
-  const box = root.querySelector<HTMLElement>("[data-views]");
-  const lists = root.querySelector<HTMLElement>(".pf-lists");
-  if (!box || !lists) return;
-  const btns = Array.from(box.querySelectorAll<HTMLButtonElement>("[data-view-as]"));
-  const KEY = "rpc-products-view";
-  const set = (v: string, keep: boolean) => {
-    if (!btns.some((b) => b.dataset.viewAs === v)) v = "grid";
-    lists.dataset.view = v;
-    btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.viewAs === v)));
-    if (keep)
-      try {
-        localStorage.setItem(KEY, v);
-      } catch {
-        /* storage may be off: the choice lasts for this visit */
-      }
-  };
-  let saved = "grid";
-  try {
-    saved = localStorage.getItem(KEY) ?? "grid";
-  } catch {
-    /* storage may be off */
-  }
-  set(saved, false);
-  box.hidden = false;
-  btns.forEach((b) => on(b, "click", () => set(b.dataset.viewAs ?? "grid", true)));
 }
 
 /** a card's picture opens larger, in a pop-up that closes with ×, Esc or a click outside */
@@ -461,7 +432,7 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
       if (enqBtn && currentProduct) {
         const activePack = pv.querySelector(".pv-pack-chip.is-active")?.textContent?.trim() || currentProduct.packs?.[0]?.size || "";
         const text = `Hi RPC Constructions, I am interested in ${currentProduct.fullName || currentProduct.name} (${activePack}). Please share pricing and availability.`;
-        const waUrl = `https://wa.me/919047012345?text=${encodeURIComponent(text)}`;
+        const waUrl = `https://wa.me/919442895907?text=${encodeURIComponent(text)}`;
         window.open(waUrl, "_blank", "noopener,noreferrer");
         return;
       }
@@ -551,6 +522,10 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
   const brands = new Set<string>();
   const fams = new Set<string>();
   let q = "";
+  // the application picked in the strip above the list, if any: only its products show
+  const appTiles = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-app]"));
+  let app: { key: string; label: string; slugs: Set<string> } | null = null;
+  const inA = (r: HTMLElement) => !app || app.slugs.has(r.id);
   const inB = (r: HTMLElement) => brands.size === 0 || brands.has(brandOf.get(r) ?? "");
   const inF = (r: HTMLElement) => fams.size === 0 || fams.has(r.dataset.family ?? "");
   /** the one brand or kind picked, or "all" (for the grid, which takes one of each) */
@@ -562,9 +537,10 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
   const apply = () => {
     const words = q.toLowerCase().split(/\s+/).filter(Boolean);
     const hitQ = (r: HTMLElement) => words.every((w) => (r.dataset.q ?? "").includes(w));
-    const matchQ = rows.filter(hitQ);
+    const matchQ = rows.filter((r) => hitQ(r) && inA(r));
     const shown = matchQ.filter((r) => inB(r) && inF(r));
-    const all = brands.size === 0 && fams.size === 0 && !q;
+    const all = brands.size === 0 && fams.size === 0 && !q && !app;
+    appTiles.forEach((t) => t.setAttribute("aria-pressed", String(app?.key === t.dataset.app)));
     const brand = one(brands);
     const fam = one(fams);
 
@@ -638,11 +614,13 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       const prods = `${n} ${n === 1 ? "product" : "products"}`;
       const from = [...new Set(shown.map((r) => brandName.get(brandOf.get(r) ?? "") ?? ""))];
       let line: string;
-      if (q) line = `${n} ${n === 1 ? "product matches" : "products match"} “${q}”${bn ? ` from ${bn}` : ""}${fn ? ` in ${fn}` : ""}.`;
+      const forApp = app ? ` for ${lower(app.label)}` : "";
+      if (q) line = `${n} ${n === 1 ? "product matches" : "products match"} “${q}”${forApp}${bn ? ` from ${bn}` : ""}${fn ? ` in ${fn}` : ""}.`;
+      else if (app) line = `${prods}${forApp}${bn ? ` from ${bn}` : ""}${fn ? ` in ${fn}` : ""}.`;
       else if (bn && fn) line = `${prods} from ${bn} in ${fn}.`;
       else if (bn) line = `${brands.size > 1 ? prods : `All ${n}`} ${brands.size > 1 ? `from ${bn}` : `${bn} products`}.`;
       else if (fn) line = `${prods} in ${fn}, from ${listing(from)}.`;
-      else line = `All ${n} products, brand by brand.`;
+      else line = `Showing all ${n} products.`;
       status.textContent = line;
     }
     clears.forEach((c) => (c.closest("[data-empty]") ? null : (c.hidden = all)));
@@ -673,6 +651,7 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
     brands.clear();
     fams.clear();
     q = "";
+    app = null;
     if (input) input.value = "";
     apply();
   };
@@ -726,6 +705,14 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       apply();
     }
   });
+  // an application: pick it to see only its products; pick it again to see them all
+  for (const t of appTiles)
+    on(t, "click", () => {
+      const k = t.dataset.app!;
+      app = app?.key === k ? null : { key: k, label: t.dataset.appLabel ?? k, slugs: new Set((t.dataset.slugs ?? "").split(" ").filter(Boolean)) };
+      apply();
+      requestAnimationFrame(toList);
+    });
   if (input)
     on(input, "input", () => {
       q = input.value.trim();
@@ -754,6 +741,7 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       brands.clear();
       fams.clear();
       q = "";
+      app = null;
       if (input) input.value = "";
       expanded.add(b);
       apply();
@@ -772,6 +760,7 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
     brands.clear();
     brands.add(k);
     fams.clear();
+    app = null;
     apply();
     requestAnimationFrame(() => toEl(box, 110));
   };
@@ -862,28 +851,39 @@ interface Side {
 }
 
 /**
- * One job's comparison: a list above each column picks its product (picking the
- * other column's product swaps the two), and the table's rows follow, marking
- * the rows the two share.
+ * One job's comparison: two brand lists pick the brands (the second never
+ * offers the first one's brand; picking it there moves the second column to
+ * another brand), a list in each column picks that brand's product, and the
+ * table's rows follow, marking the rows the two share.
  */
 function mountHeadToHead(panel: HTMLElement, on: On) {
   const raw = panel.querySelector<HTMLScriptElement>(".h2-data")?.textContent;
   if (!raw) return;
-  const { sides } = JSON.parse(raw) as { sides: Record<string, Side> };
+  const { sides, brands } = JSON.parse(raw) as { sides: Record<string, Side>; brands: CmpBrand[] };
   const pick = { a: panel.dataset.a!, b: panel.dataset.b! };
   const sels = Array.from(panel.querySelectorAll<HTMLSelectElement>("select[data-h2]"));
   sels.forEach((sel) => fancySelect(sel, on, "fs--h2"));
+  const firstOf = (brand: string) => Object.keys(sides).find((k) => sides[k]!.b === brand)!;
   const list = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
   const valueOf = (k: string, x: Side) =>
     k === "uses" ? (x.uses.length ? list(x.uses.map((u, i) => (i ? u.toLowerCase() : u))) : x.note || "Not listed") : k === "brand" ? x.b : String(x[k as "cat" | "does" | "by" | "ps"]);
 
+  const dds = { a: null as ReturnType<typeof wireDropdown> | null, b: null as ReturnType<typeof wireDropdown> | null };
   const render = () => {
     const A = sides[pick.a];
     const B = sides[pick.b];
     if (!A || !B) return;
-    sels.forEach((sel) => {
-      sel.value = sel.dataset.h2 === "a" ? pick.a : pick.b;
-      sel.dispatchEvent(new Event("fs-sync"));
+    dds.a?.set(A.b);
+    dds.b?.set(B.b, A.b);
+    (["a", "b"] as const).forEach((s) => {
+      const x = s === "a" ? A : B;
+      const th = panel.querySelector<HTMLElement>(`thead th[data-s=${s}]`);
+      th?.querySelectorAll<HTMLElement>("[data-for-brand]").forEach((box) => (box.hidden = box.dataset.forBrand !== x.b));
+      const sel = th?.querySelector<HTMLSelectElement>(`[data-for-brand="${CSS.escape(x.b)}"] select`);
+      if (sel && sel.value !== pick[s]) {
+        sel.value = pick[s];
+        sel.dispatchEvent(new Event("fs-sync"));
+      }
     });
     panel.querySelectorAll<HTMLTableRowElement>("tbody tr[data-row]").forEach((tr) => {
       const k = tr.dataset.row!;
@@ -908,12 +908,23 @@ function mountHeadToHead(panel: HTMLElement, on: On) {
     });
   };
 
+  const ddA = panel.querySelector<HTMLElement>('[data-dd$="-a"]');
+  const ddB = panel.querySelector<HTMLElement>('[data-dd$="-b"]');
+  if (ddA)
+    dds.a = wireDropdown(ddA, brands, on, (name) => {
+      if (sides[pick.a]?.b !== name) pick.a = firstOf(name);
+      // the second column never shows the first column's brand
+      if (sides[pick.b]?.b === name) pick.b = firstOf(brands.find((x) => x.name !== name)!.name);
+      render();
+    });
+  if (ddB)
+    dds.b = wireDropdown(ddB, brands, on, (name) => {
+      if (sides[pick.b]?.b !== name) pick.b = firstOf(name);
+      render();
+    });
   sels.forEach((sel) =>
     on(sel, "change", () => {
-      const side = sel.dataset.h2 as "a" | "b";
-      const other = side === "a" ? "b" : "a";
-      if (sel.value === pick[other]) pick[other] = pick[side];
-      pick[side] = sel.value;
+      pick[sel.dataset.h2 as "a" | "b"] = sel.value;
       render();
     }),
   );

@@ -66,6 +66,8 @@ export interface HomeData {
 export interface HomeOptions {
   /** plain image URLs (the local test page has no image optimiser) */
   rawImages?: boolean;
+  /** the section's number in its marker, when it sits elsewhere in the page */
+  n?: string;
 }
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -136,10 +138,10 @@ const SERVICE_ICON: readonly (readonly [RegExp, string])[] = [
   [/interior/i, `<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 16a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"/><path d="M4 18v2M20 18v2M12 4v9"/>`],
   [/manag/i, `<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>`],
 ];
-const serviceIcon = (title: string) =>
+export const serviceIcon = (title: string) =>
   `<span class="hm-sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${(SERVICE_ICON.find(([re]) => re.test(title)) ?? SERVICE_ICON[0]!)[1]}</svg></span>`;
 
-function servicesMarkup(d: HomeData, _o: HomeOptions) {
+export function servicesMarkup(d: HomeData, _o: HomeOptions) {
   const [lead, ...rest] = d.services;
   if (!lead) return "";
   const check = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.4 6.6 11.4 12.6 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -166,7 +168,7 @@ function servicesMarkup(d: HomeData, _o: HomeOptions) {
   <div class="hm-wrap">
     <header class="hm-head">
       <div>
-        ${mark("02", "Services")}
+        ${mark(_o.n ?? "02", "Services")}
         <h2 class="hm-h2" id="services-title" data-rv>Waterproofing, construction and leak&nbsp;repair.</h2>
       </div>
       <div class="hm-side" data-rv>
@@ -183,7 +185,7 @@ function servicesMarkup(d: HomeData, _o: HomeOptions) {
         <p class="hm-sbody">${esc(lead.scale)}, in Erode, Coimbatore and across Tamil&nbsp;Nadu.</p>
         ${covers ? `<ul class="hm-schk">${covers}</ul>` : ""}
         <div class="hm-sbtns">
-          <a class="hm-btn hm-btn--ink" href="/contact#enquiry" data-internal>Book a free inspection${arrow}</a>
+          <a class="hm-btn hm-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>
           <a class="hm-slink" href="/waterproofing" data-internal>How we waterproof${arrow}</a>
         </div>
       </article>
@@ -195,13 +197,66 @@ function servicesMarkup(d: HomeData, _o: HomeOptions) {
 
 /* ------------------------------------------------------------------ 04 */
 function aboutMarkup(d: HomeData, _o: HomeOptions) {
+  const map = aboutMap();
+  const points = d.points.map((p) => `<li data-rv><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p></li>`).join("");
+  return `<section class="hm-sec hm-about" id="about" aria-labelledby="about-title">
+  <div class="hm-wrap">
+    <div class="hm-abpanel">
+      <div class="hm-abtop">
+        <div class="hm-abcopy">
+          ${mark("03", "About RPC")}
+          <h2 class="hm-abh" id="about-title" data-rv>Engineers from Erode, keeping buildings dry since&nbsp;2012.</h2>
+          <a class="hm-btn hm-btn--paper" href="/about" data-internal data-rv>About RPC Constructions${arrow}</a>
+        </div>
+        ${map}
+      </div>
+      <ul class="hm-abpts">${points}</ul>
+    </div>
+  </div>
+</section>`;
+}
+
+/** where we work, drawn: Erode, the head office, with the towns around it and Chennai off to the north-east */
+export function aboutMap() {
+  // where we work, on a drawn map of western Tamil Nadu (longitude and latitude, scaled): Erode, the head office, at the centre
+  const at = (lon: number, lat: number) => [Math.round((lon - 76.75) * 290), Math.round((12.05 - lat) * 290)] as const;
+  const hq = at(77.72, 11.34);
+  const towns = [
+    { name: "Tiruppur", p: at(77.34, 11.11), side: "l" },
+    { name: "Coimbatore", p: at(76.96, 11.02), side: "r" },
+    { name: "Salem", p: at(78.15, 11.66), side: "r" },
+  ];
+  const pc = (x: number, y: number) => `left:${((x / 600) * 100).toFixed(2)}%;top:${((y / 380) * 100).toFixed(2)}%`;
+  const map = `<figure class="hm-abmap" data-rv>
+  <svg viewBox="0 0 600 380" aria-hidden="true">
+    <defs><pattern id="hm-abg" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#fff" stroke-opacity=".07"/></pattern></defs>
+    <rect width="600" height="380" fill="url(#hm-abg)"/>
+    <circle cx="${hq[0]}" cy="${hq[1]}" r="130" class="hm-abring"/><circle cx="${hq[0]}" cy="${hq[1]}" r="260" class="hm-abring"/>
+    ${towns.map((t) => `<path class="hm-abroute" d="M${hq[0]} ${hq[1]}L${t.p[0]} ${t.p[1]}"/>`).join("")}
+    <path class="hm-abroute" d="M${hq[0]} ${hq[1]}L590 34"/><path class="hm-abarrow" d="M574 30l16 4-6 15"/>
+    ${towns.map((t) => `<circle class="hm-abtown" cx="${t.p[0]}" cy="${t.p[1]}" r="6"/>`).join("")}
+    <circle class="hm-abpulse" cx="${hq[0]}" cy="${hq[1]}" r="18"/><circle class="hm-abhq" cx="${hq[0]}" cy="${hq[1]}" r="9"/>
+  </svg>
+  <span class="hm-ablab hm-ablab--hq" style="${pc(hq[0], hq[1])}"><b>Erode</b><span>Head office, Perundurai Road</span></span>
+  ${towns.map((t) => `<span class="hm-ablab hm-ablab--${t.side}" style="${pc(t.p[0], t.p[1])}">${esc(t.name)}</span>`).join("")}
+  <span class="hm-ablab hm-ablab--far" style="${pc(588, 34)}">Chennai</span>
+  <figcaption class="hm-sr">Where we work: Erode, our head office, with Tiruppur, Coimbatore, Salem and Chennai.</figcaption>
+</figure>`;
+  return map;
+}
+
+/**
+ * About, as the home page first had it: the statement, a line, the four
+ * short facts numbered, and the frame where the photograph of the team goes.
+ */
+export function rootedAboutMarkup(d: HomeData, o: HomeOptions = {}) {
   const values = d.points
     .map((p, i) => `<li data-rv style="--d:${i * 60}ms"><span class="hm-vno">${two(i + 1)}</span><h3>${esc(p.title)}</h3><p>${esc(p.body)}</p></li>`)
     .join("");
   return `<section class="hm-sec hm-about" id="about" aria-labelledby="about-title">
   <div class="hm-wrap hm-agrid">
     <div class="hm-acopy">
-      ${mark("03", "About RPC")}
+      ${mark(o.n ?? "03", "About RPC")}
       <h2 class="hm-statement" id="about-title" data-rv>Rooted in Erode since&nbsp;2012.</h2>
       <p class="hm-lead" data-rv>We repair leaks in existing buildings, and design new ones so the leaks never start.</p>
       <ul class="hm-values">${values}</ul>
@@ -213,6 +268,34 @@ function aboutMarkup(d: HomeData, _o: HomeOptions) {
   </div>
 </section>`;
 }
+export const ROOTED_ABOUT_CSS = `
+.hm-agrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:stretch;gap:clamp(2rem,5vw,6rem);flex:1 1 auto;max-height:52rem}
+.hm-acopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0}
+.hm-acopy .hm-mark{align-self:stretch}
+.hm-statement{margin:min(1.4rem,2.6svh) 0 0;max-width:20ch;font-family:var(--serif);font-weight:600;font-size:var(--fs-title);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+.hm-lead{margin:min(1.6rem,3svh) 0 0;max-width:42rem;font-size:var(--fs-body);line-height:1.7;color:rgba(18,34,59,.8);text-wrap:pretty}
+.hm-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(1rem,2vw,2rem);align-self:stretch;margin:min(1.8rem,3.4svh) 0 min(1.8rem,3.4svh);padding:0;list-style:none}
+.hm-values li{display:grid;grid-template-columns:1.9rem 1fr;align-content:start;column-gap:.1rem;padding:min(.85rem,1.5svh) 0 min(.95rem,1.6svh);border-top:1px solid var(--line)}
+.hm-vno{grid-row:1/3;padding-top:.12rem;font-size:var(--fs-body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent)}
+.hm-values h3{margin:0;font-size:var(--fs-body);font-weight:600;letter-spacing:-.01em}
+.hm-values p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:.3rem 0 0;font-size:var(--fs-body);line-height:1.45;color:var(--mute)}
+.hm-afig{display:flex;flex-direction:column;justify-content:center;min-height:0;margin:0;container-type:size}
+.hm-aph{position:relative;flex:none;width:min(100cqw,calc(100cqh * 1.7917));aspect-ratio:1376/768;overflow:hidden;border-radius:16px;background:#ddd3c2}
+@container (max-height:8rem){.hm-aph{display:none}}
+@media (max-width:1023px){
+  .hm-agrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2.2rem}
+}
+@media (max-width:767px){
+  .hm-agrid{display:flex;flex-direction:column;gap:min(1.2rem,2.2svh);max-height:none}
+  .hm-acopy{flex:none}
+  .hm-statement{max-width:none;margin-top:min(1rem,1.8svh)}
+  .hm-lead{margin-top:min(1rem,1.8svh);line-height:1.6}
+  .hm-values{display:flex;flex-wrap:wrap;gap:6px;margin:min(1rem,1.8svh) 0}
+  .hm-values li{display:inline-flex;align-items:center;height:28px;padding:0 11px;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
+  .hm-values .hm-vno,.hm-values p{display:none}
+  .hm-afig{flex:1 1 0;min-height:12rem}
+}
+`;
 
 /* ---------------------------------------------------------- 05 products */
 function productsMarkup(d: HomeData) {
@@ -232,7 +315,7 @@ function productsMarkup(d: HomeData) {
     <div class="hm-teaser" data-rv>${pr.teaser}</div>
     <div class="hm-pbrands" data-rv>
       <header class="hm-pbhead">
-        <p class="hm-pbmark">Brands</p>
+        <p class="hm-mark"><span class="hm-rule" aria-hidden="true"></span><span>Brands</span></p>
         <h3 class="hm-pbh">The brands in our methods guide.</h3>
       </header>
       ${brandsMarqueeHtml()}
@@ -266,17 +349,17 @@ function recordMarkup(d: HomeData) {
 }
 
 /* ------------------------------------------------------------------ 06 */
-function contactMarkup(d: HomeData, _o: HomeOptions) {
+export function contactMarkup(d: HomeData, _o: HomeOptions) {
   const c = d.contact;
   return `<section class="hm-sec hm-contact" id="contact" aria-labelledby="contact-title">
   <div class="hm-wrap">
     <div class="hm-cgrid">
       <div class="hm-ccopy">
-        ${mark("05", "Contact")}
+        ${mark(_o.n ?? "05", "Contact")}
         <h2 class="hm-ch" id="contact-title" data-rv>Talk to an engineer.</h2>
-        <p class="hm-clede" data-rv>A damp wall, a leaking terrace or a new building to plan? We work across Erode, Coimbatore, Tiruppur, Salem and Chennai, and call back within one working day.</p>
+        <p class="hm-clede" data-rv>A damp wall, a leaking terrace or a new building to plan?</p>
         <div class="hm-cbtns" data-rv>
-          <a class="hm-btn hm-btn--paper" href="/contact#enquiry" data-internal>Book a free inspection${arrow}</a>
+          <a class="hm-btn hm-btn--paper" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>
           <a class="hm-btn hm-btn--line" href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
         </div>
       </div>
@@ -309,72 +392,63 @@ export function homeSectionsMarkup(d: HomeData, o: HomeOptions = {}, parts: read
 export const HOME_PRODUCTS_CSS = BRANDS_MARQUEE_CSS + `
 .hm-pbrands{margin-top:clamp(2rem,4vh,3rem);padding-top:clamp(1.5rem,3vh,2.2rem);border-top:1px solid rgba(18,34,59,.1)}
 .hm-pbhead{margin-bottom:1.2rem}
-.hm-pbmark{display:inline-flex;align-items:center;gap:.6rem;font-size:var(--fs-caption);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--water);margin:0 0 .4rem}
+.hm-pbhead .hm-mark{margin-bottom:.9rem}
 .hm-pbh{margin:0;font-family:var(--font-heading,var(--font-inter-tight,var(--display))),sans-serif;font-weight:600;font-size:clamp(1.5rem,2.4vw,2.2rem);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
-.hl{display:flex;flex-direction:column;gap:1rem}
+.hl{display:flex;flex-direction:column;gap:clamp(1rem,2.4vh,1.6rem)}
 .hl-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.hl-card{overflow:hidden;border-radius:20px;background:#f7f3eb;box-shadow:0 0 0 1px rgba(18,34,59,.1),0 34px 70px -56px rgba(18,34,59,.55)}
-/* the jobs, as tabs along the top of the card */
-.hl-jobs{display:flex;padding:0 clamp(.6rem,1.8vw,1.6rem);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+/* the jobs: a quiet row of pills */
+.hl-jobs{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1 * var(--gutter,16px));padding:0 var(--gutter,16px)}
 .hl-jobs::-webkit-scrollbar{display:none}
-.hl-tab{position:relative;flex:none;display:inline-flex;align-items:center;height:3.2rem;padding:0 1rem;border:0;background:none;color:var(--mute);font-family:inherit;font-size:var(--fs-body);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:color .2s}
-.hl-tab:hover{color:var(--ink)}
-.hl-tab[aria-selected="true"]{color:var(--ink);font-weight:600}
-.hl-tab[aria-selected="true"]::after{content:"";position:absolute;left:1rem;right:1rem;bottom:-1px;height:2px;background:var(--navy)}
-.hl-tab:focus-visible,.hl-brands a:focus-visible,.hl-sum:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-/* a job: the picture and its layers */
-.hl-panel{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:clamp(1rem,3vw,3rem);padding:clamp(1rem,2vw,1.8rem) clamp(1rem,2.6vw,2.4rem)}
+.hl-tab{flex:none;display:inline-flex;align-items:center;height:2.6rem;padding:0 1.1rem;border:0;border-radius:999px;background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--mute);font-family:inherit;font-size:var(--fs-body);font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;transition:background-color .2s,color .2s,box-shadow .2s}
+.hl-tab:hover{color:var(--ink);box-shadow:inset 0 0 0 1px rgba(18,34,59,.32)}
+.hl-tab[aria-selected="true"]{background:var(--navy);color:#fff;box-shadow:none}
+.hl-tab:focus-visible,.ld-rb:focus-visible,.ld-ps a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hl-panel{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(1.2rem,3vw,2.8rem);align-items:start}
 .hl-panel[hidden]{display:none}
-.hl-art{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:0;min-width:0}
-.hl-pic{position:relative;width:100%;max-width:44rem}
-.hl-pic img{display:block;width:100%;height:auto}
-.hl-pin{position:absolute;display:grid;place-items:center;width:1.75rem;height:1.75rem;margin:-.875rem 0 0 -.875rem;border-radius:50%;background:var(--navy);box-shadow:0 0 0 2px #f7f3eb,0 4px 10px -4px rgba(4,12,30,.6);color:#fff;font-size:var(--fs-body);font-weight:700;font-variant-numeric:tabular-nums;line-height:1;transition:background-color .2s,transform .2s}
-.hl-pin.is-hot{background:var(--accent);transform:scale(1.15)}
-.hl-art figcaption{max-width:30rem;font-size:var(--fs-body);line-height:1.45;color:var(--mute);text-align:center;text-wrap:balance}
-.hl-list{display:flex;flex-direction:column;gap:.5rem;margin:0;padding:0;list-style:none;min-width:0}
-.hl-row{border-radius:14px;background:rgba(236,230,218,.55);box-shadow:inset 0 0 0 1px rgba(18,34,59,.08);transition:background-color .2s,box-shadow .2s}
-.hl-row:has(.hl-d[open]){background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.1),0 18px 36px -28px rgba(18,34,59,.45)}
-.hl-row.is-hot{box-shadow:inset 0 0 0 1.5px var(--navy)}
-/* every row the same height: the note keeps to two lines */
-.hl-sum{display:grid;grid-template-columns:2rem minmax(0,1fr) auto 1rem;align-items:center;gap:.9rem;box-sizing:border-box;min-height:5.95rem;padding:.85rem 1rem;list-style:none;cursor:pointer}
-.hl-sum::-webkit-details-marker{display:none}
-.hl-sum::marker{content:""}
-.hl-n{display:grid;place-items:center;width:2rem;height:2rem;border-radius:10px;background:var(--navy);color:#fff;font-size:var(--fs-body);font-weight:700;font-variant-numeric:tabular-nums;transition:background-color .2s}
-.hl-row.is-hot .hl-n{background:var(--accent)}
-.hl-tx{display:flex;flex-direction:column;min-width:0}
-.hl-name{font-size:var(--fs-body);font-weight:600;line-height:1.3;color:var(--ink)}
-.hl-what{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:var(--fs-body);line-height:1.4;color:var(--mute)}
-.hl-count{padding:.2rem .65rem;border-radius:999px;background:rgba(18,34,59,.06);font-size:var(--fs-body);font-variant-numeric:tabular-nums;color:var(--ink2);white-space:nowrap}
-.hl-chev{display:grid;place-items:center;color:var(--mute);transition:transform .25s}
-.hl-chev svg{width:15px;height:15px}
-.hl-d[open] .hl-chev{transform:rotate(180deg)}
-.hl-d[open] .hl-count{background:var(--navy);color:#fff}
-.hl-brands{display:grid;gap:.6rem;margin:0;padding:.1rem 1rem 1.05rem calc(1rem + 2rem + .9rem)}
-/* with scripts every opened layer is the waterproof coat's size (mountHome sets it); more products scroll within */
-.hl-panel[style*="--hl-h"] .hl-brands{box-sizing:border-box;height:var(--hl-h);align-content:start;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(18,34,59,.25) transparent}
-.hl-brands.is-more{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 2.6rem),transparent)}
-.hl-brands div{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:.2rem .8rem;align-items:start}
-.hl-brands dt{display:flex;align-items:center;gap:.45rem;min-height:2rem;font-size:var(--fs-body);font-weight:600;color:var(--ink)}
-.hl-brands dt i{flex:none;width:.5rem;height:.5rem;border-radius:1px;background:var(--c)}
-.hl-brands dd{display:flex;flex-wrap:wrap;gap:.4rem;margin:0;font-size:var(--fs-body);line-height:1.5}
-.hl-brands a{display:inline-flex;align-items:center;min-height:2rem;padding:.2rem .7rem;border-radius:8px;background:var(--paper);box-shadow:inset 0 0 0 1px rgba(18,34,59,.1);color:var(--ink);text-decoration:none;transition:background-color .2s,color .2s}
-.hl-brands a:hover{background:var(--navy);color:#fff}
-.hl-fine{margin:0;max-width:40rem;font-size:var(--fs-body);line-height:1.5;color:var(--mute)}
-@media (max-width:899px){
-  .hl-panel{grid-template-columns:minmax(0,1fr)}
-}
-@media (max-width:767px){
-  .hl-panel{padding:.9rem .8rem 1rem}
-  .hl-pin{width:1.65rem;height:1.65rem;margin:-.825rem 0 0 -.825rem}
-  .hl-sum{grid-template-columns:2rem minmax(0,1fr) 1rem;gap:.3rem .7rem;min-height:7.6rem;padding:.75rem .8rem}
-  .hl-count{justify-self:start}
-  .hl-count{grid-column:2;grid-row:2}
-  .hl-chev{grid-column:3;grid-row:1 / span 2}
-  .hl-brands{padding-left:.8rem;padding-right:.8rem}
-  .hl-brands div{grid-template-columns:minmax(0,1fr)}
-}
-/* touch screens: product chips at finger height */
-@media (pointer:coarse){.hl-brands a{min-height:2.75rem}}
+/* the detail, drawn the way an architect draws one: concrete cut and hatched, the rest in fine line */
+.ld-fig{margin:0;min-width:0}
+.ld-svg{display:block;width:100%;height:auto;max-height:min(50svh,30rem);padding:clamp(.6rem,1.4vw,1.1rem);box-sizing:border-box;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.ld-fig figcaption{margin-top:.6rem;font-size:var(--fs-body);line-height:1.45;color:var(--mute)}
+.ld-cut{stroke:#12223b;stroke-width:1.2;stroke-linejoin:round}
+.ld-fine{fill:none;stroke:#12223b;stroke-opacity:.4;stroke-width:1}
+.ld-line{stroke:#12223b;stroke-width:1}
+.ld-tiles rect{fill:#f6f2ea;stroke:#12223b;stroke-width:1}
+.ld-grout{fill:#8f877a}
+.ld-coat{fill:none;stroke:#0b6e80;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.ld-sheet{fill:none;stroke:#2b3f58;stroke-width:5;stroke-linejoin:round}
+.ld-ws{fill:#c98a35;stroke:#12223b;stroke-width:1}
+.ld-plug{fill:#5f564c;stroke:#12223b;stroke-width:1}
+.ld-steel{fill:none;stroke:#8a4b2a;stroke-width:7;stroke-linecap:round}
+.ld-steel--primed{stroke:#c0392b}
+.ld-water{fill:#3d7cc9;fill-opacity:.2}
+.ld-blocks rect{fill:#ece5d6;stroke:#12223b;stroke-width:1}
+.ld-rain{fill:none;stroke:#2756a0;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ld-el{cursor:pointer;transition:opacity .25s}
+.hl-panel.has-pick .ld-el:not(.is-on){opacity:.32}
+.ld-mk{cursor:pointer}
+.ld-mk circle{fill:#f5f0e6;stroke:#0b2350;stroke-width:1.6;transition:fill .2s}
+.ld-mk text{fill:#0b2350;font:600 15px var(--font-inter-tight),system-ui,sans-serif;text-anchor:middle;transition:fill .2s}
+.ld-mk.is-on circle{fill:#0b2350}
+.ld-mk.is-on text{fill:#f5f0e6}
+/* the list beside it: every layer, the one picked open on its products */
+.ld-list{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+.ld-row{border-bottom:1px solid var(--line)}
+.ld-rb{display:grid;grid-template-columns:2rem minmax(0,1fr) auto;gap:.9rem;align-items:center;width:100%;padding:.85rem 0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ld-n{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--navy);color:var(--navy);font-size:var(--fs-body);font-weight:600;font-variant-numeric:tabular-nums;transition:background-color .2s,color .2s}
+.ld-row.is-on .ld-n{background:var(--navy);color:#f5f0e6}
+.ld-rt{display:flex;flex-direction:column;min-width:0}
+.ld-name{font-size:var(--fs-body);font-weight:600;line-height:1.35;color:var(--ink)}
+.ld-what{font-size:var(--fs-body);line-height:1.4;color:var(--mute)}
+.ld-count{min-width:1.9rem;padding:.15rem .5rem;border-radius:999px;background:rgba(18,34,59,.06);font-size:var(--fs-body);font-variant-numeric:tabular-nums;text-align:center;color:var(--ink2,#3b4658)}
+.ld-ps{display:flex;flex-wrap:wrap;gap:.35rem;margin:0;padding:0 0 1rem 2.9rem;list-style:none}
+.ld-ps[hidden]{display:none}
+.ld-ps a{display:inline-flex;align-items:center;gap:.45rem;min-height:2.2rem;padding:0 .8rem;border-radius:999px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-size:var(--fs-body);text-decoration:none;transition:box-shadow .2s,color .2s}
+.ld-ps a:hover{box-shadow:inset 0 0 0 1px var(--navy);color:var(--accent)}
+.ld-ps i{flex:none;width:.45rem;height:.45rem;border-radius:2px;background:var(--b)}
+.ld-ps em{font-style:normal;color:var(--mute)}
+@media (max-width:1023px){.hl-panel{grid-template-columns:minmax(0,1fr)}.ld-svg{max-height:none}}
+@media (max-width:599px){.ld-ps{padding-left:0}}
+@media (pointer:coarse){.ld-ps a{min-height:2.75rem}}
 `;
 export const HOME_CSS = `
 /*
@@ -492,20 +566,45 @@ export const HOME_CSS = `
 
 /* 04 about: the copy beside a photograph that fills the height */
 .hm-about{background:var(--paper)}
-.hm-agrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:stretch;gap:clamp(2rem,5vw,6rem);flex:1 1 auto;max-height:52rem}
-.hm-acopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0}
-.hm-acopy .hm-mark{align-self:stretch}
-.hm-statement{margin:min(1.4rem,2.6svh) 0 0;max-width:20ch;font-family:var(--serif);font-weight:600;font-size:var(--fs-title);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
-.hm-lead{margin:min(1.6rem,3svh) 0 0;max-width:42rem;font-size:var(--fs-body);line-height:1.7;color:rgba(18,34,59,.8);text-wrap:pretty}
-.hm-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(1rem,2vw,2rem);align-self:stretch;margin:min(1.8rem,3.4svh) 0 min(1.8rem,3.4svh);padding:0;list-style:none}
-.hm-values li{display:grid;grid-template-columns:1.9rem 1fr;align-content:start;column-gap:.1rem;padding:min(.85rem,1.5svh) 0 min(.95rem,1.6svh);border-top:1px solid var(--line)}
-.hm-vno{grid-row:1/3;padding-top:.12rem;font-size:var(--fs-body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent)}
-.hm-values h3{margin:0;font-size:var(--fs-body);font-weight:600;letter-spacing:-.01em}
-.hm-values p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:.3rem 0 0;font-size:var(--fs-body);line-height:1.45;color:var(--mute)}
+/* About: a blueprint panel, the words on the left, a drawn map of where we work on the right, and four facts along its foot */
+.hm-abpanel{position:relative;display:flex;flex-direction:column;overflow:hidden;border-radius:22px;background:#0b2350;color:#eef3f5}
+.hm-abtop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(1.5rem,4vw,4rem);align-items:center;padding:clamp(1.6rem,4vw,3.4rem) clamp(1.4rem,4vw,3.4rem) clamp(1rem,2.6vh,2rem)}
+.hm-abcopy{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.hm-abcopy .hm-mark{color:rgba(238,243,245,.7)}
+.hm-abcopy .hm-idx{color:#9fd3ea}
+.hm-abh{margin:1.2rem 0 0;max-width:17ch;font-weight:600;font-size:var(--fs-title);line-height:1.08;letter-spacing:-.03em;color:#fff;text-wrap:balance}
+.hm-abcopy .hm-btn--paper{background:#f5f0e6;color:#0b2350}
+.hm-abcopy .hm-btn--paper:hover{background:#fff}
+.hm-abcopy .hm-btn{margin-top:2rem}
+.hm-abmap{position:relative;margin:0;min-width:0;aspect-ratio:600/380;max-height:44svh}
+.hm-abmap svg{display:block;width:100%;height:100%}
+.hm-abring{fill:none;stroke:#9fd3ea;stroke-opacity:.25;stroke-dasharray:3 6}
+.hm-abroute{fill:none;stroke:#fff;stroke-opacity:.55;stroke-width:1.4;stroke-dasharray:6 6}
+.hm-abarrow{fill:none;stroke:#fff;stroke-opacity:.7;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hm-abtown{fill:#0b2350;stroke:#fff;stroke-width:2}
+.hm-abhq{fill:#9fd3ea}
+.hm-abpulse{fill:none;stroke:#9fd3ea;stroke-opacity:.5;stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:hm-abp 2.8s ease-out infinite}
+@keyframes hm-abp{0%{transform:scale(.5);opacity:1}100%{transform:scale(2.2);opacity:0}}
+.hm-ablab{position:absolute;display:flex;flex-direction:column;transform:translate(14px,-50%);font-size:var(--fs-body);line-height:1.3;color:#fff;white-space:nowrap}
+.hm-ablab--l{transform:translate(calc(-100% - 14px),-50%)}
+.hm-ablab--hq{transform:translate(22px,-50%);color:rgba(238,243,245,.72)}
+.hm-ablab--hq b{font-weight:600;color:#fff}
+.hm-ablab--far{transform:translate(-100%,22px);text-align:right}
+.hm-abpts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:0;list-style:none;border-top:1px solid rgba(255,255,255,.12)}
+.hm-abpts li{padding:clamp(1rem,2.6vh,1.6rem) clamp(1.2rem,2.4vw,2rem)}
+.hm-abpts li + li{border-left:1px solid rgba(255,255,255,.12)}
+.hm-abpts h3{margin:0;font-size:var(--fs-body);font-weight:600;color:#fff}
+.hm-abpts p{margin:.3rem 0 0;font-size:var(--fs-body);line-height:1.45;color:rgba(238,243,245,.7)}
+.hm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (max-width:899px){
+  .hm-abtop{grid-template-columns:minmax(0,1fr)}
+  .hm-abmap{max-height:none}
+  .hm-abpts{grid-template-columns:minmax(0,1fr)}
+  .hm-abpts li + li{border-left:0;border-top:1px solid rgba(255,255,255,.12)}
+}
+@media (max-width:520px){.hm-ablab--hq span{display:none}}
+@media (prefers-reduced-motion:reduce){.hm-abpulse{animation:none}}
 /* the photograph as large as the space allows, at its own proportions */
-.hm-afig{display:flex;flex-direction:column;justify-content:center;min-height:0;margin:0;container-type:size}
-.hm-aph{position:relative;flex:none;width:min(100cqw,calc(100cqh * 1.7917));aspect-ratio:1376/768;overflow:hidden;border-radius:16px;background:#ddd3c2}
-@container (max-height:8rem){.hm-aph{display:none}}
 
 /* 05 record */
 .hm-record{background:var(--stone)}
@@ -578,8 +677,6 @@ export const HOME_CSS = `
   .hm-card{flex-basis:44vw}
   .hm-sgrid{grid-template-columns:minmax(0,1fr)}
   .hm-services .hm-side,.hm-projects .hm-side{align-items:flex-start}
-  .hm-agrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2.2rem}
-  .hm-values{grid-template-columns:1fr 1fr}
   .hm-cgrid{grid-template-columns:1fr 1fr;gap:2.5rem}
   .hm-ways{grid-template-columns:1fr 1fr}
   .hm-fgrid{grid-template-columns:1fr 1fr}
@@ -609,16 +706,7 @@ export const HOME_CSS = `
   .hm-schk{gap:.6rem .9rem}
   .hm-schk li > span > span{display:none}
   /* about: copy, the principles as tags, then the photograph */
-  .hm-agrid{display:flex;flex-direction:column;gap:min(1.2rem,2.2svh);max-height:none}
-  .hm-acopy{flex:none}
   .hm-mark{flex-wrap:wrap}
-  .hm-statement{font-size:var(--fs-title);max-width:none;margin-top:min(1rem,1.8svh)}
-  .hm-lead{margin-top:min(1rem,1.8svh);line-height:1.6}
-  .hm-values{display:flex;flex-wrap:wrap;gap:6px;margin:min(1rem,1.8svh) 0}
-  .hm-values li{display:inline-flex;align-items:center;height:28px;padding:0 11px;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
-  .hm-values .hm-vno,.hm-values p{display:none}
-  .hm-values h3{font-size:var(--fs-body);font-weight:600}
-  .hm-afig{flex:1 1 0;min-height:0}
   /* record */
   .hm-record{justify-content:center}
   .hm-stats{grid-template-columns:1fr 1fr}
@@ -663,11 +751,9 @@ export const HOME_CSS = `
 /* short phones: drop what does not fit in one screen */
 @media (max-width:767px) and (max-height:760px){
   .hm-side .hm-lede{display:none}
-  .hm-afig{display:none}
   .hm-cfig{display:none}
 }
 @media (max-width:767px) and (max-height:700px){
-  .hm-lead{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 }
 /* laptops with short screens (1366 x 768 and the like): the service tiles a little tighter */
 @media (min-width:1024px) and (max-height:880px){
@@ -686,8 +772,6 @@ export const HOME_CSS = `
 @media (max-height:520px){
   .hm-sec{min-height:0;justify-content:flex-start}
   .hm-track{flex:none;height:min(26rem,90svh)}
-  .hm-agrid,.hm-cgrid{flex:none}
-  .hm-afig,.hm-cfig{height:17rem}
 }
 @media (prefers-reduced-motion:reduce){
   .hm.js [data-rv]{opacity:1;transform:none;transition:none}
@@ -885,7 +969,7 @@ export function mountHome(root: HTMLElement) {
     }
   }
 
-  // products: pick a job and it builds up, layer by layer; point at a layer (in the list or the drawing) and it lights up in both
+  // products: pick a job and its section detail shows; tap a layer (on the drawing or in the list) for its products
   const hl = root.querySelector<HTMLElement>("[data-hl]");
   if (hl) {
     const tabs = Array.from(hl.querySelectorAll<HTMLButtonElement>("[data-hl-tab]"));
@@ -902,43 +986,6 @@ export function mountHome(root: HTMLElement) {
         m.appendChild(inner);
       });
     });
-    /**
-     * Every layer, opened, takes the room the first one (the waterproof coat)
-     * needs, so the list keeps one size whichever is open; a layer with more
-     * products scrolls within it.
-     */
-    const fit = (p: HTMLElement) => {
-      const row = p.querySelector<HTMLElement>(".hl-row");
-      const br = row?.querySelector<HTMLElement>(".hl-brands");
-      if (!row || !br || p.hidden) return;
-      const probe = br.cloneNode(true) as HTMLElement;
-      probe.style.cssText = "position:absolute;left:0;right:0;visibility:hidden;height:auto;pointer-events:none";
-      probe.setAttribute("aria-hidden", "true");
-      row.style.position = "relative";
-      row.appendChild(probe);
-      const h = probe.offsetHeight;
-      probe.remove();
-      row.style.position = "";
-      if (h) p.style.setProperty("--hl-h", `${h}px`);
-      p.querySelectorAll<HTMLElement>(".hl-brands").forEach(more);
-    };
-    /** a fade at the foot of a layer whose products run on below */
-    const more = (b: HTMLElement) => b.classList.toggle("is-more", b.scrollHeight - b.scrollTop - b.clientHeight > 2);
-    hl.querySelectorAll<HTMLElement>(".hl-brands").forEach((b) => on(b, "scroll", () => more(b)));
-    hl.querySelectorAll<HTMLDetailsElement>(".hl-d").forEach((d) =>
-      on(d, "toggle", () => {
-        const b = d.querySelector<HTMLElement>(".hl-brands");
-        if (b && d.open) more(b);
-      }),
-    );
-    let rf = 0;
-    on(window, "resize", () => {
-      cancelAnimationFrame(rf);
-      rf = requestAnimationFrame(() => {
-        const shown = panels.find((p) => !p.hidden);
-        if (shown) fit(shown);
-      });
-    });
     const select = (k: string, focus = false) => {
       tabs.forEach((t) => {
         const sel = t.dataset.hlTab === k;
@@ -953,9 +1000,27 @@ export function mountHome(root: HTMLElement) {
         p.hidden = !sel;
         p.classList.toggle("is-on", sel);
       });
-      const shown = panels.find((p) => !p.hidden);
-      if (shown) fit(shown);
+
     };
+    const pick = (p: HTMLElement, key: string) => {
+      p.classList.add("has-pick");
+      p.querySelectorAll<Element>("[data-l]").forEach((el) => el.classList.toggle("is-on", el.getAttribute("data-l") === key));
+      p.querySelectorAll<HTMLElement>(".ld-row").forEach((r) => {
+        const open = r.dataset.l === key;
+        r.querySelector(".ld-rb")?.setAttribute("aria-expanded", String(open));
+        const ul = r.querySelector<HTMLElement>(".ld-ps");
+        if (ul) ul.hidden = !open;
+      });
+    };
+    panels.forEach((p) =>
+      on(p, "click", (e: Event) => {
+        const t = e.target as Element;
+        if (t.closest("a")) return;
+        const hit = t.closest<Element>(".ld-el, .ld-mk, .ld-row");
+        const key = hit?.getAttribute("data-l");
+        if (key) pick(p, key);
+      }),
+    );
     tabs.forEach((t, i) => {
       on(t, "click", () => {
         if (t.getAttribute("aria-selected") !== "true") select(t.dataset.hlTab!);
@@ -968,8 +1033,6 @@ export function mountHome(root: HTMLElement) {
         select(tabs[n]!.dataset.hlTab!, true);
       });
     });
-    const first = panels.find((p) => !p.hidden);
-    if (first) fit(first);
     const light = (p: HTMLElement, layer: string | null) => {
       p.querySelector(".hl-art")?.classList.toggle("has-hot", Boolean(layer));
       p.querySelectorAll("[data-layer]").forEach((el) => el.classList.toggle("is-hot", el.getAttribute("data-layer") === layer));

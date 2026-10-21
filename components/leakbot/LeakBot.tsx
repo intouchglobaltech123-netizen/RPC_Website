@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, CalendarCheck, Camera, Check, Copy, Droplets, ImagePlus, RotateCcw, SendHorizontal, X } from "lucide-react";
+import { ArrowUpRight, CalendarCheck, Check, Copy, Droplets, ImagePlus, RotateCcw, SendHorizontal, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { contact } from "@/lib/content";
@@ -82,6 +82,8 @@ const T = {
     launcher: "Leak Doctor",
     launcherSub: "AI photo check",
     launcherCta: "Check my leak",
+    launcherAsk: "Leak?",
+    launcherGo: "Tap",
     subtitle: "AI photo check by RPC Constructions",
     welcome: "Send a photo of the leak, damp patch or crack. I'll tell you what's causing it, how serious it is, and which products fix it, step by step.",
     upload: "Take or upload a photo",
@@ -124,6 +126,8 @@ const T = {
     launcher: "கசிவு டாக்டர்",
     launcherSub: "AI புகைப்பட ஆய்வு",
     launcherCta: "கசிவைச் சரிபார்க்க",
+    launcherAsk: "கசிவா?",
+    launcherGo: "தொடவும்",
     subtitle: "RPC கன்ஸ்ட்ரக்ஷன்ஸ் AI புகைப்பட ஆய்வு",
     welcome: "கசிவு, ஈரம் அல்லது விரிசலின் புகைப்படத்தை அனுப்புங்கள். அதற்கான காரணம், அது எவ்வளவு தீவிரமானது, எந்தப் பொருட்கள் படிப்படியாகச் சரிசெய்யும் என்பதைச் சொல்கிறேன்.",
     upload: "புகைப்படம் எடுக்கவும் அல்லது பதிவேற்றவும்",
@@ -236,16 +240,21 @@ const historyOf = (msgs: Msg[]) =>
 /* ------------------------------------------------------------- styles */
 
 const CSS = `
-/* the launcher: a light pill at the bottom right that says what it does, with a camera on a teal disc */
-.lb-launch{position:fixed;right:var(--gutter,16px);bottom:max(36px,calc(env(safe-area-inset-bottom) + 20px));z-index:60;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border:0;border-radius:999px;background:#f5f0e6;color:#0b2350;font-size:15px;font-weight:600;line-height:1;white-space:nowrap;cursor:pointer;
-  box-shadow:inset 0 0 0 1px rgba(11,35,80,.08),0 14px 30px -14px rgba(4,12,30,.7),0 3px 8px -3px rgba(4,12,30,.3);transition:transform .4s var(--ease-film),background-color .3s,box-shadow .4s,opacity .3s}
-.lb-launch:hover{transform:translateY(-2px);background:#fff;box-shadow:inset 0 0 0 1px rgba(11,35,80,.1),0 20px 36px -14px rgba(4,12,30,.75),0 4px 10px -3px rgba(4,12,30,.3)}
-.lb-launch:active{transform:translateY(0) scale(.97)}
+/* the launcher: a round navy button in the bottom right corner, a cream ring round it, water rising and falling inside */
+.lb-launch{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));z-index:60;display:grid;place-items:center;width:62px;height:62px;padding:0;border:0;border-radius:50%;overflow:hidden;background:#0b2350;color:#fff;cursor:pointer;
+  box-shadow:0 0 0 4px #f5f0e6,0 0 0 5.5px #0b6e80,0 16px 30px -12px rgba(4,12,30,.8);transition:transform .4s var(--ease-film),box-shadow .4s,opacity .3s}
+.lb-launch:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 0 4px #fff,0 0 0 5.5px #0b6e80,0 22px 36px -12px rgba(4,12,30,.85)}
+.lb-launch:active{transform:scale(.96)}
 .lb-launch[data-hidden="1"]{opacity:0;pointer-events:none;transform:translateY(12px)}
+.lb-lv{position:absolute;left:-12%;right:-12%;bottom:0;height:42%;border-radius:42% 46% 0 0;background:#1d8aa0;animation:lb-lv 3.4s ease-in-out infinite}
+.lb-lv::before{content:"";position:absolute;inset:0;border-radius:inherit;background:#4fb4c7;opacity:.45;transform:translateX(18%);animation:lb-lv2 2.6s ease-in-out infinite}
+@keyframes lb-lv{50%{height:56%;border-radius:46% 40% 0 0}}
+@keyframes lb-lv2{50%{transform:translateX(-14%)}}
+.lb-lt{position:relative;display:flex;flex-direction:column;align-items:center;font-size:11.5px;font-weight:700;line-height:1.1;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 1px 2px rgba(4,12,30,.4)}
+@media (prefers-reduced-motion:reduce){.lb-lv,.lb-lv::before{animation:none}}
 .lb-drop{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;background:#0b6e80}
 .lb-drop::after{content:"";position:absolute;inset:-3px;border-radius:999px;border:2px solid #4fc3d4;opacity:0;animation:lb-ring 2.8s ease-out infinite}
 @keyframes lb-ring{0%{opacity:.8;transform:scale(.9)}70%,100%{opacity:0;transform:scale(1.35)}}
-.lb-launch .lb-drop{flex:none;width:34px;height:34px;color:#fff}
 
 .lb-panel{position:fixed;right:var(--gutter,16px);bottom:max(16px,env(safe-area-inset-bottom));z-index:61;display:flex;flex-direction:column;width:min(420px,calc(100vw - 32px));height:min(720px,calc(100dvh - 32px));
   overflow:hidden;border-radius:22px;background:#f5f0e6;color:#12223b;box-shadow:0 40px 80px -30px rgba(4,12,30,.7),0 0 0 1px rgba(18,34,59,.12)}
@@ -624,12 +633,14 @@ export function LeakBot() {
         data-hidden={open || rateList ? "1" : undefined}
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-label={t.launcherCta}
         onClick={() => setOpen(true)}
       >
-        <span className="lb-drop">
-          <Camera size={17} aria-hidden />
+        <span className="lb-lv" aria-hidden />
+        <span className="lb-lt">
+          <span>{t.launcherAsk}</span>
+          <span>{t.launcherGo}</span>
         </span>
-        <span>{t.launcherCta}</span>
       </button>
 
       <AnimatePresence>

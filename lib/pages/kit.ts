@@ -137,8 +137,8 @@ export type CtaStep = readonly [title: string, line: string];
  * steps written for that page (so no two pages say the same thing), and the
  * ways to start.
  */
-export function ctaBand(c: ContactInfo, t: { title: string; steps: readonly CtaStep[] }) {
-  const { title, steps } = t;
+export function ctaBand(c: ContactInfo, t: { title: string; steps?: readonly CtaStep[]; reach?: boolean }) {
+  const { title, steps = [], reach = false } = t;
   return `<section class="pg-cta" aria-labelledby="pg-cta-title">
   <div class="pg-wrap">
     <div class="pg-ctabox">
@@ -149,8 +149,8 @@ export function ctaBand(c: ContactInfo, t: { title: string; steps: readonly CtaS
           <a class="pg-btn pg-btn--line" href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
         </div>
       </div>
-      <ol class="pg-ctasteps" aria-label="What happens next">${steps.map(([h, p], i) => `<li><span class="pg-ctan" aria-hidden="true">${i + 1}</span><div><p class="pg-ctast">${esc(h)}</p><p class="pg-ctasd">${esc(p)}</p></div></li>`).join("")}</ol>
-      <p class="pg-ctaline"><a class="pg-ctatel" href="${tel(c.phone)}">${esc(c.phone)}</a><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><span>${esc(c.hours)}</span></p>
+      ${steps.length ? `<ol class="pg-ctasteps" aria-label="What happens next">${steps.map(([h, p], i) => `<li><span class="pg-ctan" aria-hidden="true">${i + 1}</span><div><p class="pg-ctast">${esc(h)}</p><p class="pg-ctasd">${esc(p)}</p></div></li>`).join("")}</ol>` : ""}
+      ${reach ? `<p class="pg-ctaline"><a class="pg-ctatel" href="${tel(c.phone)}">${esc(c.phone)}</a><a href="mailto:${esc(c.email)}">${esc(c.email)}</a><span>${esc(c.hours)}</span></p>` : ""}
     </div>
   </div>
 </section>`;

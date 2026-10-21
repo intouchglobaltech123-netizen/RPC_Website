@@ -52,7 +52,7 @@ export const steps: readonly LeakStep[] = [
     uses: "Fosroc Brushbond Roofguard, a fibre-reinforced acrylic coat.",
     body: "Rain stands on the roof and soaks through hairline cracks in the slab, then shows on the ceiling below, often some way from where it got in.",
     fix: ["Cracks and corners reinforced, the slab primed", "Fosroc Brushbond Roofguard, a fibre-reinforced acrylic coat, turned up the parapet walls", "Drain outlets sealed so the water runs off"],
-    link: { label: "Roof and terrace methods", href: "/waterproofing#m-acrylic" },
+    link: { label: "Roof and terrace methods", href: "/waterproofing#a-terrace" },
   },
   {
     zone: "ceiling",
@@ -76,7 +76,7 @@ export const steps: readonly LeakStep[] = [
     uses: "Fosroc Brushbond RFX, flood-tested for 48 hours before tiling.",
     body: "Water on the floor slips past the grout and around the pipes into the sunken slab, creeps up the walls and comes through the ceiling of the room below.",
     fix: ["Sunken slab cleaned and every pipe opening sealed", "Fosroc Brushbond RFX, 300 mm up the walls and full height in the shower", "Flooded for 48 hours before a single tile goes down"],
-    link: { label: "Bathroom methods", href: "/waterproofing#m-cementitious" },
+    link: { label: "Bathroom methods", href: "/waterproofing#a-bathroom" },
   },
   {
     zone: "walls",
@@ -89,7 +89,7 @@ export const steps: readonly LeakStep[] = [
     uses: "Fosroc Renderoc CS in the cracks, Nitocote CM210 over the wall.",
     body: "Wind drives the rain into hairline cracks in the plaster. It soaks through the brick and lifts the paint on the inside, often with mould.",
     fix: ["Cracks filled with Fosroc Renderoc CS and loose plaster replaced", "Re-plastered with a waterproof admixture where it is needed", "Finished with Fosroc Nitocote CM210, a polymer-modified protective and waterproof coat"],
-    link: { label: "Wall coatings", href: "/waterproofing#m-acrylic" },
+    link: { label: "Wall coatings", href: "/waterproofing#a-walls" },
   },
 ];
 
@@ -109,7 +109,7 @@ export const hook = {
   kicker: intro.kicker,
   title: intro.title,
   body: outro.body,
-  book: { label: "Book a free inspection", href: "/contact" },
+  book: { label: "Book a free site inspection", href: "/contact" },
   chat: "WhatsApp us",
 };
 

@@ -137,24 +137,58 @@ function projects(root: HTMLElement, env: PageEnv): Off {
   const items = Array.from(list.querySelectorAll<HTMLElement>(".pj-row"));
   const showing = root.querySelector<HTMLElement>(".pj-showing");
   const empty = root.querySelector<HTMLElement>(".pj-empty");
+  // the applications band: one job picked shows only the projects that took it in
+  const tiles = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-app]"));
+  let app: { key: string; label: string } | null = null;
   const apply = () => {
     const st = s.value("status");
     const tw = s.value("town");
     let n = 0;
+    tiles.forEach((t) => t.setAttribute("aria-pressed", String(app?.key === t.dataset.app)));
     for (const it of items) {
-      const on = (st === "all" || it.dataset.status === st) && (tw === "all" || it.dataset.town === tw) && s.matches(it.dataset.text ?? "");
+      const on = (st === "all" || it.dataset.status === st) && (tw === "all" || it.dataset.town === tw) && (!app || (it.dataset.jobs ?? "").split(" ").includes(app.key)) && s.matches(it.dataset.text ?? "");
       it.hidden = !on;
       if (on) n++;
     }
     if (empty) empty.hidden = n > 0;
     if (showing) {
       const what = `${n} ${n === 1 ? "project" : "projects"}`;
-      const bits = [st !== "all" ? s.label("status").toLowerCase() : "", tw !== "all" ? `in ${tw}` : "", s.typed() ? `matching “${s.typed()}”` : ""].filter(Boolean);
+      const bits = [app ? `with ${app.label.toLowerCase()}` : "", st !== "all" ? s.label("status").toLowerCase() : "", tw !== "all" ? `in ${tw}` : "", s.typed() ? `matching “${s.typed()}”` : ""].filter(Boolean);
       showing.textContent = bits.length ? `Showing ${what}: ${bits.join(", ")}` : `Showing all ${n} projects`;
     }
   };
   const s = mountSearch(bar, offs, apply);
-  offs.push(listen(root, "click", (e) => (e.target as HTMLElement).closest("[data-reset]") && s.reset()));
+  offs.push(
+    listen(root, "click", (e) => {
+      const t = e.target as HTMLElement;
+      // the aerial view: a building picked shows its box beside the view
+      let spot = t.closest<HTMLButtonElement>("[data-spot]");
+      // the arrows in the box step to the building before or after
+      const stepBtn = t.closest<HTMLButtonElement>("[data-step]");
+      if (stepBtn) {
+        const all = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-spot]"));
+        const cur = all.findIndex((x) => x.getAttribute("aria-pressed") === "true");
+        spot = all[(cur + Number(stepBtn.dataset.step) + all.length) % all.length] ?? null;
+      }
+      if (spot) {
+        const k = spot.dataset.spot;
+        root.querySelectorAll<HTMLButtonElement>("[data-spot]").forEach((x) => x.setAttribute("aria-pressed", String(x === spot)));
+        root.querySelectorAll<HTMLElement>("[data-spot-panel]").forEach((x) => (x.hidden = x.dataset.spotPanel !== k));
+        return;
+      }
+      const tile = t.closest<HTMLButtonElement>("[data-app]");
+      if (tile) {
+        const k = tile.dataset.app!;
+        app = app?.key === k ? null : { key: k, label: tile.dataset.appLabel ?? k };
+        apply();
+        return;
+      }
+      if (t.closest("[data-reset]")) {
+        app = null;
+        s.reset();
+      }
+    }),
+  );
   // a project in the address is shown even if the search had hidden it
   const fromHash = () => {
     const el = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
@@ -202,6 +236,43 @@ function blog(root: HTMLElement): Off {
 /* contact: whether the office is open right now (India time) */
 const DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const clock = (h: number, m: number) => `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+/** About, how to reach the office: a town shows its starting places; a starting place shows its road route on the map */
+function aboutRoutes(root: HTMLElement): Off {
+  const box = root.querySelector<HTMLElement>("[data-routes]");
+  if (!box) return () => {};
+  const dest = box.dataset.dest ?? "";
+  const map = box.querySelector<HTMLIFrameElement>("[data-map]");
+  const open = box.querySelector<HTMLAnchorElement>("[data-open]");
+  const towns = Array.from(box.querySelectorAll<HTMLButtonElement>("[data-town]"));
+  const lists = Array.from(box.querySelectorAll<HTMLElement>("[data-from-town]"));
+  const enc = encodeURIComponent;
+  const route = (b: HTMLButtonElement) => {
+    const place = b.dataset.place ?? "";
+    box.querySelectorAll<HTMLButtonElement>("[data-place]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    if (map) {
+      map.src = `https://maps.google.com/maps?saddr=${enc(place)}&daddr=${enc(dest)}&output=embed`;
+      map.title = `Road route from ${b.dataset.label ?? place} to our office`;
+    }
+    if (open) open.href = `https://www.google.com/maps/dir/?api=1&origin=${enc(place)}&destination=${enc(dest)}&travelmode=driving`;
+  };
+  const onClick = (e: Event) => {
+    const t = e.target as Element;
+    const town = t.closest<HTMLButtonElement>("[data-town]");
+    if (town) {
+      const k = town.dataset.town;
+      towns.forEach((x) => x.setAttribute("aria-selected", String(x === town)));
+      lists.forEach((l) => (l.hidden = l.dataset.fromTown !== k));
+      const firstRoute = lists.find((l) => l.dataset.fromTown === k)?.querySelector<HTMLButtonElement>("[data-place]");
+      if (firstRoute) route(firstRoute);
+      return;
+    }
+    const r = t.closest<HTMLButtonElement>("[data-place]");
+    if (r && box.contains(r)) route(r);
+  };
+  box.addEventListener("click", onClick);
+  return () => box.removeEventListener("click", onClick);
+}
+
 function openNow(root: HTMLElement): Off {
   const el = root.querySelector<HTMLElement>("[data-hours]");
   const text = el?.querySelector<HTMLElement>("[data-open-text]");
@@ -273,6 +344,7 @@ export function mountPageBehaviour(kind: PageKind, root: HTMLElement, env: PageE
   const offs: Off[] = [];
   if (kind === "projects") offs.push(projects(root, env));
   if (kind === "contact") offs.push(mountContactForm(root), openNow(root));
+  if (kind === "about") offs.push(aboutRoutes(root));
   if (kind === "blog") offs.push(blog(root));
   if (kind === "post") offs.push(post(root));
   if (kind === "products" || kind === "methods") {

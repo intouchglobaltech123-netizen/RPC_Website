@@ -14,7 +14,7 @@
  * first pair; everything else on the page is plain reading.
  */
 import { METHOD_GROUPS, METHODS, PLACES, type Method } from "../methods/data";
-import { AREA_PURPOSE, SERVICE_CATEGORIES } from "../methods/doc";
+import { FOSROC_BY_METHOD, SERVICE_CATEGORIES } from "../methods/doc";
 import type { Product } from "../products";
 import { arrow, esc, secHead, serviceSlug } from "./kit";
 import { compareRowsHtml, type CmpMethod } from "./methods-compare";
@@ -33,9 +33,9 @@ export const groupIcon = (k: string) =>
 
 /* ---------------------------------------------------------------- the map */
 /** the drawing's frame (in its own units): the sky above the house is trimmed off */
-const VB = { x: 0, y: 70, w: 760, h: 460 };
+export const VB = { x: 0, y: 70, w: 760, h: 460 };
 /** where each of the eight places is marked on the drawing, and its short name */
-const SPOTS: Readonly<Record<string, { x: number; y: number; short: string }>> = {
+export const SPOTS: Readonly<Record<string, { x: number; y: number; short: string }>> = {
   terrace: { x: 400, y: 112, short: "Terrace" },
   bathroom: { x: 440, y: 236, short: "Bathroom" },
   tank: { x: 650, y: 436, short: "Water tank" },
@@ -56,7 +56,7 @@ const flow = (x: number, y: number, deg: number, len = 24) =>
  * eight places is a group (data-zone) holding its waterproofing layer (the
  * teal line) and the arrows for the water it keeps out.
  */
-function houseDrawing() {
+export function houseDrawing() {
   const cut = `class="wpx-cut"`;
   const fine = `class="wpx-fine"`;
   const coat = (d: string) => `<path class="wpx-coat" d="${d}"/>`;
@@ -140,34 +140,84 @@ function houseDrawing() {
 </svg>`;
 }
 
-function placePanel(key: string, active: boolean) {
-  const place = PLACES.find((p) => p.key === key);
-  const service = SERVICE_CATEGORIES.find((s) => s.area === key);
-  if (!place || !service) return "";
-  const ms = place.methods.map(byNo).filter((m): m is Method => Boolean(m));
-  const book = `/contact?service=${encodeURIComponent(service.title)}#enquiry`;
-  return `<div class="wpx-panel" id="wpx-p-${key}" role="tabpanel" aria-labelledby="wpx-t-${key}" tabindex="0"${active ? "" : " hidden"}>
-  <div class="wpx-phead">
-    <h3 class="wpx-ph">${esc(place.label)}</h3>
-    <p class="wpx-why">${esc(AREA_PURPOSE[key] ?? "")}</p>
-  </div>
-  <p class="wpx-ml">${ms.length === 1 ? "The method" : "Methods"} our guide names for it</p>
-  <ul class="wpx-ms">${ms
-    .map(
-      (m) =>
-        `<li><a href="#m-${m.key}" data-m-go="${m.key}" data-k="${m.group}"><span class="wpx-mt"><span class="wpx-mn">${esc(m.short)}<span class="wpx-sr">, ${esc(groupLabel(m).toLowerCase())}</span></span><span class="wpx-ma">${esc(m.applied)}</span></span><span class="wpx-mk" aria-hidden="true">${esc(groupLabel(m))}</span></a></li>`,
-    )
-    .join("")}</ul>
-  <div class="wpx-acts">
-    <a class="pg-btn pg-btn--ink" href="${esc(book)}" data-internal>Book an inspection</a>
-    <a class="wpx-more" href="/services#${serviceSlug(service.title)}" data-internal>About ${esc(service.title.toLowerCase())}${arrow}</a>
-  </div>
-</div>`;
+const OK = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const MIND = `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.8v4M8 11.1v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+const OPEN = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3.5v9M3.5 8h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+
+const CLOSE = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+
+/** one method in a place's box: its row, and the box that opens over the list to explain it (every one the size of the place's box) */
+const BACK = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3.5M7.5 3.5L3 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+/** what each kind's picture shows (a rendered cut-away, in /public/images/methods) */
+const KIND_ALT: Readonly<Record<string, string>> = {
+  coat: "A concrete slab with a waterproof coat applied over its surface",
+  sheet: "A sheet membrane unrolled over a concrete slab, two sheets lapped where they meet",
+  concrete: "A concrete block with crystals grown in its pores, near the surface",
+  joint: "Two concrete pours with a waterstop cast across the joint and a sealant at the top",
+};
+
+function methodItem(m: Method, key: string, products: readonly Product[], place: string, book: string) {
+  const ps = m.products.map((s) => products.find((p) => p.slug === s)).filter((p): p is Product => Boolean(p));
+  const also = FOSROC_BY_METHOD.filter((f) => f.methods.includes(m.key))
+    .flatMap((f) => f.products)
+    .filter((p) => !p.slug);
+  const id = `wpx-pop-${key}-${m.key}`;
+  const prods = `<div class="wpx-dprod"><p class="wpx-dl">Products for it</p>${
+    ps.length || also.length
+      ? `<p class="wpx-dp">${ps.map((p) => `<a href="/products#${p.slug}" data-internal>${esc(p.name)}</a>`).join("")}${also.map((p) => `<span>${esc(p.name)}, Fosroc</span>`).join("")}</p>`
+      : `<p class="wpx-dnone">Not on our product list. Ask us what we use for it on your building.</p>`
+  }</div>`;
+  const row = `<li><button type="button" class="wpx-mrow" data-k="${m.group}" data-pop="${id}" aria-haspopup="dialog" aria-controls="${id}"><span class="wpx-mt"><span class="wpx-mn">${esc(m.short)}<span class="wpx-sr">, ${esc(groupLabel(m).toLowerCase())}</span></span><span class="wpx-ma">${esc(m.applied)}</span></span><span class="wpx-mk" aria-hidden="true">${esc(groupLabel(m))}</span><span class="wpx-mo">${OPEN}</span></button></li>`;
+  const pop = `<div class="wpx-pop" id="${id}" role="dialog" aria-labelledby="${id}-h" data-k="${m.group}" hidden>
+    <div class="wpx-poph">
+      <div class="wpx-popt"><p class="wpx-popk">${esc(groupLabel(m))}</p><h4 class="wpx-popn" id="${id}-h">${esc(m.name)}</h4></div>
+      <button type="button" class="wpx-popx" data-pop-close aria-label="Close">${CLOSE}</button>
+    </div>
+    <div class="wpx-popb">
+      <div class="wpx-poptop">
+        <figure class="wpx-popart"><img src="/images/methods/${m.group}.webp" width="900" height="438" alt="${esc(KIND_ALT[m.group] ?? "")}" loading="lazy" decoding="async"></figure>
+        <div><p class="wpx-dh">${esc(m.how)}</p><p class="wpx-duse"><span>Used for</span> ${esc(m.areas)}</p></div>
+      </div>
+      <div class="wpx-dnotes">
+        <div class="wpx-dn is-ok">${OK}<div><b>Good to know</b><span>${esc(m.notes[0])}</span></div></div>
+        <div class="wpx-dn is-mind">${MIND}<div><b>Keep in mind</b><span>${esc(m.notes[1])}</span></div></div>
+      </div>
+      ${prods}
+    </div>
+    <div class="wpx-popf">
+      <button type="button" class="wpx-popbk" data-pop-close aria-label="Back to ${esc(place.toLowerCase())}">${BACK}Back</button>
+      <a class="pg-btn pg-btn--ink" href="${esc(book)}" data-internal>Book a free site inspection</a>
+    </div>
+  </div>`;
+  return { row, pop };
 }
 
-export function placeMapMarkup() {
+function placePanel(key: string, active: boolean, products: readonly Product[]): { panel: string; pops: string } {
+  const place = PLACES.find((p) => p.key === key);
+  const service = SERVICE_CATEGORIES.find((s) => s.area === key);
+  if (!place || !service) return { panel: "", pops: "" };
+  const ms = place.methods.map(byNo).filter((m): m is Method => Boolean(m));
+  const book = `/contact?service=${encodeURIComponent(service.title)}#enquiry`;
+  const items = ms.map((m) => methodItem(m, key, products, place.label, book));
+  const short = ms.length <= 3;
+  const panel = `<div class="wpx-panel${short ? " wpx-panel--short" : ""}" id="wpx-p-${key}" role="tabpanel" aria-labelledby="wpx-t-${key}" tabindex="0"${active ? "" : " hidden"}>
+  <div class="wpx-phead">
+    <h3 class="wpx-ph">${esc(place.label)}</h3>
+  </div>
+  <ul class="wpx-ms">${items.map((x) => x.row).join("")}</ul>
+  ${short ? `<div class="wpx-help"><span class="wpx-helpi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/><path d="M11 7.5c-1.6 2.2-2.4 3.6-2.4 4.6a2.4 2.4 0 0 0 4.8 0c0-1-.8-2.4-2.4-4.6z"/></svg></span><p class="wpx-helph">Not sure which one your ${esc(place.label.toLowerCase())} needs?</p><p>We visit before we advise: an engineer checks where the water gets in, then suggests the method. The first site inspection is free.</p></div>` : ""}
+  <div class="wpx-acts">
+    <a class="pg-btn pg-btn--ink" href="${esc(book)}" data-internal>Book a free site inspection</a>
+    <a class="wpx-more" href="/services#${serviceSlug(service.title)}" data-internal aria-label="About ${esc(service.title.toLowerCase())}">Service details${arrow}</a>
+  </div>
+</div>`;
+  return { panel, pops: items.map((x) => x.pop).join("") };
+}
+
+export function placeMapMarkup(products: readonly Product[]) {
   const keys = SERVICE_CATEGORIES.map((s) => s.area).filter((k) => SPOTS[k]);
   const first = keys[0]!;
+  const panels = keys.map((k) => placePanel(k, k === first, products));
   const pct = (v: number, o: number, s: number) => (((v - o) / s) * 100).toFixed(2);
   const spots = keys
     .map((k, i) => {
@@ -194,7 +244,7 @@ export function placeMapMarkup() {
         <div class="wpx-frame"><div class="wpx-art">${drawing}${spots}</div></div>
         <div class="wpx-tabs" role="tablist" aria-label="Places in the house">${tabs}</div>
       </div>
-      <div class="wpx-panels">${keys.map((k) => placePanel(k, k === first)).join("")}</div>
+      <div class="wpx-panels">${panels.map((x) => x.panel).join("")}${panels.map((x) => x.pops).join("")}</div>
     </div>
   </div>
 </section>`;
@@ -299,15 +349,13 @@ export const METHODS_TOOLS_CSS = `
 .wpx-ml{margin:1.2rem 0 .4rem;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .wpx-ms{margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
 .wpx-ms li{border-bottom:1px solid var(--line)}
-.wpx-ms a{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;column-gap:.8rem;padding:.65rem .1rem;color:var(--ink);text-decoration:none}
+.wpx-ms .wpx-mrow{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:center;column-gap:.8rem;padding:.65rem .1rem;color:var(--ink);text-decoration:none}
 .wpx-mi{display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:4px;background:rgba(18,34,59,.05);color:var(--ink2)}
 .wpx-mi svg{width:1.25rem;height:1.25rem}
 .wpx-mt{display:flex;flex-direction:column;min-width:0}
 .wpx-mn{font-size:var(--fs-body);font-weight:600;line-height:1.35}
 .wpx-ma{font-size:var(--fs-body);line-height:1.4;color:var(--mute)}
 .wpx-ms .pg-ar{color:var(--mute);transition:transform .2s,color .2s}
-.wpx-ms a:hover .pg-ar{color:var(--ink);transform:translateY(2px)}
-.wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px}
 .wpx-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1.4rem;margin-top:1.3rem}
 
 /* two methods side by side */
@@ -366,37 +414,121 @@ export const METHODS_TOOLS_CSS = `
 [data-cmp-rows] .wpx-row:last-child{border-radius:0 0 8px 8px}
 /* the place's box, simple: its name on a dark band, its methods as plain rows with a line between, then the booking button and a link */
 .wpx-panel{padding:0;overflow:hidden;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
-.wpx-phead{padding:1.1rem 1.3rem 1.15rem;background:var(--navy);color:#f5f0e6}
+.wpx-panel[hidden]{display:none}
+.wpx-phead{padding:.9rem 1.3rem;background:var(--navy);color:#f5f0e6}
+.wpx-panel .wpx-ms{padding-top:.3rem}
+/* laptops: the box is only as tall as its methods (never taller than the drawing beside it, its list scrolls if it would be); an opened method fills the whole column, so every one is the same size */
+@media (min-width:1280px){
+  .wpx-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:stretch}
+  .wpx-panels{position:relative;min-height:0}
+  .wpx-panel{position:absolute;inset:0;display:flex;flex-direction:column}
+  /* every box fills the column beside the drawing, the same size as the box a method opens in: a long list spreads its rows out, a short one is followed by a note */
+  .wpx-panels .wpx-panel .wpx-ms{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+  .wpx-panels .wpx-panel .wpx-ms li{flex:1 0 auto;display:flex}
+  .wpx-panel .wpx-ms li .wpx-mrow{flex:1}
+  .wpx-panels .wpx-panel--short .wpx-ms{flex:none}
+  .wpx-panels .wpx-panel--short .wpx-ms li{flex:none}
+  .wpx-help{flex:1}
+  .wpx-panel .wpx-acts{flex:none}
+}
 .wpx-panel .wpx-ph{margin:0;padding:0;background:none;color:#f5f0e6}
+.wpx-help{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 1.3rem;padding:1rem .5rem;border-top:1px solid var(--line);text-align:center}
+.wpx-helpi{display:grid;place-items:center;width:3rem;height:3rem;margin-bottom:.7rem;border-radius:50%;background:rgba(11,110,128,.1);color:var(--water)}
+.wpx-helpi svg{width:1.5rem;height:1.5rem}
+.wpx-help p{max-width:24rem;margin:0;font-size:var(--fs-body);line-height:1.55;color:var(--ink2)}
+.wpx-help .wpx-helph{margin-bottom:.3rem;font-weight:600;color:var(--ink)}
 .wpx-panel .wpx-why{margin:.3rem 0 0;padding:0;background:none;font-size:var(--fs-body);line-height:1.45;color:rgba(245,240,230,.75)}
 .wpx-panel .wpx-ml{margin:0;padding:1rem 1.3rem .25rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .wpx-panel .wpx-ms{display:block;margin:0 1.3rem;padding:0;border:0;background:none;box-shadow:none}
 .wpx-panel .wpx-ms li{border:0;border-bottom:1px solid var(--line);box-shadow:none}
 .wpx-panel .wpx-ms li:last-child{border-bottom:0}
-.wpx-panel .wpx-ms a{--k:#2756a0;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-radius:0;background:none;box-shadow:none}
-.wpx-panel .wpx-ms a[data-k=sheet]{--k:#a35f10}
-.wpx-panel .wpx-ms a[data-k=concrete]{--k:#1f7a4f}
-.wpx-panel .wpx-ms a[data-k=joint]{--k:#6a4c9c}
-.wpx-panel .wpx-ms a:hover{background:none;box-shadow:none}
-.wpx-panel .wpx-ms a:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(18,34,59,.35)}
-.wpx-panel .wpx-ms a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.wpx-panel .wpx-mt{min-width:0}
+.wpx-panel .wpx-ms .wpx-mrow{--k:#2756a0;display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:.65rem 0;border-radius:0;background:none;box-shadow:none}
+.wpx-panel .wpx-ms .wpx-mrow[data-k=sheet]{--k:#a35f10}
+.wpx-panel .wpx-ms .wpx-mrow[data-k=concrete]{--k:#1f7a4f}
+.wpx-panel .wpx-ms .wpx-mrow[data-k=joint]{--k:#6a4c9c}
+.wpx-panel .wpx-mt{flex:1;min-width:0}
 .wpx-panel .wpx-mn{font-weight:600;line-height:1.3;color:var(--ink)}
 .wpx-panel .wpx-ma{overflow:hidden;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
+/* a method's row opens a box over the list that explains it; the box is always the place's box, so every one is the same size */
+.wpx-panel .wpx-ms .wpx-mrow{width:100%;border:0;font:inherit;text-align:left;cursor:pointer}
+.wpx-mrow:hover .wpx-mn{text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(18,34,59,.35)}
+.wpx-mrow:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wpx-mo{flex:none;display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(18,34,59,.22);color:var(--ink);transition:background-color .2s,color .2s,box-shadow .2s}
+.wpx-mo svg{width:.8rem;height:.8rem}
+.wpx-mrow:hover .wpx-mo{background:var(--navy);box-shadow:none;color:#f5f0e6}
+.wpx-pop{--k:#2756a0;position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;overflow:hidden;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);animation:wpx-pop .25s cubic-bezier(.2,.7,.2,1)}
+.wpx-pop[hidden]{display:none}
+.wpx-pop[data-k=sheet]{--k:#a35f10}.wpx-pop[data-k=concrete]{--k:#1f7a4f}.wpx-pop[data-k=joint]{--k:#6a4c9c}
+@keyframes wpx-pop{from{opacity:0;transform:translateY(8px)}}
+@media (prefers-reduced-motion:reduce){.wpx-pop{animation:none}}
+.wpx-poph{display:flex;align-items:center;gap:.8rem;padding:.65rem .9rem .65rem 1.3rem;border-radius:14px 14px 0 0;background:var(--navy);color:#f5f0e6}
+.wpx-popk{display:inline-flex;align-items:center;gap:.4rem;margin:0;font-size:var(--fs-body);color:rgba(245,240,230,.75)}
+.wpx-popk::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--k);box-shadow:0 0 0 2px rgba(245,240,230,.5)}
+.wpx-popn{margin:.15rem 0 0;font-size:var(--fs-sub);font-weight:600;line-height:1.2;color:#fff}
+.wpx-popx{flex:none;display:grid;place-items:center;width:2.2rem;height:2.2rem;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:background-color .2s}
+.wpx-popx:hover{background:rgba(255,255,255,.24)}
+.wpx-popx:focus-visible{outline:2px solid #f5f0e6;outline-offset:2px}
+.wpx-popx svg{width:.9rem;height:.9rem}
+.wpx-popt{flex:1;min-width:0}
+.wpx-popb::-webkit-scrollbar{display:none}
+.wpx-pop.is-t1 .wpx-popart{display:none}
+.wpx-pop.is-t1 .wpx-poptop{grid-template-columns:minmax(0,1fr)}
+.wpx-pop.is-t2 .wpx-duse{display:none}
+.wpx-pop.is-t3 .wpx-dprod{padding-top:.4rem}
+.wpx-pop.is-t3 .wpx-dp{gap:.25rem}
+.wpx-pop.is-t3 .wpx-dnotes{margin-top:.5rem}
+.wpx-popb{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;padding:.85rem 1.3rem}
+.wpx-poptop{display:grid;grid-template-columns:8.5rem minmax(0,1fr);gap:1rem;align-items:start}
+.wpx-popart{margin:0;padding:.4rem;border-radius:12px;background:linear-gradient(180deg,#e9e2d4,#f1ebe0);box-shadow:inset 0 0 0 1px var(--line)}
+.wpx-popart img{display:block;width:100%;height:auto}
+.wpx-duse{margin:.4rem 0 0;font-size:var(--fs-body);line-height:1.45;color:var(--ink)}
+.wpx-duse span{font-weight:600;color:var(--mute)}
+.wpx-dnotes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-top:.7rem}
+.wpx-dnotes .wpx-dn{margin:0;padding:.55rem .7rem;line-height:1.4;border-radius:10px;background:rgba(11,110,128,.07)}
+.wpx-dnotes .wpx-dn.is-mind{background:rgba(163,95,16,.08)}
+.wpx-dn b{display:block;margin-bottom:.15rem;font-weight:600;color:var(--ink)}
+.wpx-popf{flex:none;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem 1.3rem;border-top:1px solid var(--line);background:var(--card)}
+.wpx-popf .pg-btn{height:2.6rem;padding:0 1rem}
+.wpx-popbk{display:inline-flex;align-items:center;gap:.45rem;padding:.4rem 0;border:0;background:none;font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);cursor:pointer}
+.wpx-popbk svg{width:1rem;height:1rem;transition:transform .2s}
+.wpx-popbk:hover svg{transform:translateX(-3px)}
+.wpx-popbk:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+@media (max-width:479px){.wpx-poptop{grid-template-columns:minmax(0,1fr)}.wpx-popart{max-width:12rem}.wpx-dnotes{grid-template-columns:minmax(0,1fr)}.wpx-popf .pg-btn{padding:0 .8rem}}
+.wpx-dh{margin:0;font-size:var(--fs-body);line-height:1.6;color:var(--ink)}
+.wpx-dn{display:flex;gap:.5rem;margin:.7rem 0 0;font-size:var(--fs-body);line-height:1.5;color:var(--ink2)}
+.wpx-dn svg{flex:none;width:1rem;height:1rem;margin-top:.2rem}
+.wpx-dn.is-ok svg{color:var(--water)}
+.wpx-dn.is-mind svg{color:#a35f10}
+.wpx-dprod{margin-top:auto;padding-top:.7rem}
+.wpx-dnone{margin:0;padding:.5rem .7rem;border-radius:10px;background:rgba(18,34,59,.05);font-size:var(--fs-body);line-height:1.45;color:var(--ink2)}
+.wpx-dl{margin:0 0 .4rem;font-size:var(--fs-body);font-weight:600;color:var(--mute)}
+.wpx-dp{display:flex;flex-wrap:wrap;gap:.35rem;margin:0}
+.wpx-dp a,.wpx-dp span{display:inline-flex;align-items:center;min-height:1.75rem;padding:.15rem .55rem;border-radius:7px;font-size:var(--fs-body);font-weight:600;line-height:1.3}
+.wpx-dp a{background:var(--navy);color:#f5f0e6;text-decoration:none;transition:background-color .2s}
+.wpx-dp a:hover{background:var(--accent)}
+.wpx-dp span{box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);color:var(--ink2);font-weight:500}
+@media (pointer:coarse){.wpx-dp a{min-height:2.75rem}}
+/* phones and tablets: the box opens over the page, always the same size */
+@media (max-width:1279px){
+  .wpx-pop{position:fixed;inset:auto 12px max(12px,env(safe-area-inset-bottom)) 12px;width:auto;max-width:40rem;margin-inline:auto;height:min(40rem,calc(100svh - 24px));z-index:80;border-radius:16px;box-shadow:0 30px 80px -20px rgba(4,12,30,.6),0 0 0 1px var(--line)}
+  .wpx-poph{border-radius:16px 16px 0 0}
+}
 .wpx-mk{flex:none;display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-body);color:var(--mute);white-space:nowrap}
 .wpx-mk::before{content:"";width:.4rem;height:.4rem;border-radius:50%;background:var(--k,#2756a0)}
-.wpx-panel .wpx-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem 1rem;margin:.4rem 0 0;padding:.9rem 1.3rem 1rem;border-top:1px solid var(--line)}
-.wpx-panel .wpx-acts .pg-btn{height:2.6rem;padding:0 1.1rem}
+.wpx-panel .wpx-acts{display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:1rem;margin:0;padding:.8rem 1.3rem;border-top:1px solid var(--line)}
+.wpx-panel .wpx-acts .pg-btn{flex:none}
+.wpx-panel .wpx-acts .wpx-more{flex:none;white-space:nowrap}
+.wpx-panel .wpx-acts .pg-btn{height:2.6rem;padding:0 1rem}
 .wpx-more{display:inline-flex;align-items:center;gap:.3rem;font-size:var(--fs-body);font-weight:600;color:var(--ink);text-decoration:underline;text-decoration-color:rgba(18,34,59,.25);text-underline-offset:4px;transition:text-decoration-color .2s}
 .wpx-more:hover{text-decoration-color:currentColor}
 .wpx-more .pg-ar{width:.9rem;height:.9rem}
-@media (max-width:479px){.wpx-mk{display:none}.wpx-panel .wpx-ma{white-space:normal}.wpx-panel .wpx-acts .pg-btn{width:100%}.wpx-more{margin-inline:auto}}
+@media (max-width:479px){.wpx-mk{display:none}.wpx-panel .wpx-ma{white-space:normal}.wpx-panel .wpx-acts{flex-wrap:wrap}.wpx-panel .wpx-acts .pg-btn{width:100%}.wpx-more{margin-inline:auto}}
 .wpx-prods{display:flex;flex-wrap:wrap;gap:.35rem}
 .wpx-prods a{display:inline-flex;align-items:center;min-height:2rem;padding:.25rem .7rem;line-height:1.3;border-radius:8px;background:var(--navy);color:#f5f0e6;font-weight:600;text-decoration:none}
 .wpx-prods a:hover{background:var(--accent)}
 .wpx-none{color:var(--mute)}
 
-@media (max-width:1023px){
+@media (max-width:1279px){
   .wpx-grid{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:767px){

@@ -6,20 +6,12 @@
  *             "Where is the water getting in?": the eight places our services
  *             cover, on a drawing of a house (lib/pages/methods-tools.ts)
  *   rain test pick a method and watch where it stops the water (lib/pages/methods-rain.ts)
- *   methods   the twelve methods in their four kinds, one row each with where
- *             it is mainly used and how it goes on; opened, how it works, what
- *             to keep in mind, and the products on our list of that kind
- *   brands    the brands it lists, as their logos, moving slowly left to right
  *   close     the ways to start
  *
- * Links to /waterproofing#m-<key> open that method, and #a-<key> opens that
- * place on the drawing.
+ * Links to /waterproofing#a-<place> open that place on the drawing.
  */
-import { BRAND_LOGOS } from "../methods/brand-logos";
-import { METHOD_GROUPS, METHODS, type Method } from "../methods/data";
-import { BRAND_SPECIALITY, FOSROC_BY_METHOD } from "../methods/doc";
 import type { Product } from "../products";
-import { arrow, ctaBand, esc, secHead, type ContactInfo, type PageOptions } from "./kit";
+import { arrow, ctaBand, esc, type ContactInfo, type PageOptions } from "./kit";
 import { methodsData, METHODS_TOOLS_CSS, placeMapMarkup } from "./methods-tools";
 import { RAIN_CSS, rainMarkup } from "./methods-rain";
 
@@ -33,68 +25,6 @@ export const METHODS_TRAIL = [
   { name: "Waterproofing", href: "/waterproofing" },
 ] as const;
 
-/** the brands on RPC's product list, for marking them among the document's brands */
-const STOCKED = ["Fosroc", "Sika", "Berger"];
-const stocked = (b: string) => STOCKED.some((s) => b.toLowerCase().startsWith(s.toLowerCase()));
-
-/** the document's brands, those on our list first (otherwise in the document's order) */
-const BRANDS = [...BRAND_SPECIALITY].sort((x, y) => Number(stocked(y.brand)) - Number(stocked(x.brand)));
-
-const plus = `<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
-const TICK = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const MIND = `<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.8v4M8 11.1v.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
-
-/** a method as one row: its name, how it goes on and where it is mainly used; opened, the rest of what the guide says */
-function methodRow(m: Method, products: readonly Product[]) {
-  const ps = m.products.map((s) => products.find((p) => p.slug === s)).filter((p): p is Product => Boolean(p));
-  // Fosroc products the guide names for this kind of method that are not on our list
-  const also = FOSROC_BY_METHOD.filter((f) => f.methods.includes(m.key))
-    .flatMap((f) => f.products)
-    .filter((p) => !p.slug);
-  const prods = [
-    ps.length ? `<p><span>On our product list</span>${ps.map((p) => `<a href="/products#${p.slug}" data-internal>${esc(p.name)}</a>`).join("")}</p>` : "",
-    also.length ? `<p><span>Also from Fosroc</span>${also.map((p) => `<b>${esc(p.name)}</b>`).join("")}</p>` : "",
-  ].join("");
-  return `<li class="wp-row" id="m-${m.key}">
-  <details class="wp-d">
-    <summary class="wp-sum">
-      <span class="wp-sn"><span class="wp-sname">${esc(m.name)}</span><span class="wp-sapp">${esc(m.applied)}</span></span>
-      <span class="wp-sareas">${esc(m.areas)}</span>
-      <span class="wp-plus">${plus}</span>
-    </summary>
-    <div class="wp-body">
-      <p class="wp-how">${esc(m.how)}</p>
-      <dl class="wp-notes">
-        <div class="is-good"><dt>${TICK}Good to know</dt><dd>${esc(m.notes[0])}</dd></div>
-        <div class="is-mind"><dt>${MIND}Keep in mind</dt><dd>${esc(m.notes[1])}</dd></div>
-      </dl>
-      ${prods ? `<div class="wp-foot"><div class="wp-prods">${prods}</div></div>` : ""}
-    </div>
-  </details>
-</li>`;
-}
-
-/** what each kind's picture shows (a rendered cut-away, in /public/images/methods) */
-const KIND_ALT: Readonly<Record<string, string>> = {
-  coat: "A concrete slab with a waterproof coat applied over its surface",
-  sheet: "A sheet membrane unrolled over a concrete slab, two sheets lapped where they meet",
-  concrete: "A concrete block with crystals grown in its pores, near the surface",
-  joint: "Two concrete pours with a waterstop cast across the joint and a sealant at the top",
-};
-
-/** one kind of method: a picture of where it keeps the water out, and its methods */
-function kindBlock(g: (typeof METHOD_GROUPS)[number], products: readonly Product[]) {
-  return `<section class="wp-kind" aria-labelledby="wp-k-${g.key}">
-  <div class="wp-khead">
-    <div class="wp-kart"><img src="/images/methods/${g.key}.webp" width="900" height="438" alt="${esc(KIND_ALT[g.key] ?? "")}" loading="lazy" decoding="async"></div>
-    <h3 class="wp-kname" id="wp-k-${g.key}">${esc(g.label)}</h3>
-    <p class="wp-kline">${esc(g.line)}</p>
-  </div>
-  <ul class="wp-rows">${METHODS.filter((m) => m.group === g.key)
-    .map((m) => methodRow(m, products))
-    .join("")}</ul>
-</section>`;
-}
 
 export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
   void o;
@@ -104,7 +34,7 @@ export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
     <div class="wp-hgrid">
       <div>
         <p class="pg-mark">Waterproofing</p>
-        <h1 class="pg-h1">Waterproofing methods for every part of a&nbsp;building.</h1>
+        <h1 class="pg-h1">Waterproofing methods<br class="wp-br"> for every part of a&nbsp;building.</h1>
       </div>
       <div class="wp-hside">
         <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a><a class="pg-btn pg-btn--line" href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">Send us a photo on WhatsApp</a></div>
@@ -113,48 +43,17 @@ export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
   </div>
 </header>`;
 
-  const methods = `<section class="pg-sec pg-sec--stone wp-msec" id="methods" aria-labelledby="wp-m-h">
+  // the monsoon house film from the home page's opening, on a loop
+  const film = `<section class="wp-film" aria-label="A house in the monsoon rain, kept dry">
   <div class="pg-wrap">
-    ${secHead({ label: "From our methods guide", title: "Twelve methods, in four kinds.", id: "wp-m-h", lede: "Open one to see how it works, what is good to know and what to keep in mind. The final choice is made on site, once we know where the water is coming from." })}
-    <div class="wp-kinds">${METHOD_GROUPS.map((g) => kindBlock(g, d.products)).join("")}</div>
+    <figure class="wp-fbox">
+      <video class="wp-fvid" poster="/videos/hero/monsoon-house-poster.jpg" muted loop playsinline autoplay preload="metadata" data-loop aria-label="A house in the monsoon rain, kept dry"><source src="/videos/hero/monsoon-house-540.mp4" type="video/mp4" media="(max-width: 767px)"><source src="/videos/hero/monsoon-house-720.mp4" type="video/mp4"></video>
+    </figure>
   </div>
 </section>`;
 
-  const brands = `<section class="pg-sec pg-sec--stone wp-bsec" id="brands" aria-labelledby="wp-b-h">
-  <div class="pg-wrap">
-    ${secHead({ label: "Brands", title: "The brands in our methods guide.", id: "wp-b-h" })}
-    <div class="wp-marq" role="region" aria-label="The brands, moving slowly; hover to pause">
-      <ul class="wp-mtrack">${[0, 1]
-        .map((copy) =>
-          BRANDS.map((b) => {
-            const logo = BRAND_LOGOS[b.brand];
-            return `<li class="wp-btile${logo ? "" : " wp-btile--name"}"${copy ? ` aria-hidden="true"` : ""}>${logo ? `<img src="/images/brands/${esc(logo)}" alt="${copy ? "" : esc(b.brand)}" loading="lazy" decoding="async">` : `<span class="wp-bname">${esc(b.brand)}</span>`}</li>`;
-          }).join(""),
-        )
-        .join("")}</ul>
-    </div>
-  </div>
-</section>`;
-
-  // the building waterproofed stage by stage, from the ground to the roof: it builds as the page scrolls
-  const film = `<section class="wp-film" aria-label="Waterproofing from land to roof, stage by stage" data-film-scroll>
-  <div class="wp-fstick">
-    <div class="pg-wrap">
-      <figure class="wp-fbox">
-        <video class="wp-fvid" poster="/videos/land-to-roof.jpg" muted playsinline preload="none" data-film aria-label="A building waterproofed in stages, from the ground to the roof, built as you scroll"><source src="/videos/land-to-roof-scrub.webm" type="video/webm"><source src="/videos/land-to-roof-scrub.mp4" type="video/mp4"></video>
-      </figure>
-      <p class="wp-fbar" aria-hidden="true"><i></i></p>
-    </div>
-  </div>
-</section>`;
-
-  return `${head}\n${film}\n${placeMapMarkup()}\n${rainMarkup()}\n${methods}\n${methodsData(d.products)}\n${brands}\n${ctaBand(c, {
+  return `${head}\n${film}\n${placeMapMarkup(d.products)}\n${rainMarkup()}\n${methodsData(d.products)}\n${ctaBand(c, {
     title: "Not sure which method your building needs?",
-    steps: [
-      ["Show us where it leaks", "Photos on WhatsApp are a good start."],
-      ["We trace the water", "Where it gets in decides the method, not the other way round."],
-      ["You get a method for your building", "The system, the products and the area it covers, in writing."],
-    ],
   })}`;
 }
 
@@ -162,16 +61,23 @@ export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
 const BASE_CSS = `
 /* opening: the title and the ways to start, with the house straight under them */
 .wp-head{padding-bottom:0;border-bottom:0}
-.wp-hgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:1.4rem clamp(2rem,6vw,6rem);align-items:end}
+.wp-hgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1.4rem clamp(2rem,6vw,6rem);align-items:end}
 .wp-hgrid .pg-mark{margin-bottom:.9rem}
 .wp-hgrid .pg-h1{max-width:17ch}
+@media (min-width:768px){.wp-hgrid .pg-h1{max-width:none}}
+@media (max-width:767px){.wp-br{display:none}}
+/* the two ways to start, side by side */
+.wp-hside .pg-actions{flex-wrap:nowrap}
+@media (min-width:1280px){.wp-hgrid{grid-template-columns:minmax(0,1fr) auto;gap:1.4rem clamp(2rem,3.5vw,4rem)}}
+@media (max-width:1279px){.wp-hgrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:599px){.wp-hside .pg-actions{flex-wrap:wrap}}
 .wp-hside .pg-intro{margin:0;max-width:34rem}
 
 /* the twelve methods, kind by kind */
 .wp-kinds{border-top:2px solid var(--ink)}
-.wp-kind{display:grid;grid-template-columns:minmax(13rem,16rem) minmax(0,1fr);gap:1.2rem clamp(2rem,5vw,5rem);padding:clamp(1.4rem,3vh,2rem) 0;border-bottom:1px solid rgba(18,34,59,.2)}
+.wp-kind{display:grid;grid-template-columns:minmax(17rem,22rem) minmax(0,1fr);gap:1.2rem clamp(2rem,5vw,5rem);padding:clamp(1.4rem,3vh,2rem) 0;border-bottom:1px solid rgba(18,34,59,.2)}
 .wp-khead{position:sticky;top:calc(var(--nav-bar,80px) + 1.4rem);align-self:start;padding-top:.7rem}
-.wp-kart{width:100%;max-width:16rem;margin:0 0 .9rem}
+.wp-kart{width:100%;max-width:22rem;margin:0 0 .9rem}
 .wp-kart img{display:block;width:100%;height:auto}
 .wp-kname{margin:0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.01em}
 .wp-kline{margin:.35rem 0 0;max-width:15rem;font-size:var(--fs-body);line-height:1.5;color:var(--mute)}
@@ -223,16 +129,11 @@ const BASE_CSS = `
 .wp-notes .is-mind dt{color:#a35f10}
 .wp-foot:empty{display:none}
 
-/* the film as a scroll animation: it stays in view while the page moves through it, and each stage builds with the scroll */
-.wp-film{position:relative;height:280vh;margin:clamp(1rem,3vh,2rem) 0 0}
-.wp-fstick{position:sticky;top:calc(var(--nav-bar,64px) + 1rem);display:flex;flex-direction:column;justify-content:center;height:calc(100svh - var(--nav-bar,64px) - 2rem)}
-.wp-fbox{position:relative;margin:0 auto;max-height:calc(100svh - var(--nav-bar,64px) - 4rem);aspect-ratio:1280/702;overflow:hidden;border-radius:16px;background:#0b1626}
+/* the monsoon house film, full width of the page, at its own proportions */
+.wp-film{padding:clamp(1rem,3vh,2rem) 0 0}
+.wp-fbox{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#0b1626}
 .wp-fvid{display:block;width:100%;height:100%;object-fit:cover}
-.wp-fbar{position:relative;width:min(100%,24rem);height:3px;margin:1rem auto 0;border-radius:3px;background:rgba(18,34,59,.12);overflow:hidden}
-.wp-fbar i{position:absolute;inset:0;background:var(--accent);transform-origin:0 50%;transform:scaleX(var(--p,0))}
-/* less motion: the film simply sits at its first frame, with no long scroll */
-@media (prefers-reduced-motion:reduce){.wp-film{height:auto;padding:1.4rem 0}.wp-fstick{position:static;height:auto}.wp-fbar{display:none}}
-@media (max-width:767px){.wp-film{height:240vh}.wp-fbox{width:100%;max-height:none;aspect-ratio:1/1;border-radius:12px}.wp-fvid{object-position:0 50%}}
+@media (max-width:767px){.wp-fbox{border-radius:12px}}
 /* the brands follow the methods on the same background, so they need little room above */
 .wp-msec{padding-bottom:clamp(1.2rem,3vh,2rem)}
 .wp-msec ~ .wp-bsec{padding-top:clamp(2rem,5vh,3rem)}
@@ -259,19 +160,20 @@ const BASE_CSS = `
 @media (max-width:1199px){
   /* the kind's drawing and name above its methods, so the rows get the full width */
   .wp-kind{grid-template-columns:minmax(0,1fr);gap:.7rem}
-  .wp-khead{position:static;display:grid;grid-template-columns:12rem minmax(0,1fr);column-gap:1.2rem;align-items:center;padding-top:0}
+  .wp-khead{position:static;display:grid;grid-template-columns:18rem minmax(0,1fr);column-gap:1.2rem;align-items:center;padding-top:0}
   .wp-kart{grid-row:1 / span 2;width:100%;margin:0}
   .wp-kname{align-self:end}
   .wp-kline{align-self:start;max-width:none;margin-top:.2rem}
 }
 @media (max-width:899px){
-  .wp-khead{grid-template-columns:8.5rem minmax(0,1fr);column-gap:1rem}
+  .wp-khead{grid-template-columns:12.5rem minmax(0,1fr);column-gap:1rem}
   .wp-sum{grid-template-columns:minmax(0,1fr) 2.4rem;gap:.35rem 1rem;padding:1rem .9rem}
   .wp-sareas{grid-column:1;grid-row:2}
   .wp-plus{grid-column:2;grid-row:1 / span 2;width:2.4rem;height:2.4rem}
   .wp-body{grid-template-columns:minmax(0,1fr);gap:1rem;padding:0 .9rem 1.1rem}
   .wp-how,.wp-notes{grid-column:1}
 }
+@media (max-width:479px){.wp-khead{grid-template-columns:10.5rem minmax(0,1fr)}}
 @media (max-width:767px){
   /* phones: the twelve in two rows that swipe sideways, so the section stays one screen */
   .wp-btile{width:10.5rem;height:5.2rem;padding:.8rem 1.1rem}
