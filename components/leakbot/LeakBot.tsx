@@ -19,7 +19,7 @@ import { contact } from "@/lib/content";
 const HIDE = ["/studio"];
 const MAX_PHOTOS = 3;
 /** the longest side a photo is shrunk to before it is sent */
-const PHOTO_SIDE = 1280;
+const PHOTO_SIDE = 1024;
 const SAVE_KEY = "leakbot:v1";
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -92,8 +92,8 @@ const T = {
     placeholder: "Describe the problem…",
     photosLeft: (n: number, m: number) => `${n} of ${m} photo checks left today`,
     noPhotos: "No photo checks left today. Resets at midnight.",
-    analysing: "Tracing the leak in your photo…",
-    thinking: "Thinking…",
+    analysing: ["Looking at your photo…", "Tracing where the water comes from…", "Choosing the right products…"],
+    thinking: ["Thinking…", "Tracing the leak…", "Choosing the right products…"],
     see: "What I see",
     path: "Leak path",
     cause: "Likely cause",
@@ -136,8 +136,8 @@ const T = {
     placeholder: "பிரச்சனையை விவரிக்கவும்…",
     photosLeft: (n: number, m: number) => `இன்று ${m}-இல் ${n} புகைப்பட ஆய்வுகள் மீதம்`,
     noPhotos: "இன்று புகைப்பட ஆய்வுகள் மீதமில்லை. நள்ளிரவில் புதுப்பிக்கப்படும்.",
-    analysing: "உங்கள் புகைப்படத்தில் கசிவைக் கண்டறிகிறேன்…",
-    thinking: "யோசிக்கிறேன்…",
+    analysing: ["உங்கள் புகைப்படத்தைப் பார்க்கிறேன்…", "நீர் எங்கிருந்து வருகிறது என்று கண்டறிகிறேன்…", "சரியான பொருட்களைத் தேர்வு செய்கிறேன்…"],
+    thinking: ["யோசிக்கிறேன்…", "கசிவைக் கண்டறிகிறேன்…", "சரியான பொருட்களைத் தேர்வு செய்கிறேன்…"],
     see: "நான் பார்ப்பது",
     path: "கசிவு பாதை",
     cause: "சாத்தியமான காரணம்",
@@ -488,6 +488,8 @@ export function LeakBot() {
   const [pending, setPending] = useState<Pending[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState<null | { photo?: string }>(null);
+  /** which of the waiting lines is showing */
+  const [stage, setStage] = useState(0);
   const [quota, setQuota] = useState<Quota | null>(null);
   const [dragging, setDragging] = useState(false);
   const [rateList, setRateList] = useState(false);
@@ -555,6 +557,14 @@ export function LeakBot() {
     }
     el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [msgs, busy]);
+
+  // while waiting, say what is happening, a step at a time
+  useEffect(() => {
+    setStage(0);
+    if (!busy) return;
+    const id = setInterval(() => setStage((n) => Math.min(n + 1, 2)), 2600);
+    return () => clearInterval(id);
+  }, [busy]);
 
   const say = (role: Msg["role"], m: Omit<Msg, "id" | "role">) => setMsgs((list) => [...list, { id: uid(), role, ...m }]);
 
@@ -782,13 +792,16 @@ export function LeakBot() {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={busy.photo} alt="" />
                       </div>
-                      {t.analysing}
+                      {t.analysing[stage]}
                     </div>
                   ) : (
-                    <div className="lb-typing" aria-label={t.thinking}>
-                      <i />
-                      <i />
-                      <i />
+                    <div className="lb-wait">
+                      <div className="lb-typing" aria-hidden>
+                        <i />
+                        <i />
+                        <i />
+                      </div>
+                      {t.thinking[stage]}
                     </div>
                   )}
                 </div>

@@ -1,14 +1,28 @@
 /**
  * One call to Gemini's generateContent (REST, no SDK), answering in a fixed
- * JSON shape so the chat can draw the diagnosis as a card. Models are tried in
- * order (GEMINI_MODEL first, if set): one that is overloaded (429/5xx) gets one
- * retry and then hands over to the next, and the one that answers is tried
- * first next time.
+ * JSON shape so the chat can draw the diagnosis as a card.
+ *
+ * Speed: the fastest model goes first, with thinking turned down (the answer is
+ * mostly looking things up in RPC's list, not reasoning at length). A model that
+ * is overloaded or out of quota (429/5xx) or slow hands over to the next at
+ * once, and sits out for a minute so the next visitors do not wait on it. The
+ * whole answer has a deadline.
  */
 import { METHOD_KEYS, PRODUCT_SLUGS, SYSTEM_KEYS, ZONES } from "./knowledge";
 
-/** tried in this order; GEMINI_MODEL, if set, goes first */
-const MODELS = [...new Set([process.env.GEMINI_MODEL, "gemini-3.5-flash", "gemini-3.8-flash", "gemini-flash-latest", "gemini-2.5-flash"].filter((m): m is string => !!m))];
+/** tried in this order (fastest first); GEMINI_MODEL, if set, goes first */
+const MODELS = [
+  ...new Set(
+    [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.8-flash", "gemini-flash-latest"].filter(
+      (m): m is string => !!m,
+    ),
+  ),
+];
+/** the longest a visitor waits for an answer, and for any one model */
+const DEADLINE = 30_000;
+const PER_MODEL = 20_000;
+/** how long an overloaded model sits out */
+const COOL_OFF = 60_000;
 const API = "https://generativelanguage.googleapis.com/v1beta/models";
 
 export interface Turn {
@@ -102,12 +116,17 @@ export class GeminiError extends Error {
 }
 
 let working: string | undefined;
+/** when each overloaded model may be tried first again */
+const resting = new Map<string, number>();
+/** the lowest thinking level each model accepts (minimal, else low, else its default) */
+const THINKING = ["minimal", "low", null] as const;
+const thinkingOf = new Map<string, number>();
 
 export async function ask(system: string, history: Turn[], text: string, photos: Photo[]): Promise<Answer> {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new GeminiError("GEMINI_API_KEY is not set", "config");
 
-  const body = JSON.stringify({
+  const request = (thinking: string | null) => JSON.stringify({
     systemInstruction: { parts: [{ text: system }] },
     contents: [
       ...history.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
@@ -116,38 +135,63 @@ export async function ask(system: string, history: Turn[], text: string, photos:
         parts: [...photos.map((p) => ({ inlineData: { mimeType: p.mimeType, data: p.data } })), { text: text || "Please look at these photos." }],
       },
     ],
-    generationConfig: { responseMimeType: "application/json", responseSchema: SCHEMA, temperature: 0.4 },
+    generationConfig: {
+      responseMimeType: "application/json",
+      responseSchema: SCHEMA,
+      temperature: 0.4,
+      ...(thinking ? { thinkingConfig: { thinkingLevel: thinking } } : {}),
+    },
   });
 
-  // the model that last worked first, then the others: one that is overloaded or missing hands over to the next
-  const order = [...new Set([...(working ? [working] : []), ...MODELS])];
+  // the model that last worked first, then the rest; any that are resting go last
+  const now = Date.now();
+  const ready = (m: string) => (resting.get(m) ?? 0) <= now;
+  const all = [...new Set([...(working ? [working] : []), ...MODELS])];
+  const order = [...all.filter(ready), ...all.filter((m) => !ready(m))];
+  const stop = now + DEADLINE;
   let busy = false;
+
   for (const model of order) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      if (attempt) await new Promise((r) => setTimeout(r, 1200));
+    while (Date.now() < stop - 1500) {
+      const level = thinkingOf.get(model) ?? 0;
       let res: Response;
       try {
         res = await fetch(`${API}/${model}:generateContent`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-          body,
+          body: request(THINKING[level]!),
           cache: "no-store",
-          signal: AbortSignal.timeout(45_000),
+          signal: AbortSignal.timeout(Math.min(PER_MODEL, stop - Date.now())),
         });
       } catch {
+        // too slow (or the network dropped): the next model
         busy = true;
-        continue;
+        resting.set(model, Date.now() + COOL_OFF);
+        console.warn(`[leakbot] ${model} timed out, trying the next model`);
+        break;
       }
       if (res.status === 404) break;
       if (res.status === 429 || res.status >= 500) {
         busy = true;
-        console.warn(`[leakbot] ${model} answered ${res.status}${attempt ? ", trying the next model" : ", retrying"}`);
-        continue;
+        resting.set(model, Date.now() + COOL_OFF);
+        console.warn(`[leakbot] ${model} answered ${res.status}, trying the next model`);
+        break;
       }
-      if (!res.ok) throw new GeminiError(`Gemini ${res.status}: ${(await res.text()).slice(0, 300)}`, "config");
+      if (res.status === 400) {
+        const msg = await res.text();
+        // this model does not take that thinking level: the next level up, same model
+        if (/thinking/i.test(msg) && level < THINKING.length - 1) {
+          thinkingOf.set(model, level + 1);
+          continue;
+        }
+        throw new GeminiError(`Gemini 400 from ${model}: ${msg.slice(0, 300)}`, "config");
+      }
+      if (!res.ok) throw new GeminiError(`Gemini ${res.status} from ${model}: ${(await res.text()).slice(0, 300)}`, "config");
       working = model;
+      resting.delete(model);
       return parse(await res.json());
     }
+    if (Date.now() >= stop - 1500) break;
   }
   if (busy) throw new GeminiError("every model is busy", "busy");
   throw new GeminiError(`none of ${order.join(", ")} is available to this key; set GEMINI_MODEL`, "config");
