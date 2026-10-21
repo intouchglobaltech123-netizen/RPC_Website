@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, CalendarCheck, Check, Copy, Droplets, ImagePlus, RotateCcw, SendHorizontal, X } from "lucide-react";
+import { ArrowUpRight, CalendarCheck, Camera, Check, Copy, Droplets, ImagePlus, RotateCcw, SendHorizontal, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { contact } from "@/lib/content";
@@ -81,6 +81,7 @@ const T = {
   en: {
     launcher: "Leak Doctor",
     launcherSub: "AI photo check",
+    launcherCta: "Check my leak",
     subtitle: "AI photo check by RPC Constructions",
     welcome: "Send a photo of the leak, damp patch or crack. I'll tell you what's causing it, how serious it is, and which products fix it, step by step.",
     upload: "Take or upload a photo",
@@ -122,6 +123,7 @@ const T = {
   ta: {
     launcher: "கசிவு டாக்டர்",
     launcherSub: "AI புகைப்பட ஆய்வு",
+    launcherCta: "கசிவைச் சரிபார்க்க",
     subtitle: "RPC கன்ஸ்ட்ரக்ஷன்ஸ் AI புகைப்பட ஆய்வு",
     welcome: "கசிவு, ஈரம் அல்லது விரிசலின் புகைப்படத்தை அனுப்புங்கள். அதற்கான காரணம், அது எவ்வளவு தீவிரமானது, எந்தப் பொருட்கள் படிப்படியாகச் சரிசெய்யும் என்பதைச் சொல்கிறேன்.",
     upload: "புகைப்படம் எடுக்கவும் அல்லது பதிவேற்றவும்",
@@ -234,16 +236,16 @@ const historyOf = (msgs: Msg[]) =>
 /* ------------------------------------------------------------- styles */
 
 const CSS = `
-.lb-launch{position:fixed;right:var(--gutter,16px);bottom:max(16px,env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px 0 8px;border-radius:999px;color:#fff;cursor:pointer;
-  background:linear-gradient(180deg,rgba(19,49,108,.97),rgba(11,35,80,.97) 60%);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 18px 36px -16px rgba(4,12,30,.7),0 3px 8px -3px rgba(4,12,30,.35);transition:transform .4s var(--ease-film),opacity .3s}
-.lb-launch:hover{transform:translateY(-2px)}
+/* the launcher: a light pill at the bottom right that says what it does, with a camera on a teal disc */
+.lb-launch{position:fixed;right:var(--gutter,16px);bottom:max(36px,calc(env(safe-area-inset-bottom) + 20px));z-index:60;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px 0 7px;border:0;border-radius:999px;background:#f5f0e6;color:#0b2350;font-size:15px;font-weight:600;line-height:1;white-space:nowrap;cursor:pointer;
+  box-shadow:inset 0 0 0 1px rgba(11,35,80,.08),0 14px 30px -14px rgba(4,12,30,.7),0 3px 8px -3px rgba(4,12,30,.3);transition:transform .4s var(--ease-film),background-color .3s,box-shadow .4s,opacity .3s}
+.lb-launch:hover{transform:translateY(-2px);background:#fff;box-shadow:inset 0 0 0 1px rgba(11,35,80,.1),0 20px 36px -14px rgba(4,12,30,.75),0 4px 10px -3px rgba(4,12,30,.3)}
+.lb-launch:active{transform:translateY(0) scale(.97)}
 .lb-launch[data-hidden="1"]{opacity:0;pointer-events:none;transform:translateY(12px)}
 .lb-drop{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;background:#0b6e80}
 .lb-drop::after{content:"";position:absolute;inset:-3px;border-radius:999px;border:2px solid #4fc3d4;opacity:0;animation:lb-ring 2.8s ease-out infinite}
 @keyframes lb-ring{0%{opacity:.8;transform:scale(.9)}70%,100%{opacity:0;transform:scale(1.35)}}
-.lb-lt{display:flex;flex-direction:column;line-height:1.1;text-align:left}
-.lb-lt b{font-weight:600;font-size:15px}.lb-lt small{font-size:11.5px;opacity:.72;letter-spacing:.02em}
-@media (max-width:520px){.lb-launch{padding:0 8px;width:56px;justify-content:center}.lb-lt{display:none}}
+.lb-launch .lb-drop{flex:none;width:34px;height:34px;color:#fff}
 
 .lb-panel{position:fixed;right:var(--gutter,16px);bottom:max(16px,env(safe-area-inset-bottom));z-index:61;display:flex;flex-direction:column;width:min(420px,calc(100vw - 32px));height:min(720px,calc(100dvh - 32px));
   overflow:hidden;border-radius:22px;background:#f5f0e6;color:#12223b;box-shadow:0 40px 80px -30px rgba(4,12,30,.7),0 0 0 1px rgba(18,34,59,.12)}
@@ -625,12 +627,9 @@ export function LeakBot() {
         onClick={() => setOpen(true)}
       >
         <span className="lb-drop">
-          <Droplets size={20} aria-hidden />
+          <Camera size={17} aria-hidden />
         </span>
-        <span className="lb-lt">
-          <b>{t.launcher}</b>
-          <small>{t.launcherSub}</small>
-        </span>
+        <span>{t.launcherCta}</span>
       </button>
 
       <AnimatePresence>
