@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { LeakBot } from "@/components/leakbot/LeakBot";
 import { Nav } from "@/components/navigation/Nav";
 import { QualityProvider } from "@/components/providers/QualityProvider";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
@@ -184,6 +185,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Nav />
             {children}
           </SmoothScroll>
+          <LeakBot />
         </QualityProvider>
       </body>
     </html>
