@@ -6,3 +6,7 @@ next-env.d.ts
 
 .preview/dist
 .preview/node_modules
+
+# secrets (the Leak Doctor's Gemini key and the like)
+.env
+.env*.local
