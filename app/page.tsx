@@ -36,9 +36,8 @@ const productsSummary = {
 };
 
 /**
- * Home: the monsoon house (a cut-away of a house in the rain: pick a leak, or
- * scroll, and each one is traced and sealed from the terrace down to the
- * sump), then five sections:
+ * Home: the monsoon house (a film of a house in the rain: each leak, from the
+ * terrace to the outside walls, is shown and sealed in turn), then five sections:
  * projects, services, about, the products we supply layer by layer, and the
  * contact close; and the site's own footer.
  */
