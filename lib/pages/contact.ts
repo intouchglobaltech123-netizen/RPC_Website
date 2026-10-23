@@ -7,6 +7,7 @@
  * WhatsApp. The form sends through FormSubmit, as before (contact-form.ts).
  */
 import { arrow, esc, mapsLink, mark, tel, words, type ContactInfo } from "./kit";
+import { routesMarkup, ROUTES_CSS } from "./routes";
 
 export interface ContactPageData {
   contact: ContactInfo;
@@ -112,10 +113,15 @@ export function contactPageMarkup(d: ContactPageData) {
     <path d="M0 30C180 16 360 14 540 24s360 20 540 12 270-20 360-14V60H0Z" fill="rgba(39,86,160,.08)"/>
     <path d="M0 40c200-12 380-12 560-3s340 14 520 6 260-14 360-9V60H0Z" fill="rgba(11,110,128,.1)"/>
   </svg>
+</section>
+<section class="pg-sec ct-reach" aria-label="How to reach our office">
+  <div class="pg-wrap">${routesMarkup(c.mapQuery, c.regions)}</div>
 </section>`;
 }
 
-export const CONTACT_CSS = `
+export const CONTACT_CSS = ROUTES_CSS + `
+.ct-reach{padding:clamp(2rem,5vh,3.5rem) 0}
+.ct-reach .ab-go{margin-top:0}
 /* one screen on the pale blue: the ways to reach us beside the form, a waterline along the foot */
 .ct-page{background:var(--sky,#d9e2ee);position:relative;display:flex;align-items:center;min-height:100svh;padding:calc(var(--nav-room) + clamp(1.1rem,3.2vh,2.2rem)) 0 clamp(1.8rem,4.4vh,3rem);overflow:hidden}
 .ct-water{position:absolute;left:0;right:0;bottom:0;width:100%;height:clamp(30px,6vh,56px);pointer-events:none}
@@ -312,4 +318,29 @@ export const CONTACT_CSS = `
   .ct-tile .ct-open{margin-top:.15rem}
   .ct-tgo{top:50%;right:.85rem;margin-top:-.9rem}
 }
+
+/* the whole contact page in sky blue: one soft blue page from the top to the footer, its cards in white */
+.pg:has(.ct-page){background:var(--sky,#d9e2ee)}
+.ct-page{background:radial-gradient(55% 45% at 88% 8%,rgba(255,255,255,.55),transparent 70%),radial-gradient(45% 40% at 5% 95%,rgba(39,86,160,.08),transparent 70%),var(--sky,#d9e2ee)}
+.ct-water{display:none}
+.ct-reach{background:var(--sky,#d9e2ee);border-top:0 !important;padding:clamp(1rem,3vh,2rem) 0 calc(70px + 32px)}
+.ct-h1{color:var(--navy)}
+.ct-lede{color:rgba(18,34,59,.78)}
+.ct-tile{background:#fff;box-shadow:0 0 0 1px rgba(39,86,160,.12),0 20px 40px -32px rgba(11,35,80,.55);transition:transform .25s,box-shadow .25s}
+.ct-tile:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(39,86,160,.22),0 26px 44px -28px rgba(11,35,80,.6)}
+.ct-tile--call{background:var(--navy);box-shadow:0 24px 44px -28px rgba(4,12,30,.85)}
+.ct-tgo{background:#eef3f9}
+.ct-ico{background:#eaf0f8}
+.ct-ico--call{background:#f5f0e6}
+.ct-ico--wa{background:rgba(37,211,102,.14)}
+.ct-card{overflow:hidden;border-radius:20px;background:#fff;box-shadow:0 0 0 1px rgba(39,86,160,.12),0 40px 80px -48px rgba(11,35,80,.6)}
+.ct-cardtop{background:var(--navy)}
+.ct-field input,.ct-field select,.ct-field textarea{border-color:rgba(39,86,160,.18);background:#f4f7fb}
+.ct-field input:focus,.ct-field select:focus,.ct-field textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(39,86,160,.14)}
+.ct-sbtn{border-radius:12px}
+.ct-reach .ab-go{background:#fff;box-shadow:0 0 0 1px rgba(39,86,160,.12),0 40px 80px -56px rgba(11,35,80,.6)}
+.ct-reach .ab-go-route{background:#f4f7fb;box-shadow:inset 0 0 0 1px rgba(39,86,160,.12)}
+.ct-reach .ab-go-route[aria-pressed=true]{background:var(--navy);box-shadow:none}
+.ct-reach .ab-go-town{background:#eef3f9}
+.ct-reach .ab-go-town[aria-selected=true]{background:var(--navy)}
 `;

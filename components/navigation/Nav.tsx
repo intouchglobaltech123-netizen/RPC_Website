@@ -16,7 +16,7 @@ const tel = `tel:${contact.phone.replace(/[^0-9+]/g, "")}`;
 /** the page's sand, for the pill behind the page you are on */
 const SAND = "#ece6da";
 /** pages that open on a dark picture, where the logo's name is drawn in white */
-const DARK_TOP = new Set(["/", "/classic"]);
+const DARK_TOP = new Set(["/", "/classic", "/waterproofing"]);
 /** the bars' material: the logo's dark blue, a little lighter at the top, with a fine light edge and a soft shadow */
 const BAR = {
   background: "linear-gradient(180deg, rgba(19,49,108,0.94), rgba(11,35,80,0.94) 60%)",

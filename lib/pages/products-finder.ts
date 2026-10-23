@@ -16,7 +16,7 @@
  * rates are asked for. Without scripts every product is listed, each row still
  * opens, and each product keeps its own rate link.
  */
-import { BRAND_LOGOS } from "../methods/brand-logos";
+import { BRAND_LOGOS, otherBrands } from "../methods/brand-logos";
 import { imageSrc, mediaOf, pdfSrc, videoSrc } from "../products/media";
 import { FAMILIES, familyOf, type Product } from "../products";
 import { brandMark, type BrandInfo, type JobView } from "../products/brands";
@@ -40,9 +40,13 @@ const playIco = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke=
 
 /** Upgraded product details popup modal */
 const VIEWER_HTML = `<dialog class="pv" data-pv data-lenis-prevent aria-labelledby="pv-title">
-  <button type="button" class="pv-x" data-pv-close aria-label="Close">
-    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-  </button>
+  <div class="pv-top">
+    <button type="button" class="pv-back" data-pv-close>
+      <i aria-hidden="true"><svg viewBox="0 0 16 16" width="15" height="15"><path d="M13 8H3M7 4 3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+      <span>Back to products</span>
+    </button>
+    <p class="pv-crumbs" aria-label="Where you are"><span>Products</span><span data-pv-crumb-brand></span><b data-pv-crumb-name></b></p>
+  </div>
 
   <div class="pv-hero">
     <!-- Left Column: Gallery -->
@@ -237,14 +241,15 @@ function filters(bs: readonly BrandInfo[], total: number) {
   const tick = `<b class="pf-ck" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></b>`;
   return `<div class="pf-chips" data-chips>
   <div class="pf-chiprow" role="group" aria-labelledby="pf-ff">
-    <p class="pf-fh" id="pf-ff">Kind of product<span class="pf-picked" data-picked="fam"></span></p>
-    <button type="button" class="pf-chip pf-chip--all" data-chip-fam="all" aria-pressed="true">Every kind<span>${total}</span></button>
+    <p class="pf-fh" id="pf-ff">Product category<span class="pf-picked" data-picked="fam"></span></p>
+    <button type="button" class="pf-chip pf-chip--all" data-chip-fam="all" aria-pressed="true">All categories<span>${total}</span></button>
     ${fams.map((f) => `<button type="button" class="pf-chip" data-chip-fam="${f.key}" data-label="${esc(f.label)}" aria-pressed="false">${tick}${esc(f.label)}<span data-chip-n>${count(f.key)}</span></button>`).join("")}
   </div>
   <div class="pf-chiprow pf-chiprow--brands" role="group" aria-labelledby="pf-fb">
     <p class="pf-fh" id="pf-fb">Brand<span class="pf-picked" data-picked="brand"></span></p>
     <button type="button" class="pf-chip pf-chip--all" data-chip-brand="all" aria-pressed="true">All brands<span>${total}</span></button>
     ${bs.map((b) => `<button type="button" class="pf-chip pf-bt" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<em class="pf-blogo">${brandFace(b.name)}</em><span>${b.count}</span></button>`).join("")}
+    ${otherBrands(bs.map((b) => b.name)).map((name) => `<span class="pf-chip pf-bt pf-bt--none" role="note" aria-label="${esc(name)}: no products on our list yet" title="No products on our list yet"><em class="pf-blogo">${brandFace(name)}</em><span>0</span></span>`).join("")}
   </div>
 </div>`;
 }
@@ -264,7 +269,7 @@ export function finderMarkup(bs: readonly BrandInfo[], c: ContactInfo, js: reado
   <div class="pg-wrap">
     <h2 class="sr-only" id="pf-title">All ${total} products, by brand</h2>
     <div class="pf">
-      <div class="pf-side">${filters(bs, total)}</div>
+      <div class="pf-side" data-lenis-prevent>${filters(bs, total)}</div>
       <div class="pf-main">
         <label class="pf-search">${search}<span class="sr-only">Search products</span><input type="search" data-search placeholder="Search ${total} products" autocomplete="off" enterkeyhint="search"><button type="button" class="pf-x" data-clear-q aria-label="Clear the search" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></label>
         <div class="pf-state"><p class="pf-status" data-status aria-live="polite">Showing all ${total} products.</p><button type="button" class="pf-clear" data-clear hidden>Show every product</button></div>
@@ -322,10 +327,9 @@ export const FINDER_CSS = `
 /* the finder: the filters beside the list */
 .pf{display:grid;grid-template-columns:15rem minmax(0,1fr);gap:clamp(2rem,4vw,4rem);align-items:start}
 /* the filters stay in view and scroll on their own, apart from the products */
-.pf-side{position:sticky;top:calc(var(--nav-bar,64px) + 1.2rem);max-height:calc(100svh - var(--nav-bar,64px) - 2.4rem);overflow-y:auto;overscroll-behavior:contain;padding-right:.5rem;margin-right:-.5rem;scrollbar-width:thin;scrollbar-color:rgba(18,34,59,.22) transparent}
-.pf-side::-webkit-scrollbar{width:6px}
-.pf-side::-webkit-scrollbar-thumb{border-radius:3px;background:rgba(18,34,59,.22)}
-.pf-side::-webkit-scrollbar-track{background:transparent}
+/* the filters stay beside the products and scroll on their own under the cursor; scrolling the products moves them along too (products-page.ts) */
+.pf-side{position:sticky;top:calc(var(--nav-bar,64px) + 1.2rem);max-height:calc(100svh - var(--nav-bar,64px) - 2.4rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+.pf-side::-webkit-scrollbar{display:none}
 .pf-chips{display:flex;flex-direction:column;gap:1.8rem}
 .pf-chiprow{display:flex;flex-direction:column}
 .pf-fh{margin:0 0 .3rem;padding-bottom:.55rem;border-bottom:1px solid rgba(18,34,59,.32);font-size:var(--fs-body);font-weight:600;color:var(--mute)}
@@ -359,6 +363,10 @@ export const FINDER_CSS = `
 .pf-blogo img{display:block;max-width:100%;max-height:2.7rem;width:auto;height:auto;object-fit:contain}
 .pf-blogo strong{font-family:var(--display);font-weight:700;letter-spacing:-.01em;color:var(--c,var(--ink))}
 .pf-chip.pf-bt[data-empty]{opacity:.45}
+/* a brand from the brand slide with no products on the list yet: shown, not picked */
+.pf-bt--none{cursor:default}
+.pf-bt--none .pf-blogo{opacity:.55;filter:grayscale(1)}
+.pf-bt--none:hover{box-shadow:inset 0 0 0 1px var(--line)}
 /* each brand's list opens with its logo */
 .pf-bhn{font-weight:600}
 .pf-bhl{display:inline-grid;place-items:center;height:2.6rem;padding:.35rem .7rem;border-radius:8px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-style:normal}
@@ -622,22 +630,19 @@ export const FINDER_CSS = `
 
 /* the upgraded product details popup */
 html.pv-open,body.pv-open{overflow:hidden !important}
-.pv{position:fixed;inset:0;margin:auto;width:min(76rem,calc(100vw - 2.5rem));max-width:none;height:auto;max-height:calc(100svh - 2.5rem);padding:0;border:1px solid rgba(18,34,59,.14);border-radius:18px;background:#fff;color:var(--ink);box-shadow:0 30px 70px -20px rgba(10,25,50,.35);overflow-y:auto;overflow-x:hidden;box-sizing:border-box;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.pv{--pv-side:max(1.8rem,calc((100% - 76rem) / 2));position:fixed;inset:0;margin:0;width:100%;max-width:none;height:100%;max-height:none;padding:0;border:0;border-radius:0;background:#fff;color:var(--ink);box-shadow:none;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .pv::-webkit-scrollbar{width:8px}
 .pv::-webkit-scrollbar-track{background:#f8fafc;border-radius:8px}
 .pv::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
 .pv::-webkit-scrollbar-thumb:hover{background:#94a3b8}
 .pv[open]{display:block;animation:pv-in .25s cubic-bezier(.2,.8,.2,1)}
 .pv::backdrop{background:rgba(9,20,38,.62);backdrop-filter:blur(3px)}
-@keyframes pv-in{from{opacity:0;transform:translateY(14px) scale(.99)}}
-.pv-x{position:sticky;top:1rem;right:1rem;float:right;margin-top:1rem;margin-right:1rem;margin-bottom:-2.4rem;z-index:30;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border:0;border-radius:50%;background:#f1f5f9;color:#475569;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:background-color .15s,color .15s,transform .15s}
-.pv-x:hover{background:#e2e8f0;color:#0e223d;transform:scale(1.06)}
-.pv-x:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@keyframes pv-in{from{opacity:0;transform:translateY(10px)}}
 
 /* hero section */
-.pv-hero{display:grid;grid-template-columns:46% minmax(0,54%);gap:1.8rem;padding:1.6rem 1.8rem 1.2rem;align-items:start;background:#fff;clear:both}
+.pv-hero{display:grid;grid-template-columns:46% minmax(0,54%);gap:1.8rem;padding:clamp(1.6rem,5vh,3rem) var(--pv-side) 1.6rem;align-items:start;background:#fff;clear:both}
 .pv-gallery{display:flex;flex-direction:column;gap:.75rem}
-.pv-stage-wrap{position:relative;width:100%;height:320px;border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pv-stage-wrap{position:relative;width:100%;height:clamp(320px,46svh,520px);border-radius:14px;border:1px solid #e2e8f0;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .pv-stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box}
 .pv-main-img{max-width:92%;max-height:92%;object-fit:contain;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 .pv-nav-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;display:grid;place-items:center;width:2.3rem;height:2.3rem;padding:0;border-radius:50%;background:#fff;border:1px solid #e2e8f0;box-shadow:0 4px 12px rgba(14,34,61,.12);color:#334155;cursor:pointer;transition:all .15s}
@@ -685,7 +690,7 @@ html.pv-open,body.pv-open{overflow:hidden !important}
 .pv-enquire-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* tabs bar sticky on scroll */
-.pv-tabs-bar{position:sticky;top:0;z-index:20;display:flex;gap:2rem;padding:0 1.8rem;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;background:rgba(255,255,255,.98);backdrop-filter:blur(8px)}
+.pv-tabs-bar{position:sticky;top:0;z-index:20;display:flex;gap:2rem;padding:0 var(--pv-side);border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;background:rgba(255,255,255,.98);backdrop-filter:blur(8px)}
 .pv-tab{position:relative;display:inline-flex;align-items:center;gap:.5rem;height:3.2rem;border:0;background:none;font:inherit;font-size:.92rem;font-weight:600;color:#64748b;cursor:pointer;transition:color .15s}
 .pv-tab svg{width:18px;height:18px;flex:none}
 .pv-tab.is-active{color:#2756a0}
@@ -693,7 +698,7 @@ html.pv-open,body.pv-open{overflow:hidden !important}
 .pv-tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 
 /* content area */
-.pv-content{padding:1.6rem 1.8rem 2.2rem;overflow:visible;box-sizing:border-box}
+.pv-content{padding:1.6rem var(--pv-side) 3rem;overflow:visible;box-sizing:border-box}
 .pv-pane[hidden]{display:none}
 
 /* overview pane */
@@ -755,7 +760,7 @@ html.pv-open,body.pv-open{overflow:hidden !important}
   .pv-stage-wrap{height:280px}
 }
 @media (max-width:599px){
-  .pv{width:100%;max-height:92svh;margin:auto auto 0;border-radius:16px 16px 0 0}
+  .pv{--pv-side:1rem}
   .pv-hero{padding:1.2rem 1rem}
   .pv-stage-wrap{height:220px}
   .pv-features{grid-template-columns:repeat(2,1fr)}
@@ -764,6 +769,135 @@ html.pv-open,body.pv-open{overflow:hidden !important}
   .pv-tabs-bar{padding:0 1rem;gap:1rem;overflow-x:auto}
   .pv-tab{height:2.8rem;font-size:.85rem;white-space:nowrap}
   .pv-content{padding:1.2rem 1rem 1.4rem}
+}
+/* the product as a page of its own: the site's sand behind it, white cards on it */
+.pv{background:var(--sand,#ece6da)}
+.pv::-webkit-scrollbar-track{background:var(--sand,#ece6da)}
+.pv::-webkit-scrollbar-thumb{background:rgba(18,34,59,.22)}
+.pv::backdrop{background:var(--sand,#ece6da);backdrop-filter:none}
+/* no scroll bar and no close cross: a bar over the page leads back to the list (Esc does too) */
+.pv{scrollbar-width:none}
+.pv::-webkit-scrollbar{display:none}
+.pv-top{position:sticky;top:0;z-index:25;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;height:4.2rem;padding:0 var(--pv-side);background:rgba(236,230,218,.9);backdrop-filter:blur(12px) saturate(1.2);box-shadow:0 1px 0 rgba(18,34,59,.08),0 10px 24px -22px rgba(18,34,59,.5)}
+.pv-back{display:inline-flex;align-items:center;gap:.75rem;height:2.6rem;padding:0 .2rem;border:0;background:none;font:inherit;font-size:.95rem;font-weight:600;color:var(--ink,#12223b);cursor:pointer}
+.pv-back i{display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--navy,#0b2350);color:#fff;box-shadow:0 6px 14px -8px rgba(11,35,80,.8);transition:transform .25s cubic-bezier(.2,.8,.2,1),background-color .2s}
+.pv-back:hover i{transform:translateX(-3px);background:var(--accent,#2756a0)}
+.pv-back:hover span{color:var(--accent,#2756a0)}
+.pv-back span{transition:color .2s}
+.pv-back:focus-visible{outline:2px solid var(--accent,#2756a0);outline-offset:4px;border-radius:999px}
+.pv-crumbs{display:flex;align-items:center;min-width:0;margin:0;font-size:.88rem;color:var(--mute,#5b6271);white-space:nowrap}
+.pv-crumbs > *{display:inline-flex;align-items:center;min-width:0}
+.pv-crumbs > * + *::before{content:"";flex:none;width:.4rem;height:.4rem;margin:0 .75rem;border-top:1.5px solid currentColor;border-right:1.5px solid currentColor;transform:rotate(45deg);opacity:.5}
+.pv-crumbs b{display:block;overflow:hidden;text-overflow:ellipsis;font-weight:600;color:var(--ink,#12223b)}
+.pv-crumbs b::before{display:inline-block;vertical-align:middle}
+.pv-crumbs span:empty{display:none}
+@media (max-width:767px){.pv-crumbs{display:none}.pv-top{height:3.6rem}}
+.pv-hero{padding-top:clamp(1.4rem,4vh,2.4rem)}
+.pv-tabs-bar{top:4.2rem}
+@media (max-width:767px){.pv-tabs-bar{top:3.6rem}}
+/* the product page: a calm sand page, the product on a large white stage, its facts in tidy white cards */
+.pv{--pv-s:calc(var(--fs-body) * .88);--pv-card:#fff;--pv-line:rgba(18,34,59,.08);--pv-r:20px;font-family:var(--sans,inherit)}
+.pv-hero{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(2rem,4.5vw,4.5rem);align-items:center;background:transparent;padding-bottom:clamp(1.6rem,4vh,2.6rem)}
+
+/* the gallery: one big white stage, the four views under it as small cards */
+.pv-gallery{gap:1rem}
+.pv-stage-wrap{height:clamp(340px,52svh,560px);border:0;border-radius:var(--pv-r);background:radial-gradient(120% 90% at 50% 40%,#fff 55%,#f6f2ea 100%);box-shadow:0 0 0 1px var(--pv-line),0 40px 70px -50px rgba(18,34,59,.55)}
+.pv-stage{padding:clamp(1.4rem,3vw,2.6rem)}
+.pv-main-img{max-width:88%;max-height:88%;filter:drop-shadow(0 22px 26px rgba(18,34,59,.16))}
+.pv-nav-arrow{width:2.7rem;height:2.7rem;border:0;background:rgba(255,255,255,.95);color:var(--ink,#12223b);box-shadow:0 0 0 1px var(--pv-line),0 10px 20px -12px rgba(18,34,59,.5);opacity:.85;transition:opacity .2s,transform .2s,background-color .2s,color .2s}
+.pv-stage-wrap:hover .pv-nav-arrow{opacity:1}
+.pv-nav-arrow:hover{background:var(--navy,#0b2350);color:#fff}
+.pv-nav-prev{left:1rem}.pv-nav-next{right:1rem}
+.pv-zoom-btn{bottom:1rem;right:1rem;width:2.5rem;height:2.5rem;border:0;border-radius:50%;background:rgba(255,255,255,.95);color:var(--ink,#12223b);box-shadow:0 0 0 1px var(--pv-line),0 8px 18px -12px rgba(18,34,59,.5)}
+.pv-zoom-btn:hover{background:var(--navy,#0b2350);color:#fff}
+.pv-thumbs{gap:.75rem}
+.pv-thumb{gap:.5rem}
+.pv-thumb-box{height:78px;padding:6px;border:0;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--pv-line);transition:box-shadow .2s,transform .2s}
+.pv-thumb:hover .pv-thumb-box{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(18,34,59,.2),0 10px 18px -14px rgba(18,34,59,.5)}
+.pv-thumb.is-active .pv-thumb-box{box-shadow:0 0 0 2px var(--navy,#0b2350)}
+.pv-thumb-label{font-size:var(--pv-s);font-weight:500;color:var(--mute,#5b6271)}
+.pv-thumb.is-active .pv-thumb-label{color:var(--ink,#12223b);font-weight:600}
+
+/* the product: what it is, its name large, what it does, then the four strengths and how to buy it */
+.pv-info{padding:0;align-self:center}
+.pv-badges{gap:.6rem;margin-bottom:1rem}
+.pv-badge-cat{padding:.35rem .8rem;border-radius:999px;background:var(--navy,#0b2350);color:#fff;font-size:var(--pv-s);font-weight:600;letter-spacing:.02em;text-transform:none}
+.pv-badge-brand{gap:.45rem;padding:.35rem .8rem;border-radius:999px;background:#fff;color:var(--ink,#12223b);font-size:var(--pv-s);font-weight:600;box-shadow:0 0 0 1px var(--pv-line)}
+.pv-badge-brand::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:var(--accent,#2756a0)}
+.pv-title{font-family:var(--display,inherit);font-size:var(--fs-title);font-weight:600;line-height:1.08;letter-spacing:-.025em;color:var(--ink,#12223b);text-wrap:balance}
+.pv-subtitle{margin:.7rem 0 0;font-size:var(--fs-sub);font-weight:500;line-height:1.35;color:var(--accent,#2756a0);letter-spacing:-.01em}
+.pv-summary{display:block;-webkit-line-clamp:unset;margin:1rem 0 0;max-width:38rem;font-size:var(--fs-body);line-height:1.7;color:var(--ink2,rgba(18,34,59,.82))}
+.pv-features{grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:1.6rem 0 0}
+.pv-feat{gap:.6rem;padding:1rem .5rem .9rem;border:0;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--pv-line)}
+.pv-feat-ico{width:2.6rem;height:2.6rem;border-radius:50%;background:rgba(39,86,160,.09)}
+.pv-feat-ico svg{width:20px;height:20px;color:var(--accent,#2756a0)}
+.pv-feat-title{font-size:var(--pv-s);font-weight:600;color:var(--ink,#12223b)}
+.pv-purchase-row{align-items:center;gap:1.2rem;margin-top:1.2rem;padding:1.1rem 1.2rem 1.1rem 1.4rem;border-radius:var(--pv-r);background:#fff;box-shadow:0 0 0 1px var(--pv-line),0 24px 40px -34px rgba(18,34,59,.5)}
+.pv-packs-block{gap:.55rem}
+.pv-packs-title{font-size:var(--pv-s);font-weight:600;color:var(--mute,#5b6271)}
+.pv-pack-chip{height:2.3rem;padding:0 .95rem;border:0;border-radius:999px;background:var(--sand,#ece6da);color:var(--ink,#12223b);font-size:var(--pv-s);font-weight:600;box-shadow:none}
+.pv-pack-chip:hover:not(.is-active){background:#e2d9c9}
+.pv-pack-chip.is-active{background:var(--navy,#0b2350);color:#fff}
+.pv-enquire-btn{gap:.7rem;height:3.2rem;padding:0 1.6rem;border-radius:999px;background:var(--navy,#0b2350);font-size:var(--fs-body);font-weight:600;box-shadow:0 14px 26px -16px rgba(11,35,80,.9)}
+.pv-enquire-btn:hover{background:var(--accent,#2756a0);transform:translateY(-1px);box-shadow:0 18px 30px -16px rgba(39,86,160,.9)}
+.pv-enquire-btn svg{transition:transform .2s}
+.pv-enquire-btn:hover svg{transform:translateX(3px)}
+
+/* the three tabs as one rounded switch */
+.pv-tabs-bar{gap:.35rem;margin-top:0;padding-top:.8rem;padding-bottom:.8rem;border:0;background:rgba(236,230,218,.92);backdrop-filter:blur(12px)}
+.pv-tab{height:2.75rem;padding:0 1.15rem;border-radius:999px;font-size:var(--pv-s);color:var(--mute,#5b6271);background:transparent;transition:background-color .2s,color .2s}
+.pv-tab:hover{color:var(--ink,#12223b);background:rgba(255,255,255,.6)}
+.pv-tab.is-active{color:#fff;background:var(--navy,#0b2350)}
+.pv-tab.is-active::after{display:none}
+.pv-tab svg{width:17px;height:17px}
+
+/* the overview: what it is and its benefits beside its properties; the places it is used across the foot */
+.pv-content{padding-top:clamp(1rem,2.5vh,1.6rem)}
+.pv-overview-grid{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"desc props" "apps apps";gap:clamp(1rem,2vw,1.5rem);align-items:stretch}
+.pv-col-desc{grid-area:desc}.pv-col-apps{grid-area:apps}.pv-col-props{grid-area:props}
+.pv-col-desc,.pv-col-apps,.pv-col-props{padding:clamp(1.4rem,2.6vw,2.2rem);border-radius:var(--pv-r);background:#fff;box-shadow:0 0 0 1px var(--pv-line)}
+.pv-section-title,.pv-specs-title{margin:0 0 .9rem;font-family:var(--display,inherit);font-size:var(--fs-sub);font-weight:600;letter-spacing:-.015em;color:var(--ink,#12223b)}
+.pv-col-desc .pv-section-title + .pv-full-desc + .pv-section-title{margin-top:1.8rem;padding-top:1.6rem;border-top:1px solid var(--pv-line)}
+.pv-full-desc{margin:0;max-width:44rem;font-size:var(--fs-body);line-height:1.75;color:var(--ink2,rgba(18,34,59,.82))}
+.pv-benefits-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem 1.6rem}
+.pv-benefit-item{gap:.7rem;font-size:var(--pv-s);line-height:1.55;color:var(--ink,#12223b)}
+.pv-benefit-check{width:1.35rem;height:1.35rem;margin-top:.05rem;border-radius:50%;background:rgba(39,86,160,.12);color:var(--accent,#2756a0)}
+.pv-specs-card{padding:0;border:0;border-radius:0;background:none}
+.pv-specs-table{font-size:var(--pv-s)}
+.pv-specs-table tr{border-top:1px solid var(--pv-line)}
+.pv-specs-table th{padding:.85rem 1rem .85rem 0;font-weight:500;color:var(--mute,#5b6271);white-space:nowrap}
+.pv-specs-table td{padding:.85rem 0;text-align:right;font-weight:600;color:var(--ink,#12223b)}
+.pv-apps-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem}
+.pv-app-card{position:relative;border:0;border-radius:16px;background:var(--sand,#ece6da)}
+.pv-app-img{height:auto;aspect-ratio:4/3;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.pv-app-card:hover .pv-app-img{transform:scale(1.04)}
+.pv-app-label{position:absolute;left:.6rem;bottom:.6rem;padding:.35rem .75rem;border-radius:999px;background:rgba(255,255,255,.94);font-size:var(--pv-s);font-weight:600;color:var(--ink,#12223b);text-align:left;box-shadow:0 6px 14px -10px rgba(18,34,59,.6)}
+
+/* the video and the data sheet: on the same white cards */
+.pv-video-player{border-radius:var(--pv-r)}
+.pv-video-empty,.pv-tds-empty{border:1px dashed rgba(18,34,59,.2);border-radius:var(--pv-r);background:#fff}
+.pv-tds-topbar{border:0;border-radius:var(--pv-r);background:#fff;box-shadow:0 0 0 1px var(--pv-line);padding:1.1rem 1.4rem}
+.pv-tds-action-btn{border-radius:999px;height:2.6rem;padding:0 1.2rem}
+.pv-tds-dl-btn{background:var(--navy,#0b2350);border-color:var(--navy,#0b2350)}
+.pv-tds-open-btn{border-color:var(--navy,#0b2350);color:var(--navy,#0b2350)}
+.pv-tds-open-btn:hover{background:var(--navy,#0b2350);color:#fff}
+.pv-tds-embed-wrap{border:0;border-radius:var(--pv-r);box-shadow:0 0 0 1px var(--pv-line);height:min(75svh,720px)}
+
+@media (max-width:1100px){.pv-apps-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:960px){
+  .pv-hero{grid-template-columns:1fr}
+  .pv-overview-grid{grid-template-columns:1fr;grid-template-areas:"desc" "props" "apps"}
+  .pv-stage-wrap{height:clamp(280px,46svh,420px)}
+}
+@media (max-width:599px){
+  .pv-features{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pv-benefits-list{grid-template-columns:1fr}
+  .pv-purchase-row{flex-direction:column;align-items:stretch;padding:1rem}
+  .pv-enquire-btn{justify-content:center}
+  .pv-tabs-bar{overflow-x:auto;scrollbar-width:none}
+  .pv-tab{white-space:nowrap;padding:0 .9rem}
+  .pv-thumb-box{height:62px}
+  .pv-col-desc,.pv-col-apps,.pv-col-props{padding:1.2rem}
 }
 @media (prefers-reduced-motion:reduce){.pv[open]{animation:none}}
 

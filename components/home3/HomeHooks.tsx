@@ -1,15 +1,20 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
-import { brand, contact, highlights, projects, services, stats } from "@/lib/content";
+import { brand, contact, projects, services, stats } from "@/lib/content";
 import { HOME_CSS, mountHome, type HomeData } from "@/lib/home/sections";
-import { HOOKS_CSS, hooksMarkup, type HookData } from "@/lib/home/hooks";
+import { HOOKS_CSS, hooksMarkup, mountHooks, type HookData } from "@/lib/home/hooks";
 
-/** the home page's own sections (about, services, contact) draw from the site's content; About shows four short facts */
+/** the home page's own sections (about, services, contact) draw from the site's content; About shows four short, plain facts */
 const HOME: HomeData = {
   projects,
   services,
-  points: [...highlights, { title: "Close to your site", body: "From Erode to Coimbatore, Tiruppur and Salem." }],
+  points: [
+    { title: "Based in Erode", body: "Our office is on Perundurai Road." },
+    { title: "Five towns", body: "Erode, Coimbatore, Tiruppur, Salem and Chennai." },
+    { title: "Every building", body: "Homes, offices and factories." },
+    { title: "One team", body: "From the first visit to handover." },
+  ],
   stats,
   contact,
   brand,
@@ -30,6 +35,7 @@ export function HomeHooks({ data }: { data: HookData }) {
     const el = ref.current;
     if (!el) return;
     const off = mountHome(el);
+    const offStack = mountHooks(el);
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[data-internal]");
       if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
@@ -40,6 +46,7 @@ export function HomeHooks({ data }: { data: HookData }) {
     return () => {
       el.removeEventListener("click", onClick);
       off?.();
+      offStack();
     };
   }, [router]);
   return (

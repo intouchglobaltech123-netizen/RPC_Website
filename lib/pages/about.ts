@@ -6,10 +6,12 @@
  *
  * The one photograph's place is an empty frame, ready for RPC's own picture.
  */
-import { arrow, ctaBand, esc, listing, mark, ph, tick, two, words, type ContactInfo } from "./kit";
+import { esc, mark, ph, two, words, type ContactInfo } from "./kit";
 
 export interface AboutData {
   story: readonly string[];
+  /** RPC's two partners; a photo is shown when `image` is set, otherwise its empty frame */
+  partners: readonly { name: string; role: string; qualification: string; bio: string; image: string }[];
   vision: string;
   mission: readonly string[];
   principles: readonly { title: string; body: string }[];
@@ -36,56 +38,17 @@ const markOf = (t: string) =>
   `<svg class="ab-mk" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${MARKS[t] ?? MARKS.Honesty!}</svg>`;
 
 
-/**
- * How to reach the office: pick a town, then one of four places people
- * usually set out from there (its bus stand, its railway station and so on),
- * and Google Maps shows the road route to our Perundurai Road office. The
- * starting places are public landmarks; the routes and times are Google's.
- */
-const ROUTES: readonly { town: string; from: readonly (readonly [label: string, place: string])[] }[] = [
-  { town: "Erode", from: [["From the central bus stand", "Erode Central Bus Terminus, Erode"], ["From the railway station", "Erode Junction Railway Station, Erode"], ["From Perundurai", "Perundurai Bus Stand, Perundurai"], ["From Bhavani", "Bhavani Bus Stand, Bhavani"]] },
-  { town: "Tiruppur", from: [["From the new bus stand", "Tiruppur New Bus Stand, Tiruppur"], ["From the old bus stand", "Tiruppur Old Bus Stand, Tiruppur"], ["From the railway station", "Tiruppur Railway Station, Tiruppur"], ["From Avinashi", "Avinashi Bus Stand, Avinashi"]] },
-  { town: "Coimbatore", from: [["From Gandhipuram bus stand", "Gandhipuram Central Bus Stand, Coimbatore"], ["From the railway station", "Coimbatore Junction Railway Station"], ["From the airport", "Coimbatore International Airport"], ["From Ukkadam bus stand", "Ukkadam Bus Stand, Coimbatore"]] },
-  { town: "Salem", from: [["From the new bus stand", "Salem New Bus Stand, Salem"], ["From the old bus stand", "Salem Old Bus Stand, Salem"], ["From the railway station", "Salem Junction Railway Station"], ["From Five Roads", "Five Roads, Salem"]] },
-  { town: "Chennai", from: [["From Koyambedu bus stand", "Chennai Mofussil Bus Terminus, Koyambedu, Chennai"], ["From Kilambakkam bus stand", "Kilambakkam Bus Terminus, Chennai"], ["From Chennai Central station", "Chennai Central Railway Station"], ["From the airport", "Chennai International Airport"]] },
+/** one drawn mark for each mission promise, in order: the price, the date, safety, the team */
+const ic = (body: string) =>
+  `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
+const MISSION_ICONS = [
+  ic(`<path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3"/><path d="M9.5 9h5M9.5 11.5h5M11 9c2.6 0 2.6 4.5 0 4.5H9.5l4 3.5"/>`),
+  ic(`<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="m9 14.6 2 2 4-4.2"/>`),
+  ic(`<path d="M4 16.5a8 8 0 0 1 16 0"/><path d="M12 8.5V5.5M9.5 9l-1-2.6M14.5 9l1-2.6"/><path d="M2.5 16.5h19v2.5h-19z"/>`),
+  ic(`<circle cx="9" cy="8" r="3"/><path d="M3.5 19.5c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/><path d="M15.5 11.5 18 9l2.5 2.5M18 9v6.5"/>`),
 ];
 
-const embedRoute = (from: string, to: string) => `https://maps.google.com/maps?saddr=${encodeURIComponent(from)}&daddr=${encodeURIComponent(to)}&output=embed`;
-const openRoute = (from: string, to: string) => `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from)}&destination=${encodeURIComponent(to)}&travelmode=driving`;
-
-function routesMarkup(dest: string, regions: readonly string[]) {
-  const towns = ROUTES.filter((r) => regions.includes(r.town));
-  const first = towns[0]!;
-  const [fl, fp] = first.from[0]!;
-  const pin = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s4.8-4.3 4.8-8a4.8 4.8 0 0 0-9.6 0c0 3.7 4.8 8 4.8 8z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="6.5" r="1.7" fill="currentColor"/></svg>`;
-  const short = (l: string) => { const x = l.replace(/^From (the )?/, ""); return x.charAt(0).toUpperCase() + x.slice(1); };
-  return `<div class="ab-go" data-routes data-dest="${esc(dest)}">
-    <div class="ab-go-side">
-      <h3 class="ab-go-h">How to reach our office</h3>
-      <div class="ab-go-towns" role="tablist" aria-label="Towns">${towns
-        .map((t, i) => `<button type="button" role="tab" class="ab-go-town" data-town="${esc(t.town)}" aria-selected="${i === 0}">${esc(t.town)}</button>`)
-        .join("")}</div>
-      ${towns
-        .map(
-          (t, i) => `<ul class="ab-go-from" data-from-town="${esc(t.town)}"${i === 0 ? "" : " hidden"}>${t.from
-            .map(
-              ([label, place], j) =>
-                `<li><button type="button" class="ab-go-route" data-place="${esc(place)}" data-label="${esc(`${label.replace(/^From /, "")}, ${t.town}`)}" aria-pressed="${i === 0 && j === 0}">${pin}<span><b>${esc(short(label))}</b><small>${esc(place)}</small></span></button></li>`,
-            )
-            .join("")}</ul>`,
-        )
-        .join("")}
-      <a class="ab-go-open" href="${esc(openRoute(fp, dest))}" target="_blank" rel="noopener noreferrer" data-open>Open this route in Google Maps${arrow}</a>
-    </div>
-    <div class="ab-go-map">
-      <iframe title="Road route from ${esc(`${fl.replace(/^From /, "")}, ${first.town}`)} to our office" src="${esc(embedRoute(fp, dest))}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-map></iframe>
-    </div>
-  </div>`;
-}
-
 export function aboutMarkup(d: AboutData) {
-  const c = d.contact;
-  const [hq] = c.regions;
   const head = `<header class="pg-head ab-head">
   <div class="pg-wrap">
     <div class="ab-headgrid">
@@ -94,23 +57,30 @@ export function aboutMarkup(d: AboutData) {
         <h1 class="pg-h1" data-rv="words">${words("Waterproofing and construction in Erode since&nbsp;2012.")}</h1>
         <p class="pg-intro" data-rv>We keep buildings dry. RPC Constructions repairs leaks in buildings already standing and builds new homes, offices and factories with their waterproofing designed in, from our office on Perundurai Road, Erode.</p>
       </div>
-      <div class="ab-headside">
-        <div class="pg-actions" data-rv><a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a><a class="pg-btn pg-btn--line" href="/services" data-internal>Our services</a></div>
-      </div>
     </div>
   </div>
 </header>`;
 
+  const partner = (p: AboutData["partners"][number], i: number) => `<article class="ab-pt${i % 2 ? " ab-pt--flip" : ""}" aria-label="${esc(p.name)}, ${esc(p.role)}">
+      <div class="ab-ptph" data-rv>${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}, ${esc(p.role)} at RPC Constructions" loading="lazy" decoding="async">` : ph({ ratio: "4/5", label: `Photo: ${p.name}` })}</div>
+      <div class="ab-ptcopy" data-rv>
+        <p class="ab-ptrole">${esc(p.role)}</p>
+        <h3 class="ab-ptname">${esc(p.name)}</h3>
+        <p class="ab-ptq">${esc(p.qualification)}</p>
+        <p class="ab-p">${esc(p.bio)}</p>
+      </div>
+    </article>`;
+
   const who = `<section class="pg-sec ab-who" aria-labelledby="ab-who-h">
   <div class="pg-wrap">
-    <div class="ab-whogrid">
-      <div class="ab-whoph" data-rv>${ph({ ratio: "4/3", label: "Photo: the RPC team on site" })}</div>
-      <div class="ab-whocopy">
+    <div class="ab-whohead">
+      <div>
         ${mark("02", "Who we are")}
         <h2 class="pg-h2" id="ab-who-h" data-rv>An engineer‑led waterproofing company that also builds.</h2>
-        ${d.story.map((p, i) => `<p class="${i === 0 ? "ab-lead" : "ab-p"}" data-rv>${esc(p)}</p>`).join("")}
       </div>
+      <div class="ab-whotext">${d.story.map((p, i) => `<p class="${i === 0 ? "ab-lead" : "ab-p"}" data-rv>${esc(p)}</p>`).join("")}</div>
     </div>
+    <div class="ab-pts">${d.partners.map(partner).join("")}</div>
   </div>
 </section>`;
 
@@ -121,8 +91,8 @@ export function aboutMarkup(d: AboutData) {
       <p class="ab-vtext">${esc(d.vision)}</p>
     </article>
     <article class="ab-mission" aria-labelledby="ab-mission-h">
-      <h2 class="ab-vh" id="ab-mission-h" data-rv>Our mission</h2>
-      <ul data-rv-stagger="80">${d.mission.map((m) => `<li data-rv>${tick}<span>${esc(m)}</span></li>`).join("")}</ul>
+      <h2 class="ab-vh ab-vh--rule" id="ab-mission-h" data-rv><span>Our mission</span></h2>
+      <ul data-rv-stagger="80">${d.mission.map((m, i) => `<li data-rv><span class="ab-mic">${MISSION_ICONS[i % MISSION_ICONS.length]}</span><span>${esc(m)}</span></li>`).join("")}</ul>
     </article>
   </div>
 </section>`;
@@ -139,78 +109,47 @@ export function aboutMarkup(d: AboutData) {
   </div>
 </section>`;
 
-  const where = `<section class="pg-sec pg-sec--stone ab-where" aria-labelledby="ab-where-h">
-  <div class="pg-wrap">
-    <div class="ab-whead">
-      <div>
-        ${mark("04", "Where we work")}
-        <h2 class="pg-h2" id="ab-where-h">${["One", "Two", "Three", "Four", "Five", "Six", "Seven"][c.regions.length - 1] ?? c.regions.length} towns, one office in&nbsp;${esc(hq ?? "Erode")}.</h2>
-      </div>
-      <p class="ab-wlede">Waterproofing contractors in ${esc(listing(c.regions))}, working from our office at ${esc(c.address.split(",").slice(0, 2).join(",").trim())}.</p>
-    </div>
-    ${routesMarkup(c.mapQuery, c.regions)}
-  </div>
-</section>`;
-
-  return `${head}\n${who}\n${vm}\n${values}\n${where}\n${ctaBand(c, {
-    title: "Let’s keep your building dry.",
-    steps: [
-      ["Tell us what you’re seeing", "A damp patch, a dripping ceiling or a building still on paper."],
-      ["Meet an engineer on site", "The first inspection is free, anywhere around Erode and Coimbatore."],
-      ["Decide in your own time", "With the cause, the method and the price in front of you."],
-    ],
-    reach: true,
-  })}`;
+  return `${head}\n${who}\n${vm}\n${values}`;
 }
 
 export const ABOUT_CSS = `
-/* how to reach the office: towns and starting places on the left, Google's road route on the right */
-.ab-go{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.3fr);gap:0;margin-top:clamp(1rem,2.2vh,1.6rem);overflow:hidden;border-radius:18px;background:var(--card,#f5f0e6);box-shadow:inset 0 0 0 1px var(--line)}
-.ab-go-side{display:flex;flex-direction:column;gap:.9rem;padding:clamp(1.1rem,2vw,1.5rem)}
-.ab-go-k{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.ab-go-h{margin:0;font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
-.ab-go-towns{display:flex;flex-wrap:wrap;gap:.35rem}
-.ab-go-town{height:2.3rem;padding:0 .9rem;border:0;border-radius:999px;background:rgba(18,34,59,.06);font:inherit;font-size:var(--fs-body);font-weight:600;color:var(--ink);cursor:pointer;transition:background-color .2s,color .2s}
-.ab-go-town:hover{background:rgba(18,34,59,.1)}
-.ab-go-town[aria-selected=true]{background:var(--navy);color:#f5f0e6}
-.ab-go-town:focus-visible,.ab-go-route:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.ab-go-from{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem;margin:0;padding:0;list-style:none}
-.ab-go-from[hidden]{display:none}
-.ab-go-route{display:flex;align-items:flex-start;gap:.55rem;width:100%;height:100%;padding:.5rem .75rem;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font:inherit;text-align:left;cursor:pointer;transition:box-shadow .2s,background-color .2s}
-.ab-go-route svg{flex:none;width:1.1rem;height:1.1rem;margin-top:.15rem;color:var(--accent)}
-.ab-go-route span{display:flex;flex-direction:column;min-width:0}
-.ab-go-route b{font-size:var(--fs-body);font-weight:600;color:var(--ink)}
-.ab-go-route small{font-size:var(--fs-body);color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ab-go-route:hover{box-shadow:inset 0 0 0 1.5px var(--navy)}
-.ab-go-route[aria-pressed=true]{background:var(--navy);box-shadow:none}
-.ab-go-route[aria-pressed=true] b,.ab-go-route[aria-pressed=true] svg{color:#fff}
-.ab-go-route[aria-pressed=true] small{color:rgba(245,240,230,.7)}
-.ab-go-open{display:inline-flex;align-items:center;gap:.4rem;margin-top:auto;font-size:var(--fs-body);font-weight:600;color:var(--accent);text-decoration:none}
-.ab-go-open:hover{text-decoration:underline;text-underline-offset:3px}
-.ab-go-open .pg-ar{width:.9rem;height:.9rem}
-.ab-go-map{position:relative;min-height:21rem;background:#d9d0bf}
-.ab-go-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-@media (max-width:899px){.ab-go{grid-template-columns:minmax(0,1fr)}.ab-go-map{min-height:20rem}}
-
 /* the opening: the h1 and its intro */
-.ab-headgrid{display:grid;grid-template-columns:minmax(0,52rem) auto;justify-content:space-between;align-items:end;gap:1.4rem clamp(2rem,5vw,5rem)}
-.ab-headside .pg-actions{flex-wrap:nowrap;justify-content:flex-end;margin:0}
-@media (max-width:1099px){.ab-headgrid{grid-template-columns:minmax(0,1fr)}.ab-headside .pg-actions{justify-content:flex-start;flex-wrap:wrap}}
 .ab-headcopy .pg-mark{margin-bottom:.9rem}
 
-/* who we are */
-.ab-whogrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(2rem,5vw,6rem);align-items:center}
-.ab-whocopy .pg-h2{margin-top:.7rem}
+/* who we are: the story beside the heading, then the two partners, the second the other way round */
+.ab-whohead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.2rem clamp(2rem,5vw,6rem);align-items:end}
+.ab-whohead .pg-h2{margin-top:.7rem}
+.ab-whotext .ab-lead{margin-top:0}
 .ab-lead{margin:1.4rem 0 0;max-width:40rem;font-size:var(--fs-body);line-height:1.65;color:var(--ink)}
 .ab-p{margin:1rem 0 0;max-width:40rem;font-size:var(--fs-body);line-height:1.7;color:var(--ink2)}
+.ab-pts{display:grid;gap:clamp(2.5rem,7vh,4.5rem);margin-top:clamp(2.6rem,7vh,4.5rem)}
+.ab-pt{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:1.6rem clamp(2rem,6vw,6rem);align-items:center}
+.ab-pt--flip{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.ab-pt--flip .ab-ptph{order:2}
+.ab-pt--flip .ab-ptcopy{order:1;justify-self:end}
+.ab-ptph{width:100%;max-width:26rem}
+.ab-pt--flip .ab-ptph{justify-self:end}
+.ab-ptph img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:8px}
+.ab-ptcopy{max-width:36rem;padding-left:1.4rem;border-left:2px solid var(--accent)}
+.ab-ptrole{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
+.ab-ptname{margin:.4rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.015em;color:var(--ink)}
+.ab-ptq{margin:.3rem 0 0;font-size:var(--fs-body);color:var(--mute)}
+.ab-ptcopy .ab-p{margin-top:1rem}
 
-/* vision and mission: the vision across the panel, the mission's four promises under it */
+/* vision and mission: the vision large in the middle, the four promises under it, each with its mark */
+.ab-vm{text-align:center}
+.ab-vision{max-width:62rem;margin:0 auto}
 .ab-vh{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.ab-vtext{margin:.9rem 0 0;max-width:30ch;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.35;letter-spacing:-.01em;text-wrap:balance}
-.ab-mission{margin-top:clamp(2.4rem,6vh,3.6rem);padding-top:clamp(1.4rem,3vh,2rem);border-top:1px solid rgba(39,86,160,.22)}
-.ab-mission ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem clamp(1rem,2vw,2rem);margin:1.2rem 0 0;padding:0;list-style:none}
-.ab-mission li{display:flex;flex-direction:column;gap:.5rem;padding-top:1rem;border-top:2px solid var(--navy);font-size:var(--fs-body);line-height:1.55}
-.ab-mission .pg-tick{display:none}
+.ab-vtext{margin:1rem auto 0;max-width:24ch;font-family:var(--display);font-weight:600;font-size:var(--fs-title);line-height:1.15;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
+.ab-mission{margin-top:clamp(2.8rem,8vh,4.5rem)}
+.ab-vh--rule{display:flex;align-items:center;gap:1.2rem;max-width:40rem;margin:0 auto}
+.ab-vh--rule::before,.ab-vh--rule::after{content:"";flex:1;height:1px;background:rgba(39,86,160,.28)}
+.ab-mission ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.2rem,3vw,3rem);margin:clamp(1.8rem,4vh,2.6rem) 0 0;padding:0;list-style:none}
+.ab-mission li{display:flex;flex-direction:column;align-items:center;gap:1rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink);text-wrap:pretty}
+.ab-mic{display:grid;place-items:center;width:4rem;height:4rem;border-radius:50%;background:var(--navy);color:#f5f0e6;box-shadow:0 0 0 6px rgba(11,35,80,.08);transition:transform .3s}
+.ab-mission li:hover .ab-mic{transform:translateY(-3px)}
+.ab-mic svg{width:1.7rem;height:1.7rem}
+@media (prefers-reduced-motion:reduce){.ab-mic{transition:none}.ab-mission li:hover .ab-mic{transform:none}}
 
 /* values */
 .ab-vhead{margin-bottom:clamp(1.8rem,4vh,2.6rem)}
@@ -288,11 +227,12 @@ export const ABOUT_CSS = `
 .ab-svc a:hover{border-color:var(--ink)}
 
 @media (max-width:1023px){
-  .ab-whogrid{grid-template-columns:1fr;align-items:start}
-  .ab-vlist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab-whohead{grid-template-columns:1fr;align-items:start}
   .ab-mission ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ab-vlist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ab-reach2{grid-template-columns:1fr}
 }
+@media (max-width:519px){.ab-mission ul{grid-template-columns:1fr}}
 @media (max-width:639px){
   .ab-towns{grid-template-columns:1fr}
   .ab-hq-hud{flex-direction:column;align-items:flex-start;gap:.6rem}
@@ -302,7 +242,10 @@ export const ABOUT_CSS = `
   .ab-wgrid{grid-template-columns:1fr;align-items:start}
 }
 @media (max-width:767px){
-  .ab-mission ul{grid-template-columns:1fr}
+  .ab-pt,.ab-pt--flip{grid-template-columns:1fr}
+  .ab-pt--flip .ab-ptph{order:0;justify-self:start}
+  .ab-pt--flip .ab-ptcopy{order:0;justify-self:start}
+  .ab-ptph{max-width:22rem}
   .ab-vlist{grid-template-columns:1fr}
 }
 `;

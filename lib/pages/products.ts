@@ -24,7 +24,7 @@ import { brandInfo, brandMark, jobGroup, jobs, type JobView } from "../products/
 import { cap, fullName, shortName, useTerms, usesNote } from "../products/compare";
 import { arrow, ctaBand, esc, listing, mark, type ContactInfo } from "./kit";
 import { enquiryMarkup, FINDER_CSS, finderMarkup } from "./products-finder";
-import { BRAND_LOGOS, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
+import { BRAND_LOGOS, BRANDS_MARQUEE_CSS, otherBrands } from "../methods/brand-logos";
 import { brandDropdown, COMPARE_CSS, type CmpBrand } from "./products-compare";
 
 export interface ProductsData {
@@ -119,6 +119,9 @@ function faceOff(j: JobView, c: ContactInfo, hidden = false) {
   const B = sides[pb.slug]!;
   // the job's brands, for the two brand lists over the table
   const brands: CmpBrand[] = j.brands.map((br) => ({ name: br.name, logo: BRAND_LOGOS[br.name], color: brandMark(br.name), count: br.products.length }));
+  // every other brand, from the product list and the brand slide, listed too but not picked: none of its products does this job
+  const listed = brandInfo().map((b) => b.name);
+  const rest: CmpBrand[] = [...listed.filter((n) => !brands.some((b) => b.name === n)), ...otherBrands(listed)].map((name) => ({ name, logo: BRAND_LOGOS[name], color: brandMark(name), count: 0 }));
   // each column picks a product of its brand: a list per brand, the one for the brand picked showing
   const pick = (s: "a" | "b", sel: Product) =>
     `<th scope="col" data-s="${s}"><div class="cmp-pick"><span>Product ${s === "a" ? 1 : 2}</span>${j.brands
@@ -131,8 +134,6 @@ function faceOff(j: JobView, c: ContactInfo, hidden = false) {
           }</div>`,
       )
       .join("")}</div></th>`;
-  const rate = (s: "a" | "b", x: Side) =>
-    `<td data-s="${s}"><a class="fo-rate" data-s="${s}" href="${esc(x.rate)}" target="_blank" rel="noopener noreferrer">Ask the rate<span class="h2-rn">for ${esc(x.n)}</span></a></td>`;
   const data = JSON.stringify({ sides, brands }).replace(/</g, "\\u003c");
   return `<article class="fo-panel" id="job-${j.key}" data-job="${j.key}" data-a="${pa.slug}" data-b="${pb.slug}" aria-labelledby="fo-t-${j.key}"${hidden ? " hidden" : ""}>
   <header class="fo-ph">
@@ -140,15 +141,13 @@ function faceOff(j: JobView, c: ContactInfo, hidden = false) {
       <h3 class="fo-jt sr-only" id="fo-t-${j.key}">${esc(j.name)}</h3>
       <p class="fo-k">${n} products from ${esc(listing(j.brands.map((b) => b.name)))}. Pick two brands, then a product from each.</p>
     </div>
-    <a class="fo-all" href="${esc(rateLink(c.whatsapp, j.products))}" target="_blank" rel="noopener noreferrer">Ask for all ${n} rates</a>
   </header>
-  <div class="bc-picks">${brandDropdown(`bd-${j.key}-a`, "Brand 1", brands, pa.brand)}<span class="bc-vs" aria-hidden="true">vs</span>${brandDropdown(`bd-${j.key}-b`, "Brand 2", brands, pb.brand, pa.brand)}</div>
+  <div class="bc-picks">${brandDropdown(`bd-${j.key}-a`, "Brand 1", brands, pa.brand, undefined, rest)}<span class="bc-vs" aria-hidden="true">vs</span>${brandDropdown(`bd-${j.key}-b`, "Brand 2", brands, pb.brand, pa.brand, rest)}</div>
   <div class="cmp-wrap" aria-live="polite">
     <table class="cmp-t">
       <caption class="sr-only">${esc(j.name)}: two products compared</caption>
       <thead><tr><td></td>${pick("a", pa)}${pick("b", pb)}</tr></thead>
       <tbody>${compareRows(A, B)}</tbody>
-      <tfoot><tr><td></td>${rate("a", A)}${rate("b", B)}</tr></tfoot>
     </table>
   </div>
   <script type="application/json" class="h2-data">${data}</script>

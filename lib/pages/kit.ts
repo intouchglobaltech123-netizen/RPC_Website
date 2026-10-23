@@ -241,7 +241,10 @@ export const KIT_CSS = `
 .pg-ctan{display:grid;place-items:center;flex:none;width:2rem;height:2rem;border-radius:4px;background:rgba(255,255,255,.12);color:#fff;font-family:var(--display);font-weight:600;font-size:var(--fs-body)}
 .pg-ctast{margin:.15rem 0 0;font-size:var(--fs-body);font-weight:600;line-height:1.35}
 .pg-ctasd{margin:.3rem 0 0;max-width:20rem;font-size:var(--fs-body);line-height:1.55;color:rgba(255,255,255,.66);text-wrap:pretty}
-.pg-ctaline{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1.6rem;margin:clamp(1.6rem,4vh,2.2rem) 0 0;font-size:var(--fs-body);color:rgba(255,255,255,.66)}
+/* the ways to reach us, each under one of the three steps: the phone, the email, the hours */
+.pg-ctaline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:baseline;gap:.4rem 1.4rem;margin:clamp(1.6rem,4vh,2.2rem) 0 0;font-size:var(--fs-body);color:rgba(255,255,255,.66)}
+.pg-ctaline > *{justify-self:start;min-width:0}
+@media (max-width:767px){.pg-ctaline{grid-template-columns:minmax(0,1fr)}}
 .pg-ctaline a{text-decoration:none}
 .pg-ctaline a:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
 .pg-ctaline .pg-ctatel{font-family:var(--display);font-weight:600;font-size:var(--fs-sub);color:#fff}

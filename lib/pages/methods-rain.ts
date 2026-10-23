@@ -144,6 +144,8 @@ export function rainMarkup() {
 export const RAIN_CSS = `
 /* the rain test: one screen. The heading; the drawing of one drop's journey beside the words; the methods in one band under them */
 .rt-sec{scroll-margin-top:var(--nav-bar,80px)}
+/* the last section on the page: 70px of sand before the footer (which rises 32px over it) */
+.rt-sec{padding-bottom:calc(70px + 32px) !important}
 .rt{display:flex;flex-direction:column;gap:clamp(.9rem,2vh,1.3rem)}
 .rt-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.6rem 3rem;align-items:end}
 .rt-head .pg-h2{margin-top:.5rem}

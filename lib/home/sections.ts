@@ -68,6 +68,8 @@ export interface HomeOptions {
   rawImages?: boolean;
   /** the section's number in its marker, when it sits elsewhere in the page */
   n?: string;
+  /** on the home page's own run of sections: no button beside the headline, and the core service without its booking button */
+  below?: boolean;
 }
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -171,9 +173,9 @@ export function servicesMarkup(d: HomeData, _o: HomeOptions) {
         ${mark(_o.n ?? "02", "Services")}
         <h2 class="hm-h2" id="services-title" data-rv>Waterproofing, construction and leak&nbsp;repair.</h2>
       </div>
-      <div class="hm-side" data-rv>
+      ${_o.below ? "" : `<div class="hm-side" data-rv>
         <a class="hm-btn hm-btn--line" href="/services" data-internal>View all services${arrow}</a>
-      </div>
+      </div>`}
     </header>
     <div class="hm-sgrid">
       <article class="hm-sfeat" data-rv aria-labelledby="svc-lead">
@@ -185,8 +187,8 @@ export function servicesMarkup(d: HomeData, _o: HomeOptions) {
         <p class="hm-sbody">${esc(lead.scale)}, in Erode, Coimbatore and across Tamil&nbsp;Nadu.</p>
         ${covers ? `<ul class="hm-schk">${covers}</ul>` : ""}
         <div class="hm-sbtns">
-          <a class="hm-btn hm-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>
-          <a class="hm-slink" href="/waterproofing" data-internal>How we waterproof${arrow}</a>
+          ${_o.below ? "" : `<a class="hm-btn hm-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a>`}
+          <a class="${_o.below ? "hm-btn hk-btn--white" : "hm-slink"}" href="/waterproofing" data-internal>How we waterproof${arrow}</a>
         </div>
       </article>
       <ul class="hm-stiles" aria-label="More services">${tiles}</ul>
@@ -258,7 +260,7 @@ export function rootedAboutMarkup(d: HomeData, o: HomeOptions = {}) {
     <div class="hm-acopy">
       ${mark(o.n ?? "03", "About RPC")}
       <h2 class="hm-statement" id="about-title" data-rv>Rooted in Erode since&nbsp;2012.</h2>
-      <p class="hm-lead" data-rv>We repair leaks in existing buildings, and design new ones so the leaks never start.</p>
+      <p class="hm-lead" data-rv>We keep buildings dry, from homes to factories.</p>
       <ul class="hm-values">${values}</ul>
       <a class="hm-btn hm-btn--ink" href="/about" data-internal data-rv>About RPC Constructions${arrow}</a>
     </div>

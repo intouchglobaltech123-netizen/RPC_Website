@@ -32,12 +32,37 @@ export function mountProducts(root: HTMLElement, env: PageEnv = {}): Off {
   };
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const scrollToY = (y: number) => {
+    // the site's smooth scrolling (Lenis) moves the page itself: a plain window.scrollTo would be undone by it
+    const lenis = (window as unknown as { __lenis?: { scrollTo(y: number, o?: { immediate?: boolean }): void } }).__lenis;
     if (env.scrollTo) env.scrollTo(y);
+    else if (lenis) lenis.scrollTo(y, { immediate: reduced });
     else window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
   };
   const toEl = (el: HTMLElement, gap = 120) => scrollToY(el.getBoundingClientRect().top + window.scrollY - gap);
 
   const finder = mountFinder(root, toEl, on);
+
+  // the filters scroll on their own under the cursor, and along with the products when the page scrolls
+  const side = root.querySelector<HTMLElement>(".pf-side");
+  if (side) {
+    let over = false;
+    let last = window.scrollY;
+    on(side, "pointerenter", () => (over = true));
+    on(side, "pointerleave", () => (over = false));
+    on(
+      window,
+      "scroll",
+      () => {
+        const dy = window.scrollY - last;
+        last = window.scrollY;
+        if (over || getComputedStyle(side).position !== "sticky") return;
+        // only once the column has reached its place under the top bar
+        const stuck = side.getBoundingClientRect().top <= parseFloat(getComputedStyle(side).top) + 1;
+        if (stuck || dy < 0) side.scrollTop += dy;
+      },
+      { passive: true },
+    );
+  }
   const faceOff = mountFaceOff(root, toEl, on, reduced);
 
   // links within the page: a product, a job
@@ -197,6 +222,10 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
     if (brandEl) brandEl.textContent = item.brand || "RPC";
     const titleEl = pv.querySelector<HTMLElement>("[data-pv-title]");
     if (titleEl) titleEl.textContent = item.fullName || item.name || "";
+    const crumbBrand = pv.querySelector<HTMLElement>("[data-pv-crumb-brand]");
+    if (crumbBrand) crumbBrand.textContent = item.brand || "";
+    const crumbName = pv.querySelector<HTMLElement>("[data-pv-crumb-name]");
+    if (crumbName) crumbName.textContent = item.fullName || item.name || "";
     const subtitleEl = pv.querySelector<HTMLElement>("[data-pv-subtitle]");
     if (subtitleEl) subtitleEl.textContent = item.purpose || item.category || "";
     const summaryEl = pv.querySelector<HTMLElement>("[data-pv-summary]");
@@ -672,6 +701,8 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       else if (brands.has(k)) brands.delete(k);
       else brands.add(k);
       apply();
+      // the list starts again from its first product
+      requestAnimationFrame(toList);
       return;
     }
     const cf = t.closest<HTMLButtonElement>("[data-chip-fam]");
@@ -681,6 +712,7 @@ function mountFinder(root: HTMLElement, toEl: (el: HTMLElement, gap?: number) =>
       else if (fams.has(k)) fams.delete(k);
       else fams.add(k);
       apply();
+      requestAnimationFrame(toList);
       return;
     }
     if (t.closest("[data-clear]")) {

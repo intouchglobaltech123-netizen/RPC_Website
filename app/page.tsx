@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/contact/Footer";
 import { HomeHooks } from "@/components/home3/HomeHooks";
 import { MonsoonHero } from "@/components/home4/MonsoonHero";
-import { blogPosts } from "@/lib/blog";
 import { brand, projects } from "@/lib/content";
 import type { HookData } from "@/lib/home/hooks";
-import { PLACES } from "@/lib/methods/data";
-import { SPOTS } from "@/lib/pages/methods-tools";
+import { steps } from "@/lib/monsoon/copy";
 import { FAMILIES, PRODUCTS } from "@/lib/products";
+import { otherBrands } from "@/lib/methods/brand-logos";
+import { brandInfo, brandMark } from "@/lib/products/brands";
 import { imageSrc, mediaOf } from "@/lib/products/media";
 import { packArt } from "@/lib/products/pack-art";
 
@@ -38,12 +38,12 @@ export const metadata: Metadata = {
  * RPC's product list are shown, each linking to its card on the products page.
  */
 const BEST_SELLERS: readonly [string, readonly string[]][] = [
-  ["Superplasticisers", ["fosroc-conplast-sp430", "fosroc-conplast-sp430-g8", "fosroc-conplast-sp430-es2"]],
-  ["High-performance admixtures", ["fosroc-auramix-400", "fosroc-auramix-350", "fosroc-auramix-300", "fosroc-auramix-300-plus", "fosroc-auramix-200-20", "fosroc-auramix-200-41"]],
+  ["Superplasticiser", ["fosroc-conplast-sp430", "fosroc-conplast-sp430-g8", "fosroc-conplast-sp430-es2"]],
+  ["PCE admixture", ["fosroc-auramix-400", "fosroc-auramix-350", "fosroc-auramix-300", "fosroc-auramix-300-plus", "fosroc-auramix-200-20", "fosroc-auramix-200-41"]],
   ["Accelerator", ["fosroc-conplast-nc"]],
   ["Mortar plasticiser", ["fosroc-cebex-112"]],
   ["Block admixture", ["fosroc-conplast-sd110"]],
-  ["Waterproofing admixture", ["fosroc-conplast-crystalline"]],
+  ["Waterproofing", ["fosroc-conplast-crystalline"]],
 ];
 
 /** a product's picture: the maker's pack shot where we have one, otherwise its pack drawn in the colour of its kind */
@@ -56,6 +56,20 @@ const picOf = (slug: string) => {
   return packArt(`hk-${p.slug}`, p.packs[0]?.shape ?? "bag", tint, p.packs[0]?.size ?? "");
 };
 
+/** for each leak in the film, the still of the place leaking and the same place dry (frames of the film, in /public/images/rain) */
+const STILLS: Readonly<Record<string, { before: string; after: string }>> = {
+  terrace: { before: "/images/rain/terrace-before.webp", after: "/images/rain/terrace-after.webp" },
+  ceiling: { before: "/images/rain/leak-before.webp", after: "/images/rain/leak-after.webp" },
+  bathroom: { before: "/images/rain/bath-before.webp", after: "/images/rain/bath-after.webp" },
+  walls: { before: "/images/rain/wall-before.webp", after: "/images/rain/wall-after.webp" },
+};
+
+/** the brand slide: the product list's brands (most products first), then the methods guide's other brands */
+function brandSlide() {
+  const listed = brandInfo().map((b) => ({ name: b.name, color: brandMark(b.name) }));
+  return [...listed, ...otherBrands(listed.map((l) => l.name)).map((name) => ({ name, color: "" }))];
+}
+
 /** what the hooks need, gathered here on the server */
 const hookData: HookData = {
   shelf: BEST_SELLERS.flatMap(([group, slugs]) => {
@@ -63,12 +77,9 @@ const hookData: HookData = {
     const [lead, ...rest] = ps;
     return lead ? [{ group, lead: { name: lead.name, slug: lead.slug, cat: lead.category, pic: picOf(lead.slug) }, more: rest.map((p) => p.name) }] : [];
   }),
-  places: Object.entries(SPOTS).map(([key, s]) => ({ key, label: s.short, n: PLACES.find((pl) => pl.key === key)?.methods.length ?? 0 })),
-  projects: projects.map((p) => ({ slug: p.slug, name: p.name, location: p.location, type: p.type, image: p.image })),
-  posts: [...blogPosts]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 3)
-    .map((p) => ({ slug: p.slug, title: p.title, category: p.category, minutes: p.readMinutes, excerpt: p.excerpt })),
+  signs: steps.map((x) => ({ place: x.place, see: x.title, fix: x.apply, href: x.link.href, ...STILLS[x.zone]! })),
+  projects: projects.slice(0, 3).map((p) => ({ slug: p.slug, name: p.name, location: p.location, type: p.type, image: p.image, summary: p.summary })),
+  brands: brandSlide(),
 };
 
 /**

@@ -31,13 +31,15 @@ export const BRAND_LOGOS: Readonly<Record<string, string>> = {
   /** the products list's Berger products are its HomeShield range */
   Berger: "berger-homeshield.png",
   Renacon: "renacon.png",
+  CCI: "cci.svg",
 };
 
-/** Render the 2x duplicate track for infinite smooth scroll */
-export function brandsMarqueeTrack() {
+/** Render the 2x duplicate track for infinite smooth scroll; `skip` leaves brands out */
+export function brandsMarqueeTrack(skip: readonly string[] = []) {
+  const shown = BRANDS.filter((b) => !skip.includes(b.brand));
   return [0, 1]
     .map((copy) =>
-      BRANDS.map((b) => {
+      shown.map((b) => {
         const logo = BRAND_LOGOS[b.brand];
         return `<li class="wp-btile${logo ? "" : " wp-btile--name"}"${copy ? ` aria-hidden="true"` : ""}>${
           logo
@@ -49,10 +51,41 @@ export function brandsMarqueeTrack() {
     .join("");
 }
 
-/** Complete brand marquee container */
-export function brandsMarqueeHtml() {
+/** the methods guide's brands taken off the home page's brand slide (and so off the products page's brand filter) */
+export const OFF_SLIDE = ["Sunanda", "MC-Bauchemie", "CICO", "Perma", "Kryton"];
+/** two names for one brand (Berger and Berger HomeShield) */
+const sameBrand = (a: string, b: string) => a.toLowerCase().startsWith(b.toLowerCase()) || b.toLowerCase().startsWith(a.toLowerCase());
+/** the brand slide's brands that are not among `listed` (the product list's): the methods guide's, in its order */
+export const otherBrands = (listed: readonly string[]) =>
+  BRANDS.map((b) => b.brand).filter((n) => !OFF_SLIDE.includes(n) && !listed.some((l) => sameBrand(l, n)));
+
+/** a strip of the given brands, in their order: the logo where RPC has one, otherwise the name in `color` (only the first round is read out) */
+export function brandsMarqueeOf(brands: readonly { name: string; color?: string }[]) {
+  // a short list is repeated so one pass of the strip is wider than the widest screen
+  const times = Math.max(1, Math.ceil(12 / Math.max(1, brands.length)));
+  const track = Array.from({ length: times * 2 }, (_, i) => i)
+    .map((copy) =>
+      brands
+        .map((b) => {
+          const logo = BRAND_LOGOS[b.name];
+          return `<li class="wp-btile${logo ? "" : " wp-btile--name"}"${copy ? ` aria-hidden="true"` : ""}>${
+            logo
+              ? `<img src="/images/brands/${esc(logo)}" alt="${copy ? "" : esc(b.name)}" loading="lazy" decoding="async">`
+              : `<span class="wp-bname"${b.color ? ` style="color:${esc(b.color)}"` : ""}>${esc(b.name)}</span>`
+          }</li>`;
+        })
+        .join(""),
+    )
+    .join("");
   return `<div class="wp-marq" role="region" aria-label="The brands, moving slowly; hover to pause">
-    <ul class="wp-mtrack">${brandsMarqueeTrack()}</ul>
+    <ul class="wp-mtrack">${track}</ul>
+  </div>`;
+}
+
+/** Complete brand marquee container */
+export function brandsMarqueeHtml(skip: readonly string[] = []) {
+  return `<div class="wp-marq" role="region" aria-label="The brands, moving slowly; hover to pause">
+    <ul class="wp-mtrack">${brandsMarqueeTrack(skip)}</ul>
   </div>`;
 }
 

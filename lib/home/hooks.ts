@@ -8,25 +8,27 @@
  *                     then the brands in our methods guide, moving by
  *   03 Waterproofing  "where is the water getting in?": four of the places, each opening its
  *                     methods on the waterproofing page
- *   04 Projects       three of our projects as one mosaic of photographs
+ *   04 Projects       three of our projects as a pile of prints, the top one's words beside it
  *   05 Services       the home page's own services section (lib/home/sections.ts)
- *   06 Blog           the three newest articles, as cards
- *   07 Contact        the home page's own contact section (lib/home/sections.ts)
+ *   then the close     "Seen a damp patch?", in the about page's design (lib/pages/kit.ts)
  *
  * Plain strings, like the rest of the home page: the server renders every word
  * and the links work before scripts arrive. The shared look (markers, buttons,
  * reveals) comes from HOME_CSS.
  */
-import { brandsMarqueeHtml, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
-import { contactMarkup, rootedAboutMarkup, ROOTED_ABOUT_CSS, servicesMarkup, type HomeData } from "./sections";
+import { brandsMarqueeOf, BRANDS_MARQUEE_CSS } from "../methods/brand-logos";
+import { ctaBand, KIT_CSS, type ContactInfo } from "../pages/kit";
+import { rootedAboutMarkup, ROOTED_ABOUT_CSS, servicesMarkup, type HomeData } from "./sections";
 
 export interface HookData {
   /** the best sellers on the shelf: one tile per kind, its first product shown */
   shelf: { group: string; lead: { name: string; slug: string; cat: string; pic: string }; more: string[] }[];
   /** the places on the waterproofing page, each with how many methods its guide names */
-  places: { key: string; label: string; n: number }[];
-  projects: { slug: string; name: string; location: string; type: string; image: string }[];
-  posts: { slug: string; title: string; category: string; minutes: number; excerpt: string }[];
+  /** the leaks people notice, as the film on the home page shows them: the place, what they see, what we do, and where to read more */
+  signs: { place: string; see: string; fix: string; href: string; before: string; after: string }[];
+  projects: { slug: string; name: string; location: string; type: string; image: string; summary: string }[];
+  /** the brand slide: the product list's brands, then the methods guide's, with a colour for a name without a logo */
+  brands: { name: string; color: string }[];
 }
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -34,38 +36,33 @@ const arrow = `<svg class="hm-ar" viewBox="0 0 16 16" aria-hidden="true"><path d
 const mark = (n: string, label: string) =>
   `<p class="hm-mark" data-rv><span class="hm-idx">${n}</span><span class="hm-rule" aria-hidden="true"></span><span>${esc(label)}</span></p>`;
 const btn = (href: string, text: string, kind = "ink") => `<a class="hm-btn ${kind === "paper" ? "hk-btn--paper" : `hm-btn--${kind}`} hk-btn" href="${href}" data-internal>${esc(text)}${arrow}</a>`;
-const words = (n: number) => ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"][n] ?? String(n);
-const Cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-/** the head of a hook: the marker and headline on the left, a line and the button on the right */
-const head = (n: string, label: string, id: string, title: string, line: string, button: string) => `<div class="hk-head">
-      <div>${mark(n, label)}<h2 class="hm-h2" id="${id}" data-rv>${title}</h2></div>
-      <div class="hk-side" data-rv><p class="hk-lede">${line}</p>${button}</div>
-    </div>`;
 
 /* ------------------------------------------------------------------ 02 products */
 function products(d: HookData) {
-  const n = d.shelf.reduce((s, g) => s + 1 + g.more.length, 0);
   const tiles = d.shelf
     .map(
-      (g, i) => `<li data-rv style="--d:${i * 50}ms"><a class="hk-tile" href="/products#${esc(g.lead.slug)}" data-internal>
+      (g, i) => `<li data-rv style="--d:${i * 50}ms"><a class="hk-tile" href="/products#${esc(g.lead.slug)}" data-internal${g.more.length ? ` title="${esc(`Also ${g.more.join(", ")}`)}"` : ""}>
       <span class="hk-pic">${g.lead.pic}</span>
-      <span class="hk-kind">${esc(g.group)}</span>
+      <span class="hk-kind"><i aria-hidden="true"></i>${esc(g.group)}</span>
       <span class="hk-name">${esc(g.lead.name)}</span>
-      <span class="hk-more">${g.more.length ? `Also ${esc(g.more.join(", "))}` : esc(g.lead.cat)}</span>
+      <span class="hk-foot"><span class="hk-more">${g.more.length ? `+${g.more.length} more` : "View product"}</span><span class="hk-tgo" aria-hidden="true">${arrow}</span></span>
     </a></li>`,
     )
     .join("");
   return `<section class="hk hk--stone hk-prod" id="products" aria-labelledby="hk-prod-h">
   <div class="hm-wrap">
-    ${head("02", "Products", "hk-prod-h", "Our best-selling Fosroc&nbsp;products.", `${Cap(words(n))} products for concrete, blocks and waterproofing that builders ask us for most. Rates on request.`, btn("/products", "See all products"))}
+    <div class="hk-head">
+      <div>${mark("02", "Products")}<h2 class="hm-h2" id="hk-prod-h" data-rv>Our best-selling products.</h2></div>
+    </div>
     <ul class="hk-shelf">${tiles}</ul>
+    <div class="hk-after" data-rv>${btn("/products", "See all products")}</div>
     <div class="hm-pbrands hk-brands" data-rv>
       <header class="hm-pbhead">
         <p class="hk-bk">Brands</p>
-        <h3 class="hm-pbh">The brands in our methods guide.</h3>
+        <h3 class="hm-pbh">The brands in our products and methods.</h3>
       </header>
-      ${brandsMarqueeHtml()}
+      ${brandsMarqueeOf(d.brands)}
     </div>
   </div>
 </section>`;
@@ -73,23 +70,28 @@ function products(d: HookData) {
 
 /* ------------------------------------------------------------------ 03 waterproofing */
 function waterproofing(d: HookData) {
-  const drop = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c3.4 4.3 6 7.6 6 10.6a6 6 0 0 1-12 0c0-3 2.6-6.3 6-10.6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
-  // a sample: the first four places; the rest are on the waterproofing page
-  const tiles = d.places
-    .slice(0, 4)
+  const cards = d.signs
     .map(
-      (p, i) => `<li data-rv style="--d:${i * 40}ms"><a class="hk-place" href="/waterproofing#a-${esc(p.key)}" data-internal>
-      <span class="hk-pn">${String(i + 1).padStart(2, "0")}</span>
-      <span class="hk-pl">${esc(p.label)}</span>
-      <span class="hk-pm">${drop}${p.n ? `${p.n} ${p.n === 1 ? "method" : "methods"}` : "Ask us"}</span>
-      <span class="hk-pgo" aria-hidden="true">${arrow}</span>
+      (x, i) => `<li data-rv style="--d:${i * 60}ms"><a class="hk-ba" href="${esc(x.href)}" data-internal>
+      <span class="hk-bap">
+        <img class="hk-ba-after" src="${esc(x.after)}" width="960" height="540" alt="" loading="lazy" decoding="async">
+        <img class="hk-ba-before" src="${esc(x.before)}" width="960" height="540" alt="" loading="lazy" decoding="async">
+        <span class="hk-bal" aria-hidden="true">Before</span><span class="hk-bar" aria-hidden="true">After</span><span class="hk-bad" aria-hidden="true"></span>
+      </span>
+      <span class="hk-bat">
+        <em>${esc(x.place)}</em>
+        <b>${esc(x.see)}</b>
+        <span class="hk-baf"><span>What we do</span>${esc(x.fix)}</span>
+      </span>
+      <span class="hk-bago" aria-hidden="true">${arrow}</span>
     </a></li>`,
     )
     .join("");
   return `<section class="hk hk--paper hk-wp" id="waterproofing" aria-labelledby="hk-wp-h">
   <div class="hm-wrap">
-    ${head("03", "Waterproofing", "hk-wp-h", "Where is the water getting&nbsp;in?", "Pick the place. You will see the methods that seal it, and where each one stops the water.", btn("/waterproofing", "See every method"))}
-    <ol class="hk-places">${tiles}</ol>
+    <div class="hk-head"><div>${mark("03", "Waterproofing")}<h2 class="hm-h2" id="hk-wp-h" data-rv>What do you&nbsp;see?</h2></div></div>
+    <ul class="hk-bas">${cards}</ul>
+    <div class="hk-after" data-rv>${btn("/waterproofing", "See every method")}</div>
   </div>
 </section>`;
 }
@@ -97,40 +99,103 @@ function waterproofing(d: HookData) {
 /* ------------------------------------------------------------------ 04 projects */
 function projects(d: HookData) {
   const ps = d.projects.slice(0, 3);
-  const tile = (p: HookData["projects"][number], i: number) => `<li class="hk-m${i === 0 ? " hk-m--big" : ""}" data-rv style="--d:${i * 60}ms"><a href="/projects#${esc(p.slug)}" data-internal>
-      <img src="${esc(p.image)}" width="1376" height="768" alt="${esc(`${p.name}, ${p.location}`)}" loading="lazy" decoding="async">
-      <span class="hk-mcap"><span class="hk-mt">${esc(p.type)}</span><b>${esc(p.name)}</b><span>${esc(p.location)}</span></span>
-    </a></li>`;
+  const pin = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14.5s-4.6-3.9-4.6-7.6a4.6 4.6 0 0 1 9.2 0c0 3.7-4.6 7.6-4.6 7.6z" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="6.9" r="1.6" fill="currentColor"/></svg>`;
+  const chev = (dir: "l" | "r") =>
+    `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="${dir === "l" ? "M10 3.5 5.5 8l4.5 4.5" : "M6 3.5 10.5 8 6 12.5"}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const info = ps
+    .map(
+      (p, i) => `<div class="hk-pi" data-pi="${i}"${i ? " hidden" : ""}>
+        <span class="hk-ptype">${esc(p.type)}</span>
+        <h3 class="hk-pname">${esc(p.name)}</h3>
+        <p class="hk-ploc">${pin}${esc(p.location)}</p>
+        <p class="hk-psum">${esc(p.summary)}</p>
+      </div>`,
+    )
+    .join("");
+  const prints = ps
+    .map(
+      (p, i) => `<figure class="hk-pol" data-pos="${i}" data-card="${i}">
+        <span class="hk-polph"><img src="${esc(p.image)}" width="1376" height="768" alt="${esc(`${p.name}, ${p.location}`)}" loading="lazy" decoding="async" draggable="false"></span>
+        <figcaption><b>${esc(p.name)}</b><span>${esc(p.location)}</span></figcaption>
+      </figure>`,
+    )
+    .join("");
   return `<section class="hk hk--stone hk-proj" id="projects" aria-labelledby="hk-proj-h">
   <div class="hm-wrap">
-    ${head("04", "Projects", "hk-proj-h", "From homes to factories, kept&nbsp;dry.", "Homes, villas, offices, shops and factories, with the waterproofing built into each.", btn("/projects", "See our projects"))}
-    <ul class="hk-mosaic">${ps.map(tile).join("")}</ul>
+    <div class="hk-pgrid" data-stack>
+      <div class="hk-pinfo">
+        <div>${mark("04", "Projects")}<h2 class="hm-h2" id="hk-proj-h" data-rv>From homes to factories, kept&nbsp;dry.</h2></div>
+        <div aria-live="polite">${info}</div>
+        <div class="hk-pctl">
+          <button type="button" class="hk-arr" data-sprev aria-label="Previous project">${chev("l")}</button>
+          <span class="hk-pcount"><b data-scount>1</b> / ${ps.length}</span>
+          <button type="button" class="hk-arr" data-snext aria-label="Next project">${chev("r")}</button>
+        </div>
+        <div data-rv>${btn("/projects", "See our projects")}</div>
+      </div>
+      <div class="hk-stack" data-sdeck role="button" tabindex="0" aria-label="Show the next project">${prints}</div>
+    </div>
   </div>
 </section>`;
 }
 
-/* ------------------------------------------------------------------ 06 blog */
-function blog(d: HookData) {
-  const cards = d.posts
-    .slice(0, 3)
-    .map(
-      (p, i) => `<li data-rv style="--d:${i * 70}ms"><a class="hk-post" href="/blog/${esc(p.slug)}" data-internal>
-      <span class="hk-pc">${esc(p.category)}<span>${p.minutes} min read</span></span>
-      <span class="hk-pt">${esc(p.title)}</span>
-      <span class="hk-pe">${esc(p.excerpt)}</span>
-      <span class="hk-pr">Read the article${arrow}</span>
-    </a></li>`,
-    )
-    .join("");
-  return `<section class="hk hk--stone hk-blog" id="blog" aria-labelledby="hk-blog-h">
-  <div class="hm-wrap">
-    <div class="hk-head hk-head--end">
-      <div>${mark("06", "Blog")}<h2 class="hm-h2" id="hk-blog-h" data-rv>Know your building before the rain&nbsp;does.</h2></div>
-      <div class="hk-side" data-rv>${btn("/blog", "Read the blog")}</div>
-    </div>
-    <ul class="hk-posts">${cards}</ul>
-  </div>
-</section>`;
+/**
+ * The projects' pile of prints: the arrows, a tap on the pile or Enter on it
+ * bring the next print to the front (the top one flies off and slides under
+ * the others); the words beside it follow.
+ */
+export function mountHooks(root: HTMLElement) {
+  const box = root.querySelector<HTMLElement>("[data-stack]");
+  if (!box) return () => {};
+  const cards = Array.from(box.querySelectorAll<HTMLElement>("[data-card]"));
+  const infos = Array.from(box.querySelectorAll<HTMLElement>("[data-pi]"));
+  const count = box.querySelector<HTMLElement>("[data-scount]");
+  const deck = box.querySelector<HTMLElement>("[data-sdeck]");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let order = cards.map((_, i) => i);
+  let busy = 0;
+  const place = () => {
+    order.forEach((c, pos) => (cards[c]!.dataset.pos = String(pos)));
+    infos.forEach((el, i) => (el.hidden = i !== order[0]));
+    if (count) count.textContent = String(order[0]! + 1);
+  };
+  const next = () => {
+    if (busy) return;
+    const top = cards[order[0]!]!;
+    order = [...order.slice(1), order[0]!];
+    if (reduced) return place();
+    top.classList.add("is-out");
+    busy = window.setTimeout(() => {
+      top.classList.remove("is-out");
+      place();
+      busy = 0;
+    }, 320);
+    infos.forEach((el, i) => (el.hidden = i !== order[0]));
+    if (count) count.textContent = String(order[0]! + 1);
+  };
+  const prev = () => {
+    if (busy) return;
+    order = [order[order.length - 1]!, ...order.slice(0, -1)];
+    place();
+  };
+  const onClick = (e: Event) => {
+    const t = e.target as Element;
+    if (t.closest("[data-snext]") || t.closest("[data-sdeck]")) next();
+    else if (t.closest("[data-sprev]")) prev();
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.target === deck && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      next();
+    }
+  };
+  box.addEventListener("click", onClick);
+  box.addEventListener("keydown", onKey);
+  return () => {
+    box.removeEventListener("click", onClick);
+    box.removeEventListener("keydown", onKey);
+    window.clearTimeout(busy);
+  };
 }
 
 /** every hook, in the order of the top menu */
@@ -140,18 +205,30 @@ export function hooksMarkup(home: HomeData, d: HookData) {
     products(d),
     waterproofing(d),
     projects(d),
-    servicesMarkup(home, { n: "05" }),
-    blog(d),
-    contactMarkup(home, { n: "07" }),
+    servicesMarkup(home, { n: "05", below: true }),
+    // the close, in the about page's design: its own three steps and the ways to reach us
+    `<div class="pg hk-cta">${ctaBand({ regions: [], ...home.contact } as ContactInfo, {
+      title: "Seen a damp patch? Let’s fix it.",
+      steps: [
+        ["Send us a photo", "WhatsApp a picture of the leak, the crack or the damp wall."],
+        ["We come and check", "An engineer visits your site. The first visit is free."],
+        ["Get one clear plan", "What is wrong, how we fix it and the price, in writing."],
+      ],
+      reach: true,
+    })}</div>`,
   ].join("\n");
 }
 
 export const HOOKS_CSS =
+  KIT_CSS +
   ROOTED_ABOUT_CSS +
   BRANDS_MARQUEE_CSS +
   `
 /* the hooks: one short section per page, in the order of the top menu; the grounds alternate, light sand and stone */
 .hm-services,.hm-contact{background:var(--paper)}
+.hm-services{padding-bottom:clamp(2rem,5vh,3.5rem)}
+.hk-cta{background:var(--paper)}
+.hk-cta .pg-cta{padding-top:0}
 .hk{position:relative;z-index:10;padding:clamp(4rem,11vh,7rem) 0}
 .hk--paper{background:var(--paper)}
 .hk--stone{background:var(--stone)}
@@ -165,94 +242,120 @@ export const HOOKS_CSS =
 .hk-btn{height:3.1rem}
 .hk-btn--paper{background:#f5f0e6;color:var(--navy)}
 .hk-btn--paper:hover{background:#fff}
+.hk-btn--white{background:#fff;color:var(--navy)}
+.hk-btn--white:hover{background:#f5f0e6}
 .hk-head{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:end;gap:1.4rem clamp(2rem,6vw,6rem);margin-bottom:clamp(1.6rem,4vh,2.6rem)}
 .hk-side{display:flex;flex-direction:column;align-items:flex-start;gap:1.2rem}
 /* a head with only the button beside the headline: the button at the far right */
 .hk-head--end .hk-side{align-items:flex-end;justify-self:end}
 
-/* 02 products: a shelf, one tile per kind, its first product in the picture */
+/* 02 products: a shelf, one tile per kind: the kind on the picture, the product's name, and how many more in its range */
 .hk-shelf{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.6rem,1.2vw,1rem);margin:0;padding:0;list-style:none}
-.hk-tile{display:flex;flex-direction:column;height:100%;padding:.7rem .7rem 1rem;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line);color:inherit;text-decoration:none;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
-.hk-tile:hover{transform:translateY(-4px);box-shadow:0 0 0 1.5px var(--navy),0 24px 40px -28px rgba(18,34,59,.5)}
+.hk-tile{display:flex;flex-direction:column;height:100%;padding:.55rem .55rem .9rem;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line),0 18px 36px -30px rgba(18,34,59,.45);color:inherit;text-decoration:none;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.hk-tile:hover{transform:translateY(-4px);box-shadow:0 0 0 1.5px var(--navy),0 28px 44px -28px rgba(18,34,59,.55)}
 .hk-tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.hk-pic{position:relative;display:grid;place-items:center;aspect-ratio:1;overflow:hidden;margin-bottom:.8rem;padding:.8rem;border-radius:12px;background:#f4efe6}
-.hk-pic img{position:absolute;inset:8%;width:84%;height:84%;object-fit:contain;mix-blend-mode:multiply}
-.hk-pic svg{width:82%;height:auto}
-.hk-kind{padding:0 .3rem;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.hk-name{margin-top:.2rem;padding:0 .3rem;font-family:var(--serif);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
-.hk-more{margin-top:.4rem;padding:0 .3rem;font-size:var(--fs-body);line-height:1.45;color:var(--mute)}
+.hk-pic{position:relative;display:grid;place-items:center;aspect-ratio:1/1;overflow:hidden;border-radius:15px;background:radial-gradient(120% 90% at 50% 35%,#fff 0%,#fff 45%,#f1ece3 100%)}
+.hk-pic img{position:absolute;left:14%;top:14%;width:72%;height:72%;object-fit:contain;mix-blend-mode:multiply;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.hk-pic svg{width:72%;height:auto;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.hk-tile:hover .hk-pic img,.hk-tile:hover .hk-pic svg{transform:scale(1.05)}
+.hk-kind{display:flex;align-items:center;gap:.45rem;margin:.9rem .35rem 0;font-size:var(--fs-body);font-weight:500;line-height:1.3;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hk-kind i{flex:none;width:.5rem;height:.5rem;border-radius:50%;background:var(--water)}
+.hk-name{margin:.2rem .35rem 0;font-family:var(--serif);font-size:var(--fs-body);font-weight:700;line-height:1.3;letter-spacing:-.01em;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.6em}
+.hk-foot{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin:auto .35rem 0;padding-top:.7rem;border-top:1px solid var(--line)}
+.hk-more{min-width:0;font-size:var(--fs-body);line-height:1.35;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hk-tgo{flex:none;display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .3s,color .3s,box-shadow .3s}
+.hk-tile:hover .hk-tgo{background:var(--navy);color:#fff;box-shadow:none}
+.hk-after{display:flex;justify-content:center;margin-top:clamp(1.4rem,3vh,2rem)}
+.hk-after--end{justify-content:flex-end}
 .hk-brands{margin-top:clamp(2.2rem,5vh,3.4rem)}
 .hk-bk{margin:0 0 .6rem;font-size:var(--fs-body);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--water)}
 .hm-pbrands{padding-top:clamp(1.5rem,3vh,2.2rem);border-top:1px solid rgba(18,34,59,.1)}
 .hm-pbhead{margin-bottom:1.2rem}
 .hm-pbh{margin:0;font-family:var(--serif);font-weight:600;font-size:var(--fs-sub);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
 
-/* 03 waterproofing: the eight places, a numbered tile each; pointed at, a tile turns night blue */
-.hk-places{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem;margin:0;padding:0;list-style:none}
-.hk-place{--t:.25s;position:relative;display:grid;grid-template-rows:auto 1fr auto;gap:.5rem;height:100%;min-height:9.5rem;padding:1.1rem 1.2rem;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);text-decoration:none;transition:background-color var(--t),box-shadow var(--t)}
-.hk-pn,.hk-pl,.hk-pm,.hk-pm svg,.hk-pgo{transition:color var(--t),background-color var(--t),box-shadow var(--t)}
-.hk-pn{font-size:var(--fs-body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent)}
-.hk-pl{font-family:var(--serif);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
-.hk-pm{display:flex;align-items:center;gap:.4rem;font-size:var(--fs-body);color:var(--mute)}
-.hk-pm svg{width:1rem;height:1rem;color:var(--water)}
-.hk-pgo{position:absolute;top:1rem;right:1rem;display:grid;place-items:center;width:2.2rem;height:2.2rem;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
-.hk-place:hover{background:var(--navy);box-shadow:none}
-.hk-place:hover .hk-pn,.hk-place:hover .hk-pm svg{color:#9fd3ea}
-.hk-place:hover .hk-pl{color:#fff}
-.hk-place:hover .hk-pm{color:rgba(245,240,230,.75)}
-.hk-place:hover .hk-pgo{background:#f5f0e6;color:var(--navy);box-shadow:none}
-.hk-place:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* 03 waterproofing: four places, each a still from the home page film split down the middle, the leak on the left and the same place dry on the right; pointed at, the dry side slides over */
+.hk-bas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.7rem,1.2vw,1rem);margin:0;padding:0;list-style:none}
+.hk-ba{position:relative;display:flex;flex-direction:column;height:100%;padding:.55rem;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line),0 18px 36px -30px rgba(18,34,59,.45);color:inherit;text-decoration:none;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+.hk-bap{--x:50%;position:relative;display:block;aspect-ratio:4/3;overflow:hidden;border-radius:15px;background:#d9d0bf}
+.hk-bap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hk-ba-before{clip-path:inset(0 calc(100% - var(--x)) 0 0);transition:clip-path .7s cubic-bezier(.45,0,.2,1)}
+.hk-bad{position:absolute;top:0;bottom:0;left:var(--x);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 12px rgba(0,0,0,.35);transition:left .7s cubic-bezier(.45,0,.2,1)}
+.hk-bal,.hk-bar{position:absolute;z-index:1;bottom:.6rem;padding:.15rem .55rem;border-radius:999px;font-size:var(--fs-body);font-weight:600;line-height:1.3;color:#fff;transition:opacity .4s}
+.hk-bal{left:.6rem;background:rgba(162,69,44,.88)}
+.hk-bar{right:.6rem;background:rgba(11,110,128,.9)}
+.hk-ba:hover .hk-ba-before{clip-path:inset(0 100% 0 0)}
+.hk-ba:hover .hk-bad{left:0}
+.hk-ba:hover .hk-bal{opacity:0}
+.hk-bat{display:flex;flex-direction:column;gap:.25rem;padding:.9rem .45rem .5rem}
+.hk-bat em{font-style:normal;font-size:var(--fs-body);font-weight:500;color:var(--mute)}
+.hk-bat b{font-family:var(--serif);font-size:var(--fs-body);font-weight:700;line-height:1.35;color:var(--ink)}
+.hk-baf{margin-top:.5rem;padding-top:.6rem;border-top:1px solid var(--line);font-size:var(--fs-body);line-height:1.5;color:var(--ink2)}
+.hk-baf span{display:block;font-weight:600;color:var(--water)}
+.hk-bago{position:absolute;top:1.1rem;right:1.1rem;display:grid;place-items:center;width:2.3rem;height:2.3rem;border-radius:50%;background:#fff;box-shadow:0 4px 12px -6px rgba(18,34,59,.45);color:var(--ink);transition:background-color .3s,color .3s}
+.hk-ba:hover{transform:translateY(-4px);box-shadow:0 0 0 1.5px var(--navy),0 28px 44px -28px rgba(18,34,59,.55)}
+.hk-ba:hover .hk-bago{background:var(--navy);color:#fff}
+.hk-ba:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.hk-ba:focus-visible .hk-ba-before{clip-path:inset(0 100% 0 0)}
 
-/* 04 projects: three of them, one large photograph and two beside it, each with its name */
-.hk-mosaic{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:clamp(.6rem,1.2vw,1rem);height:min(36rem,calc(100svh - var(--nav-room) - 14rem));min-height:24rem;margin:0;padding:0;list-style:none}
-.hk-m--big{grid-row:1/3}
-.hk-m a{position:relative;display:block;height:100%;overflow:hidden;border-radius:18px;background:#d9d0bf;color:#fff;text-decoration:none}
-.hk-m img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
-.hk-m a::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,16,34,0) 45%,rgba(6,16,34,.72))}
-.hk-m a:hover img{transform:scale(1.05)}
-.hk-m a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-.hk-mcap{position:absolute;z-index:1;left:1rem;right:1rem;bottom:.9rem;display:flex;flex-direction:column;gap:.1rem;font-size:var(--fs-body);line-height:1.35}
-.hk-mcap b{font-weight:600}
-.hk-m--big .hk-mcap b{font-family:var(--serif);font-size:var(--fs-sub)}
-.hk-mcap span:last-child{color:rgba(255,255,255,.78)}
-.hk-mt{align-self:flex-start;margin-bottom:.35rem;padding:.1rem .55rem;border-radius:999px;background:rgba(255,255,255,.9);font-weight:600;color:var(--ink)}
-
-/* 06 blog: the three newest, as cards */
-.hk-posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.8rem,1.4vw,1.2rem);margin:0;padding:0;list-style:none}
-.hk-post{display:flex;flex-direction:column;gap:.7rem;height:100%;padding:clamp(1.1rem,1.8vw,1.5rem);border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);color:inherit;text-decoration:none;transition:box-shadow .3s,transform .3s}
-.hk-post:hover{box-shadow:inset 0 0 0 1.5px var(--navy);transform:translateY(-3px)}
-.hk-post:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.hk-pc{display:flex;justify-content:space-between;gap:1rem;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.hk-pc span{font-weight:500;color:var(--mute)}
-.hk-pt{font-family:var(--serif);font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink)}
-.hk-pe{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;font-size:var(--fs-body);line-height:1.55;color:var(--mute)}
-.hk-pr{display:inline-flex;align-items:center;gap:.5rem;margin-top:auto;padding-top:.4rem;font-size:var(--fs-body);font-weight:600;color:var(--ink)}
-.hk-post:hover .hm-ar{transform:translate(2px,-2px)}
+/* 04 projects: three prints in a pile, a little turned; the top one's words beside it */
+.hk-proj{display:flex;flex-direction:column;justify-content:center;min-height:calc(100svh - var(--nav-room));padding:calc(var(--nav-room) + clamp(.5rem,2vh,1.2rem)) 0 clamp(1rem,3vh,2rem)}
+.hk-pgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);align-items:center;gap:2rem clamp(2rem,6vw,6rem)}
+.hk-pinfo .hm-h2{margin-top:.8rem}
+.hk-pinfo{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(.9rem,2.4vh,1.4rem);min-width:0;padding-left:50px}
+.hk-pi{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;animation:hk-in .45s ease both}
+.hk-pi[hidden]{display:none}
+@keyframes hk-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hk-ptype{padding:.15rem .65rem;border-radius:999px;background:rgba(11,35,80,.08);font-size:var(--fs-body);font-weight:600;color:var(--accent)}
+.hk-pname{margin:.2rem 0 0;font-family:var(--serif);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
+.hk-ploc{display:flex;align-items:center;gap:.4rem;margin:0;font-size:var(--fs-body);color:var(--mute)}
+.hk-ploc svg{width:1rem;height:1rem;color:var(--water)}
+.hk-psum{margin:.2rem 0 0;max-width:30rem;font-size:var(--fs-body);line-height:1.6;color:var(--ink2)}
+.hk-plink{display:inline-flex;align-items:center;gap:.45rem;margin-top:.4rem;padding-bottom:3px;border-bottom:1px solid currentColor;font-size:var(--fs-body);font-weight:600;color:var(--ink);text-decoration:none}
+.hk-plink:hover .hm-ar{transform:translate(2px,-2px)}
+.hk-pctl{display:flex;align-items:center;gap:.8rem}
+.hk-pcount{min-width:3.5rem;text-align:center;font-size:var(--fs-body);font-variant-numeric:tabular-nums;color:var(--mute)}
+.hk-pcount b{color:var(--ink)}
+.hk-arr{display:grid;place-items:center;width:3rem;height:3rem;border:0;border-radius:50%;background:#f5f0e6;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);cursor:pointer;transition:background-color .25s,color .25s}
+.hk-arr:hover{background:var(--navy);color:#fff}
+.hk-arr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hk-arr svg{width:1.1rem;height:1.1rem}
+.hk-stack{position:relative;aspect-ratio:5/4;height:min(36rem,calc(100svh - var(--nav-room) - 4rem));max-width:100%;margin:0 auto;cursor:pointer;outline:none}
+.hk-stack:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:12px}
+.hk-pol{position:absolute;left:50%;top:50%;width:78%;margin:0;padding:.8rem .8rem 0;border-radius:6px;background:#fff;box-shadow:0 1px 0 rgba(18,34,59,.06),0 24px 50px -24px rgba(18,34,59,.55);transition:transform .55s cubic-bezier(.2,.7,.2,1),opacity .35s,box-shadow .35s}
+.hk-polph{display:block;aspect-ratio:4/3;overflow:hidden;border-radius:2px;background:#d9d0bf}
+.hk-polph img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.hk-pol figcaption{display:flex;flex-direction:column;gap:.1rem;padding:.8rem .2rem 1rem}
+.hk-pol figcaption b{font-family:var(--serif);font-size:var(--fs-body);font-weight:700;color:var(--ink)}
+.hk-pol figcaption span{font-size:var(--fs-body);color:var(--mute)}
+.hk-pol[data-pos="0"]{z-index:3;transform:translate(-50%,-50%) rotate(-2.5deg)}
+.hk-pol[data-pos="1"]{z-index:2;transform:translate(-43%,-52%) rotate(5deg)}
+.hk-pol[data-pos="2"]{z-index:1;transform:translate(-57%,-48%) rotate(-8deg)}
+.hk-pol[data-pos="1"],.hk-pol[data-pos="2"]{box-shadow:0 1px 0 rgba(18,34,59,.06),0 14px 30px -20px rgba(18,34,59,.45)}
+.hk-pol.is-out{z-index:4;transform:translate(10%,-62%) rotate(14deg);opacity:0}
+.hk-stack:hover .hk-pol[data-pos="0"]{transform:translate(-50%,-51.5%) rotate(-1deg)}
 
 @media (max-width:1199px){
   .hk-shelf{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media (max-width:1099px){
-  .hk-posts{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hk-posts li:nth-child(3){display:none}
+  .hk-bas{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:1023px){
-  .hk-places{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hk-mosaic{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:14rem;height:auto}
-  .hk-m--big{grid-column:1/-1;grid-row:auto}
 }
 @media (max-width:899px){
+  .hk-pgrid{grid-template-columns:minmax(0,1fr)}
+  .hk-pinfo{padding-left:0}
+  .hk-proj{min-height:0;padding:clamp(3.5rem,9vh,5rem) 0}
+  .hk-stack{order:-1;aspect-ratio:1/1;height:auto;width:100%}
   .hk-head,.hk-bgrid{grid-template-columns:minmax(0,1fr)}
   .hk-head--end .hk-side{align-items:flex-start;justify-self:start}
 }
 @media (max-width:599px){
   .hk-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .hk-posts{grid-template-columns:minmax(0,1fr)}
-  .hk-posts li:nth-child(3){display:block}
-  .hk-place{min-height:8rem;padding:.9rem 1rem}
-  .hk-mosaic{grid-template-columns:minmax(0,1fr);grid-auto-rows:12rem}
+  .hk-bas{grid-template-columns:minmax(0,1fr)}
+  .hk-kind{white-space:normal;align-items:flex-start}
+  .hk-kind i{margin-top:.45rem}
+  .hk-pol{width:84%}
   .hk-btn{width:100%}
   .hk-side{align-items:stretch}
 }
-@media (prefers-reduced-motion:reduce){.hk-tile,.hk-m img,.hk-place,.hk-post{transition:none}.hk-post:hover{transform:none}.hk-m a:hover img{transform:none}.hk-tile:hover{transform:none}}
+@media (prefers-reduced-motion:reduce){.hk-pol,.hk-pi{transition:none;animation:none}.hk-ba,.hk-ba-before,.hk-bad,.hk-card img,.hk-pic img,.hk-pic svg{transition:none}.hk-card a:hover img{transform:none}.hk-tile:hover .hk-pic img,.hk-tile:hover .hk-pic svg{transform:none}.hk-tile:hover{transform:none}}
 `;

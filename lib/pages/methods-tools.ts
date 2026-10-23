@@ -54,7 +54,7 @@ const flow = (x: number, y: number, deg: number, len = 24) =>
  * A section through a house, the way an architect draws one: the walls and
  * slabs cut through are hatched, what lies beyond is in fine line. Each of the
  * eight places is a group (data-zone) holding its waterproofing layer (the
- * teal line) and the arrows for the water it keeps out.
+ * dark navy line) and the arrows for the water it keeps out.
  */
 export function houseDrawing() {
   const cut = `class="wpx-cut"`;
@@ -329,9 +329,9 @@ export const METHODS_TOOLS_CSS = `
 .wpx-water{fill:#3d7cc9;fill-opacity:.2}
 .wpx-lid{fill:#26313f}
 .wpx-crack{fill:none;stroke:#12223b;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.wpx-coat{fill:none;stroke:#0b6e80;stroke-opacity:.28;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .25s,stroke-width .25s}
+.wpx-coat{fill:none;stroke:#0b2350;stroke-opacity:.35;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;transition:stroke-opacity .25s,stroke-width .25s}
 .wpx-flow{fill:none;stroke:#2756a0;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .25s}
-.wpx-part.is-on .wpx-coat{stroke-opacity:1;stroke-width:5.5}
+.wpx-part.is-on .wpx-coat{stroke-opacity:1;stroke-width:9}
 .wpx-part.is-on .wpx-flow{opacity:1}
 .wpx-spot{position:absolute;display:grid;place-items:center;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;padding:0;border:0;border-radius:50%;background:var(--card);box-shadow:0 0 0 1.5px var(--navy),0 6px 14px -6px rgba(11,35,80,.55);font:inherit;font-size:var(--fs-body);font-weight:600;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .2s}
 .wpx-spot:hover{transform:scale(1.08)}

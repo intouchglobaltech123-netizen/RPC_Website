@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/contact/Footer";
 import { PageScripts } from "@/components/pages/PageScripts";
-import { company, contact, principles, services } from "@/lib/content";
+import { company, contact, partners, principles, services } from "@/lib/content";
 import { ABOUT_CSS, aboutMarkup, type AboutData } from "@/lib/pages/about";
 import { KIT_CSS } from "@/lib/pages/kit";
 import { ldJson, pageMeta, siteUrl } from "@/lib/site";
@@ -15,6 +15,7 @@ export const metadata: Metadata = pageMeta({
 
 const DATA: AboutData = {
   story: company.story.slice(0, 2),
+  partners,
   vision: company.vision,
   mission: company.mission,
   principles,

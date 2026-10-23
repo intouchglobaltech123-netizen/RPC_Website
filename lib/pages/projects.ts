@@ -7,7 +7,7 @@
  * ask about something similar. /projects#slug lands on that project (the home
  * page links so).
  */
-import { arrow, ctaBand, esc, mark, words, type ContactInfo, type PageOptions } from "./kit";
+import { arrow, esc, mark, words, type ContactInfo, type PageOptions } from "./kit";
 import { SEARCH_BAR_CSS, searchBar } from "./search-bar";
 import { PLACES, METHODS } from "../methods/data";
 
@@ -97,7 +97,7 @@ function sceneMarkup(ps: readonly ProjectData[]) {
         <p class="pjs-loc">${pin}${esc(pr.location)}</p>
         <p class="pjs-lead">${esc(pr.summary)}</p>
         ${layersOf(pr).length ? `<div class="pjs-wp"><p class="pjs-wk">Waterproofing built in</p>${ticks(layersOf(pr))}</div>` : ""}
-        <div class="pjs-foot"><a class="pg-btn pg-btn--ink" href="#${esc(pr.slug)}">See the project${arrow}</a>${step(i)}</div>`
+        <div class="pjs-foot">${step(i)}</div>`
       : `<h3 class="pjs-name">Overhead tanks and underground sumps</h3>
         <p class="pjs-lead">Sealed so the water stays clean and stays in.</p>
         <div class="pjs-wp"><p class="pjs-wk">Methods our guide names for them</p>${ticks(tankMethods)}</div>
@@ -118,13 +118,6 @@ function sceneMarkup(ps: readonly ProjectData[]) {
 </header>`;
 }
 
-/** after the five projects, a card for the next one */
-const nextCard = `<article class="pj-row pj-next" aria-labelledby="pj-next-h">
-  <p class="pj-top"><span class="pj-type">Your building</span></p>
-  <h2 class="pj-name" id="pj-next-h">Your project next.</h2>
-  <p class="pj-lead">A home, an office or a factory: tell us about the site or share the drawings, and we plan the waterproofing in from the start.</p>
-  <a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Plan a project with us${arrow}</a>
-</article>`;
 
 export function projectsPageMarkup(d: ProjectsData, o: PageOptions = {}) {
   void o;
@@ -156,19 +149,10 @@ export function projectsPageMarkup(d: ProjectsData, o: PageOptions = {}) {
 </section>
 <section class="pj-listwrap" aria-label="Projects">
   <div class="pg-wrap">
-    <div class="pj-list" id="project-list">${ps.map(row).join("\n")}
-${nextCard}</div>
+    <div class="pj-list" id="project-list">${ps.map(row).join("\n")}</div>
     <p class="pj-empty" hidden>No projects match your search. <button type="button" data-reset>Show all projects</button></p>
   </div>
-</section>
-${ctaBand(d.contact, {
-  title: "Planning something similar?",
-  steps: [
-    ["Share your plot or drawings", "A site in Erode, Coimbatore or nearby, or plans you already have."],
-    ["We review the water risks", "Soil, groundwater, terraces and wet areas, before a price is fixed."],
-    ["Build with it designed in", "A quote with the waterproofing written into every stage."],
-  ],
-})}`;
+</section>`;
 }
 
 export const PROJECTS_CSS = SEARCH_BAR_CSS + `

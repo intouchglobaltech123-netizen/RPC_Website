@@ -10,7 +10,7 @@
  */
 import { SEARCH_BAR_CSS, searchBar } from "./search-bar";
 import { METHODS } from "../methods/data";
-import { arrow, ctaBand, esc, ph, shortDate, tel, words, type ContactInfo, type PageOptions } from "./kit";
+import { arrow, esc, ph, shortDate, tel, words, type ContactInfo, type PageOptions } from "./kit";
 
 export interface PostSection {
   heading?: string;
@@ -143,10 +143,7 @@ export function blogIndexMarkup(d: { posts: readonly PostData[]; contact: Contac
     }
     <p class="bl-empty" hidden>No articles match your search. <button type="button" data-reset>Show all articles</button></p>
   </div>
-</section>
-${ctaBand(d.contact, {
-  title: "Have a leak we haven’t covered?",
-})}`;
+</section>`;
 }
 
 export function postMarkup(d: { post: PostData; related: readonly PostData[]; contact: ContactInfo }, o: PageOptions = {}) {

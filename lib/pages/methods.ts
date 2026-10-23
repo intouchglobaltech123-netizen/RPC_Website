@@ -11,7 +11,7 @@
  * Links to /waterproofing#a-<place> open that place on the drawing.
  */
 import type { Product } from "../products";
-import { arrow, ctaBand, esc, type ContactInfo, type PageOptions } from "./kit";
+import { type ContactInfo, type PageOptions } from "./kit";
 import { methodsData, METHODS_TOOLS_CSS, placeMapMarkup } from "./methods-tools";
 import { RAIN_CSS, rainMarkup } from "./methods-rain";
 
@@ -28,33 +28,18 @@ export const METHODS_TRAIL = [
 
 export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
   void o;
-  const c = d.contact;
-  const head = `<header class="pg-head wp-head">
-  <div class="pg-wrap">
-    <div class="wp-hgrid">
-      <div>
-        <p class="pg-mark">Waterproofing</p>
-        <h1 class="pg-h1">Waterproofing methods<br class="wp-br"> for every part of a&nbsp;building.</h1>
-      </div>
-      <div class="wp-hside">
-        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="/contact#enquiry" data-internal>Book a free site inspection${arrow}</a><a class="pg-btn pg-btn--line" href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">Send us a photo on WhatsApp</a></div>
-      </div>
+  // the opening: the monsoon house film from the home page, on a loop, one screen tall, with the page's title in the middle of it
+  const film = `<header class="wp-film" aria-label="A house in the monsoon rain, kept dry" data-nav-tone="dark">
+  <figure class="wp-fbox">
+    <video class="wp-fvid" poster="/videos/hero/monsoon-house-poster.jpg" muted loop playsinline autoplay preload="metadata" data-loop aria-hidden="true"><source src="/videos/hero/monsoon-house-540.mp4" type="video/mp4" media="(max-width: 767px)"><source src="/videos/hero/monsoon-house-720.mp4" type="video/mp4"></video>
+    <div class="wp-fhead">
+      <p class="pg-mark">Waterproofing</p>
+      <h1 class="pg-h1">Waterproofing methods<br class="wp-br"> for every part of a&nbsp;building.</h1>
     </div>
-  </div>
+  </figure>
 </header>`;
 
-  // the monsoon house film from the home page's opening, on a loop
-  const film = `<section class="wp-film" aria-label="A house in the monsoon rain, kept dry">
-  <div class="pg-wrap">
-    <figure class="wp-fbox">
-      <video class="wp-fvid" poster="/videos/hero/monsoon-house-poster.jpg" muted loop playsinline autoplay preload="metadata" data-loop aria-label="A house in the monsoon rain, kept dry"><source src="/videos/hero/monsoon-house-540.mp4" type="video/mp4" media="(max-width: 767px)"><source src="/videos/hero/monsoon-house-720.mp4" type="video/mp4"></video>
-    </figure>
-  </div>
-</section>`;
-
-  return `${head}\n${film}\n${placeMapMarkup(d.products)}\n${rainMarkup()}\n${methodsData(d.products)}\n${ctaBand(c, {
-    title: "Not sure which method your building needs?",
-  })}`;
+  return `${film}\n${placeMapMarkup(d.products)}\n${rainMarkup()}\n${methodsData(d.products)}`;
 }
 
 /* ---------------------------------------------------------------- CSS */
@@ -130,10 +115,14 @@ const BASE_CSS = `
 .wp-foot:empty{display:none}
 
 /* the monsoon house film, full width of the page, at its own proportions */
-.wp-film{padding:clamp(1rem,3vh,2rem) 0 0}
-.wp-fbox{position:relative;margin:0;aspect-ratio:16/9;overflow:hidden;border-radius:16px;background:#0b1626}
+/* the film edge to edge, one screen tall, like the home page's opening; the title in its middle, on a soft shade */
+.wp-film{padding:0}
+.wp-fbox{position:relative;margin:0;width:100%;height:100svh;overflow:hidden;border-radius:0;background:#0b1626}
 .wp-fvid{display:block;width:100%;height:100%;object-fit:cover}
-@media (max-width:767px){.wp-fbox{border-radius:12px}}
+.wp-fbox::after{content:"";position:absolute;inset:0;background:linear-gradient(20deg,rgba(6,16,34,.78) 0%,rgba(6,16,34,.42) 38%,rgba(6,16,34,0) 65%),linear-gradient(180deg,rgba(6,16,34,.45),transparent 22%);pointer-events:none}
+.wp-fhead{position:absolute;inset:auto 0 0 0;z-index:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;width:100%;max-width:1360px;margin:0 auto;padding:0 var(--gutter,3rem) clamp(2.4rem,9vh,5.5rem);box-sizing:border-box;text-align:left}
+.wp-fhead .pg-mark{justify-content:flex-start;margin:0 0 1rem;color:rgba(255,255,255,.85)}
+.wp-fhead .pg-h1{max-width:20ch;margin:0;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.35)}
 /* the brands follow the methods on the same background, so they need little room above */
 .wp-msec{padding-bottom:clamp(1.2rem,3vh,2rem)}
 .wp-msec ~ .wp-bsec{padding-top:clamp(2rem,5vh,3rem)}

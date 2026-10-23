@@ -31,19 +31,21 @@ const plural = (n: number, one: string) => `${n} ${n === 1 ? one : `${one}s`}`;
 export const brandFace = (b: CmpBrand) =>
   `<span class="bc-face${b.logo ? "" : " bc-face--txt"}" style="--c:${b.color}">${b.logo ? `<img src="/images/brands/${esc(b.logo)}" alt="" loading="lazy" decoding="async">` : esc(initials(b.name))}</span>`;
 
-/** one brand list: `id` keeps its parts apart from the other lists on the page; `hide` is a brand it does not offer */
-export function brandDropdown(id: string, label: string, brands: readonly CmpBrand[], sel: string, hide?: string) {
+/** one brand list: `id` keeps its parts apart from the other lists on the page; `hide` is a brand it does not offer; `rest` are brands shown under a line but not offered (none of their products does the job) */
+export function brandDropdown(id: string, label: string, brands: readonly CmpBrand[], sel: string, hide?: string, rest: readonly CmpBrand[] = []) {
   const cur = brands.find((x) => x.name === sel) ?? brands[0]!;
   return `<div class="bc-dd" data-dd="${esc(id)}">
     <span class="bc-k" id="${esc(id)}-k">${esc(label)}</span>
     <button type="button" class="bc-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="${esc(id)}-list" aria-labelledby="${esc(id)}-k ${esc(id)}-cur">
       <span class="bc-cur" id="${esc(id)}-cur">${brandFace(cur)}<b>${esc(cur.name)}</b></span>${CHEV}
     </button>
-    <ul class="bc-list" id="${esc(id)}-list" role="listbox" aria-labelledby="${esc(id)}-k" tabindex="-1" hidden>${brands
+    <ul class="bc-list" id="${esc(id)}-list" data-lenis-prevent role="listbox" aria-labelledby="${esc(id)}-k" tabindex="-1" hidden>${brands
       .map(
         (x) =>
           `<li role="option" tabindex="-1" data-brand="${esc(x.name)}" aria-selected="${x.name === cur.name}"${x.name === hide ? " hidden" : ""}>${brandFace(x)}<b>${esc(x.name)}</b><span class="bc-meta">${plural(x.count, "product")}</span></li>`,
       )
+      .join("")}${rest
+      .map((x, i) => `<li class="bc-none${i === 0 ? " bc-none--first" : ""}" role="option" aria-disabled="true" aria-selected="false">${brandFace(x)}<b>${esc(x.name)}</b><span class="bc-meta">No product for this</span></li>`)
       .join("")}</ul>
   </div>`;
 }
@@ -64,7 +66,8 @@ export const COMPARE_CSS = `
 .bc-face{flex:none;display:grid;place-items:center;width:5.6rem;height:2.6rem;padding:.25rem .4rem;border-radius:9px;background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.1)}
 .bc-face img{display:block;max-width:100%;max-height:2.05rem;width:auto;height:auto;object-fit:contain}
 .bc-face--txt{background:var(--c);box-shadow:none;font-family:var(--display);font-size:var(--fs-body);font-weight:700;letter-spacing:.02em;color:#fff}
-.bc-list{position:absolute;top:calc(100% + .4rem);left:0;right:0;z-index:30;max-height:min(24rem,60vh);margin:0;padding:.35rem;overflow-y:auto;list-style:none;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 48px -20px rgba(18,34,59,.45);scrollbar-width:thin}
+.bc-list{position:absolute;top:calc(100% + .4rem);left:0;right:0;z-index:30;max-height:min(24rem,60vh);margin:0;padding:.35rem;overflow-y:auto;overscroll-behavior:contain;list-style:none;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line),0 24px 48px -20px rgba(18,34,59,.45);scrollbar-width:none}
+.bc-list::-webkit-scrollbar{display:none}
 .bc-list[hidden]{display:none}
 .bc-list li{display:flex;align-items:center;gap:.75rem;padding:.4rem .6rem .4rem .4rem;border-radius:10px;cursor:pointer}
 .bc-list li[hidden]{display:none}
@@ -75,6 +78,11 @@ export const COMPARE_CSS = `
 .bc-list li[aria-selected=true] b{color:var(--accent)}
 .bc-list .bc-face{width:4.6rem;height:2.2rem}
 .bc-list .bc-face img{max-height:1.7rem}
+.bc-list li.bc-none{cursor:default}
+.bc-list li.bc-none:hover{background:none}
+.bc-list li.bc-none b{color:var(--mute);font-weight:500}
+.bc-list li.bc-none .bc-face{opacity:.55;filter:grayscale(1)}
+.bc-list li.bc-none--first{margin-top:.35rem;border-top:1px solid var(--line);border-radius:0 0 10px 10px;padding-top:.75rem}
 .cmp-prod[hidden]{display:none}
 .cmp-one{display:flex;align-items:center;min-height:2.6rem;margin:0;padding:.4rem .8rem;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.2);font-weight:600;color:var(--ink)}
 @media (max-width:699px){

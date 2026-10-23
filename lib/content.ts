@@ -379,6 +379,28 @@ export const company = {
 } as const;
 
 /**
+ * PLACEHOLDER — RPC's two partners, shown on the About page: the first with
+ * the photo on the left, the second with it on the right. Replace each name,
+ * qualification and line, and add the photo (e.g. public/images/partners/1.jpg).
+ */
+export const partners: readonly { name: string; role: string; qualification: string; bio: string; image: string }[] = [
+  {
+    name: "[Partner 1 name]",
+    role: "Partner",
+    qualification: "[Qualification, e.g. B.E. Civil]",
+    bio: "[Two or three lines about this partner: their background, and what they look after at RPC.]",
+    image: "",
+  },
+  {
+    name: "[Partner 2 name]",
+    role: "Partner",
+    qualification: "[Qualification, e.g. B.E. Civil]",
+    bio: "[Two or three lines about this partner: their background, and what they look after at RPC.]",
+    image: "",
+  },
+];
+
+/**
  * PLACEHOLDER — founder / managing director. Replace the name, message and
  * portrait (public/images/founder.jpg) with the real details before launch.
  */

@@ -340,11 +340,23 @@ function post(root: HTMLElement): Off {
   return () => offs.forEach((f) => f());
 }
 
+/** before and after cards (the services page): the slider under each moves the line between the two photographs */
+function beforeAfter(root: HTMLElement): Off {
+  const onInput = (e: Event) => {
+    const r = e.target as HTMLInputElement;
+    if (!r.matches?.(".sv-ba-r")) return;
+    r.closest<HTMLElement>(".sv-ba")?.style.setProperty("--x", `${r.value}%`);
+  };
+  root.addEventListener("input", onInput);
+  return () => root.removeEventListener("input", onInput);
+}
+
 export function mountPageBehaviour(kind: PageKind, root: HTMLElement, env: PageEnv = {}): Off {
   const offs: Off[] = [];
   if (kind === "projects") offs.push(projects(root, env));
+  if (kind === "services") offs.push(beforeAfter(root));
   if (kind === "contact") offs.push(mountContactForm(root), openNow(root));
-  if (kind === "about") offs.push(aboutRoutes(root));
+  if (kind === "contact") offs.push(aboutRoutes(root));
   if (kind === "blog") offs.push(blog(root));
   if (kind === "post") offs.push(post(root));
   if (kind === "products" || kind === "methods") {
