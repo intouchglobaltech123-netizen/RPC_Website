@@ -33,7 +33,7 @@ export const FAMILIES: readonly FamilyInfo[] = [
 ];
 export const familyOf = (key: string) => FAMILIES.find((f) => f.key === key) ?? FAMILIES[FAMILIES.length - 1]!;
 
-export const BRANDS = ["Fosroc", "Sika", "CCI", "NCL", "Berger", "Renacon"] as const;
+export const BRANDS = ["Fosroc", "Sika", "CCI", "Berger", "Renacon"] as const;
 
 const BY_SLUG = new Map(PRODUCTS.map((p) => [p.slug, p] as const));
 export const productBySlug = (slug: string): Product | undefined => BY_SLUG.get(slug);
@@ -84,8 +84,8 @@ export const SYSTEMS: readonly System[] = [
     layers: [
       { key: "coat", look: "coat", name: "Waterproof coat", note: "On the slab and turned up the walls", products: ["fosroc-brushbond-rfx-grey", "fosroc-nitocote-cm210-white", "sika-seal-550", "sika-seal-551", "fosroc-brushbond-grey"] },
       { key: "screed", look: "screed", name: "Protective screed", note: "A polymer-modified or waterproofed screed over the coat", products: ["fosroc-nitobond-sbr", "fosroc-nitobond-sbr-latex", "cci-neo-bond-sbr", "fosroc-conplast-wl-xtra"] },
-      { key: "adhesive", look: "adhesive", name: "Tile adhesive", note: "A thin bed that fixes the tiles to the screed", products: ["ncl-cerostik-fl-100-grey", "ncl-cerostik-fl-103-grey", "ncl-vitristik-te-104-grey", "ncl-vitristik-te-104-white", "ncl-vitristik-te-105-white", "berger-hs-tile-adhesive", "berger-hs-tile-adhesive-plus", "berger-hs-tile-bond-anti-slip-grey"] },
-      { key: "grout", look: "grout", name: "Joint grout", note: "Fills the joints between tiles", products: ["ncl-aeg-tile-epoxy", "berger-hs-epoxy-tile-grout", "ncl-tile-grout"] },
+      { key: "adhesive", look: "adhesive", name: "Tile adhesive", note: "A thin bed that fixes the tiles to the screed", products: ["berger-hs-tile-adhesive", "berger-hs-tile-adhesive-plus", "berger-hs-tile-bond-anti-slip-grey"] },
+      { key: "grout", look: "grout", name: "Joint grout", note: "Fills the joints between tiles", products: ["berger-hs-epoxy-tile-grout"] },
     ],
   },
   {

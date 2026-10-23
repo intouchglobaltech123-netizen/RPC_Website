@@ -20,7 +20,7 @@
  */
 import { FANCY_SELECT_CSS } from "./fancy-select";
 import { PRODUCT_COUNT, rateLink, type Product } from "../products";
-import { brandInfo, brandMark, jobGroup, jobs, type JobView } from "../products/brands";
+import { brandInfo, brandMark, jobs, type JobView } from "../products/brands";
 import { cap, fullName, shortName, useTerms, usesNote } from "../products/compare";
 import { arrow, ctaBand, esc, listing, mark, type ContactInfo } from "./kit";
 import { enquiryMarkup, FINDER_CSS, finderMarkup } from "./products-finder";
@@ -155,21 +155,17 @@ function faceOff(j: JobView, c: ContactInfo, hidden = false) {
 }
 
 function byJobMarkup(js: readonly JobView[], c: ContactInfo) {
-  // the jobs in one list, grouped by the kind of work
-  const groups = [...new Set(js.map(jobGroup))];
-  const jobOptions = groups
-    .map((g) => `<optgroup label="${esc(g)}">${js.filter((j) => jobGroup(j) === g).map((j, i) => `<option value="${j.key}"${g === groups[0] && i === 0 ? " selected" : ""}>${esc(j.name)} (${j.products.length})</option>`).join("")}</optgroup>`)
-    .join("");
+  // one comparison: the first job (the list of jobs was taken off the page)
+  const first = js.slice(0, 1);
   return `<section class="pg-sec fo-sec" id="by-job" aria-labelledby="fo-h">
   <div class="pg-wrap">
     <div class="fo-top">
       <div>
-        <p class="pg-mark">Same job, different brands</p>
+        <p class="pg-mark">Brand comparison</p>
         <h2 class="pg-h2" id="fo-h">Compare two products side by side.</h2>
       </div>
-      <label class="fo-pickjob"><span>Job</span><select data-job-select>${jobOptions}</select></label>
     </div>
-    <div class="fo"><div class="fo-stage">${js.map((j, i) => faceOff(j, c, i > 0)).join("\n")}</div></div>
+    <div class="fo"><div class="fo-stage">${first.map((j) => faceOff(j, c)).join("\n")}</div></div>
   </div>
 </section>`;
 }

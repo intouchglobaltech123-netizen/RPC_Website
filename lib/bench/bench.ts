@@ -61,7 +61,7 @@ export const BENCH_TESTS: readonly BenchTest[] = [
     control: "Spill, then wipe",
     states: ["Clean tiles", "Spilled", "Wiped"],
     a: { label: "Ordinary cement grout", caption: "Porous, so the spill soaks into the joint.", products: [] },
-    b: { label: "Epoxy grout", caption: "Stain-resistant: it wipes clean, joints and all.", products: ["ncl-aeg-tile-epoxy", "berger-hs-epoxy-tile-grout"] },
+    b: { label: "Epoxy grout", caption: "Stain-resistant: it wipes clean, joints and all.", products: ["berger-hs-epoxy-tile-grout"] },
     result: "Epoxy grout resists stains and chemicals, which is why it goes into bathrooms, kitchens and hospitals.",
   },
   {

@@ -234,8 +234,6 @@ const PAIRS: readonly (readonly [string, string])[] = [
   ["fosroc-rendroc-sp40", "sika-emaco-s348"],
   ["fosroc-nitozinc-primer", "sika-rustop"],
   ["fosroc-concure-wb-white", "sika-antisol-a4-white"],
-  ["berger-hs-epoxy-tile-grout", "ncl-aeg-tile-epoxy"],
-  ["berger-hs-tile-adhesive", "ncl-cerostik-fl-100-grey"],
   ["fosroc-nitobond-sbr", "cci-neo-bond-sbr"],
 ];
 export const HEAD_TO_HEADS: readonly (readonly [Product, Product])[] = PAIRS.map(([x, y]) => [productBySlug(x), productBySlug(y)] as const).filter(

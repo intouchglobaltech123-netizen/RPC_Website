@@ -343,4 +343,27 @@ export const CONTACT_CSS = ROUTES_CSS + `
 .ct-reach .ab-go-route[aria-pressed=true]{background:var(--navy);box-shadow:none}
 .ct-reach .ab-go-town{background:#eef3f9}
 .ct-reach .ab-go-town[aria-selected=true]{background:var(--navy)}
+
+/* the four ways to reach us: all white; navy only under the pointer */
+.ct-tile,.ct-tile--call{background:#fff;color:var(--ink);box-shadow:0 0 0 1px rgba(39,86,160,.12),0 20px 40px -32px rgba(11,35,80,.55);transition:transform .25s,box-shadow .25s,background-color .25s,color .25s}
+.ct-tile--call .ct-tk{color:var(--accent)}
+.ct-tile--call .ct-tv{color:var(--ink)}
+.ct-tile--call .ct-open{color:var(--ink2)}
+.ct-tile--call .ct-ico--call{background:var(--navy);color:#fff}
+.ct-tile--call .ct-tgo{background:#eef3f9;color:var(--ink)}
+.ct-tile .ct-tk,.ct-tile .ct-tv,.ct-tile .ct-tn,.ct-tile .ct-open,.ct-tile .ct-ico,.ct-tile .ct-tgo{transition:color .25s,background-color .25s}
+.ct-tile:hover,.ct-tile:focus-visible{background:var(--navy);box-shadow:0 26px 44px -26px rgba(4,12,30,.85)}
+.ct-tile:hover .ct-tk,.ct-tile:focus-visible .ct-tk,.ct-tile:hover .ct-tn,.ct-tile:focus-visible .ct-tn{color:rgba(245,240,230,.72)}
+.ct-tile:hover .ct-tv,.ct-tile:focus-visible .ct-tv,.ct-tile:hover .ct-open,.ct-tile:focus-visible .ct-open{color:#fff}
+.ct-tile:hover .ct-ico,.ct-tile:focus-visible .ct-ico{background:#f5f0e6;color:var(--navy)}
+.ct-tile:hover .ct-tgo,.ct-tile:focus-visible .ct-tgo{background:#f5f0e6;color:var(--navy)}
+
+/* the form's card as tall as the column beside it: the message box takes the extra room */
+@media (min-width:1024px){
+  .ct-grid{align-items:stretch}
+  .ct-card{display:flex;flex-direction:column}
+  .ct-card .ct-form{flex:1}
+  .ct-card .ct-row{flex:1;grid-template-rows:auto auto minmax(0,1fr)}
+  .ct-card .ct-full textarea{flex:1;height:auto !important;min-height:4.3rem}
+}
 `;

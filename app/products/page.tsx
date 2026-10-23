@@ -11,7 +11,7 @@ import { ldJson, pageMeta, siteUrl } from "@/lib/site";
 export const metadata: Metadata = pageMeta({
   title: "Waterproofing Products & Construction Chemicals in Erode",
   description:
-    "Fosroc, Sika, CCI, NCL, Renacon and Berger products in Erode, brand by brand: waterproofing coatings, admixtures, tile adhesives, grouts, repair mortars and AAC blocks. Compare brands job by job and ask for today's rate.",
+    "Fosroc, Sika, CCI, Renacon and Berger products in Erode, brand by brand: waterproofing coatings, admixtures, tile adhesives, grouts, repair mortars and AAC blocks. Compare brands job by job and ask for today's rate.",
   path: "/products",
 });
 

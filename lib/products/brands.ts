@@ -83,7 +83,7 @@ export function jobs(all: readonly Product[] = PRODUCTS): JobView[] {
 }
 
 /** a colour for each brand's mark in the comparisons (the site's own palette, not the brands' trademark colours) */
-const MARK: Record<string, string> = { Fosroc: "#0b6e80", Sika: "#2756a0", CCI: "#6b5b9a", NCL: "#ad5531", Renacon: "#97633f", Berger: "#5f7a33" };
+const MARK: Record<string, string> = { Fosroc: "#0b6e80", Sika: "#2756a0", CCI: "#6b5b9a", Renacon: "#97633f", Berger: "#5f7a33" };
 export const brandMark = (name: string) => MARK[name] ?? "#55707f";
 
 /** the kind of work a job belongs to, for grouping the list of jobs */

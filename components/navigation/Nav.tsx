@@ -196,7 +196,7 @@ export function Nav() {
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 top-0 -bottom-2 bg-paper shadow-[0_10px_24px_-18px_rgba(18,34,59,0.35)] transition-opacity duration-300"
-          style={{ opacity: scrolled && !open ? 1 : 0 }}
+          style={{ opacity: scrolled && !open ? 1 : 0, background: pathname === "/contact" ? "#d9e2ee" : undefined }}
         />
         <div className="rn-in gutter relative mx-auto flex max-w-[1600px] justify-end pt-2">
           {/* from 1024px: room for the logo, the pages in a pill centred at the top, and Contact at the right */}
