@@ -298,5 +298,11 @@ export const KIT_CSS = `
 .pg-head .pg-btn--ink{background:#f5f0e6;color:var(--navy)}
 .pg-head .pg-btn--ink:hover{background:#fff;color:var(--navy)}
 .pg-head .pg-btn--line{border-color:rgba(245,240,230,.5);color:#fff}
+/* every page's opening the same height, its title set at the same place near the foot (it only grows if a long title needs the room) */
+.pg-head,.pjs-head{--head-h:27rem;--head-pb:clamp(2rem,4.5vh,3rem)}
+@media (max-width:1023px){.pg-head,.pjs-head{--head-h:28rem}}
+@media (max-width:599px){.pg-head,.pjs-head{--head-h:30rem;--head-pb:1.8rem}}
+.pg-head{display:flex !important;flex-direction:column;justify-content:flex-end;min-height:var(--head-h);height:auto;box-sizing:border-box;padding:var(--nav-room) 0 var(--head-pb) !important}
+.pg-head > .pg-wrap{width:100%}
 
 `;

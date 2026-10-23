@@ -161,9 +161,9 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
 .pjs-head{margin-bottom:clamp(1.1rem,2.6vh,1.6rem)}
 .pjs-head .pg-mark{margin-bottom:.9rem}
 /* the opening band: the same shaded photograph as every page's opening, behind the title; the view of the town rises over its foot */
-.pjs{position:relative;isolation:isolate;overflow-x:clip}
-.pjs-head{position:relative;padding-bottom:clamp(1rem,2.4vh,1.4rem)}
-.pjs-head::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;margin-left:-50vw;top:calc(-1 * (var(--nav-room) + clamp(2rem,6vh,3.8rem)));bottom:-7rem;background:linear-gradient(90deg,rgba(7,20,44,.9) 0%,rgba(7,20,44,.72) 50%,rgba(7,20,44,.45) 100%),linear-gradient(180deg,rgba(7,20,44,.55),rgba(7,20,44,0) 35%),url("/images/hero-final.jpg") center 42%/cover no-repeat #0b2350}
+.pjs{position:relative;isolation:isolate;overflow-x:clip;padding-top:0 !important}
+.pjs-head{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:var(--head-h);box-sizing:border-box;padding:var(--nav-room) 0 var(--head-pb);margin-bottom:clamp(1.4rem,3.2vh,2.2rem) !important}
+.pjs-head::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;margin-left:-50vw;top:0;bottom:0;background:linear-gradient(90deg,rgba(7,20,44,.9) 0%,rgba(7,20,44,.72) 50%,rgba(7,20,44,.45) 100%),linear-gradient(180deg,rgba(7,20,44,.55),rgba(7,20,44,0) 35%),url("/images/hero-final.jpg") center 42%/cover no-repeat #0b2350}
 .pjs-head .pg-mark{color:rgba(245,240,230,.78)}
 .pjs-head .pg-idx{color:#9fbbe6}
 .pjs-head .pj-h1{color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25)}
