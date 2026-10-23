@@ -351,10 +351,55 @@ function beforeAfter(root: HTMLElement): Off {
   return () => root.removeEventListener("input", onInput);
 }
 
+/** the About page's values: pick a name (click, hover or the arrow keys) to show it large beside the list */
+function valuesPick(root: HTMLElement): Off {
+  const box = root.querySelector<HTMLElement>("[data-values]");
+  if (!box) return () => {};
+  const tabs = Array.from(box.querySelectorAll<HTMLButtonElement>("[data-vtab]"));
+  const panels = Array.from(box.querySelectorAll<HTMLElement>("[data-vpanel]"));
+  const show = (k: string, focus = false) => {
+    tabs.forEach((t) => {
+      const on = t.dataset.vtab === k;
+      t.setAttribute("aria-selected", String(on));
+      t.tabIndex = on ? 0 : -1;
+      if (on && focus) t.focus();
+    });
+    panels.forEach((p) => (p.hidden = p.dataset.vpanel !== k));
+  };
+  const hover = window.matchMedia("(hover: hover) and (min-width: 900px)");
+  const onClick = (e: Event) => {
+    const t = (e.target as Element).closest<HTMLButtonElement>("[data-vtab]");
+    if (t) show(t.dataset.vtab!);
+  };
+  const onOver = (e: Event) => {
+    if (!hover.matches) return;
+    const t = (e.target as Element).closest<HTMLButtonElement>("[data-vtab]");
+    if (t && t.getAttribute("aria-selected") !== "true") show(t.dataset.vtab!);
+  };
+  const onKey = (e: Event) => {
+    const ev = e as KeyboardEvent;
+    const i = tabs.findIndex((t) => t === document.activeElement);
+    if (i < 0) return;
+    const n = ev.key === "ArrowDown" || ev.key === "ArrowRight" ? 1 : ev.key === "ArrowUp" || ev.key === "ArrowLeft" ? -1 : 0;
+    if (!n) return;
+    ev.preventDefault();
+    show(tabs[(i + n + tabs.length) % tabs.length]!.dataset.vtab!, true);
+  };
+  box.addEventListener("click", onClick);
+  box.addEventListener("mouseover", onOver);
+  box.addEventListener("keydown", onKey);
+  return () => {
+    box.removeEventListener("click", onClick);
+    box.removeEventListener("mouseover", onOver);
+    box.removeEventListener("keydown", onKey);
+  };
+}
+
 export function mountPageBehaviour(kind: PageKind, root: HTMLElement, env: PageEnv = {}): Off {
   const offs: Off[] = [];
   if (kind === "projects") offs.push(projects(root, env));
   if (kind === "services") offs.push(beforeAfter(root));
+  if (kind === "about") offs.push(valuesPick(root));
   if (kind === "contact") offs.push(mountContactForm(root), openNow(root));
   if (kind === "contact") offs.push(aboutRoutes(root));
   if (kind === "blog") offs.push(blog(root));

@@ -286,4 +286,17 @@ export const KIT_CSS = `
 @media (min-width:600px) and (max-width:1023px){
   .pg-ctasteps{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+/* every page's opening (from under the menu bar to its foot): one photograph, shaded navy, the title in white */
+.pg-head{--pg-shot:url("/images/hero-final.jpg");position:relative;isolation:isolate;border-bottom:0;background:linear-gradient(90deg,rgba(7,20,44,.9) 0%,rgba(7,20,44,.72) 50%,rgba(7,20,44,.45) 100%),linear-gradient(180deg,rgba(7,20,44,.55),rgba(7,20,44,0) 35%),var(--pg-shot) center 42%/cover no-repeat #0b2350;color:#fff}
+.pg-head .pg-mark{color:rgba(245,240,230,.78)}
+.pg-head .pg-idx{color:#9fbbe6}
+.pg-head .pg-h1,.pg-head h1{color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25)}
+.pg-head .pg-intro,.pg-head .po-by{color:rgba(245,240,230,.86)}
+.pg-head .po-by span{color:#fff}
+.pg-head .bl-cat{color:#9fbbe6}
+.pg-head .pg-btn--ink{background:#f5f0e6;color:var(--navy)}
+.pg-head .pg-btn--ink:hover{background:#fff;color:var(--navy)}
+.pg-head .pg-btn--line{border-color:rgba(245,240,230,.5);color:#fff}
+
 `;

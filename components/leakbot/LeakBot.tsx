@@ -84,6 +84,7 @@ const T = {
     launcherCta: "Check my leak",
     launcherAsk: "Leak?",
     launcherGo: "Tap",
+    launcherHint: "Ask AI about a leak",
     subtitle: "AI photo check by RPC Constructions",
     welcome: "Send a photo of the leak, damp patch or crack. I'll tell you what's causing it, how serious it is, and which products fix it, step by step.",
     upload: "Take or upload a photo",
@@ -128,6 +129,7 @@ const T = {
     launcherCta: "கசிவைச் சரிபார்க்க",
     launcherAsk: "கசிவா?",
     launcherGo: "தொடவும்",
+    launcherHint: "கசிவு பற்றி AI-யிடம் கேளுங்கள்",
     subtitle: "RPC கன்ஸ்ட்ரக்ஷன்ஸ் AI புகைப்பட ஆய்வு",
     welcome: "கசிவு, ஈரம் அல்லது விரிசலின் புகைப்படத்தை அனுப்புங்கள். அதற்கான காரணம், அது எவ்வளவு தீவிரமானது, எந்தப் பொருட்கள் படிப்படியாகச் சரிசெய்யும் என்பதைச் சொல்கிறேன்.",
     upload: "புகைப்படம் எடுக்கவும் அல்லது பதிவேற்றவும்",
@@ -241,7 +243,7 @@ const historyOf = (msgs: Msg[]) =>
 
 const CSS = `
 /* the launcher: a round navy button in the bottom right corner, a cream ring round it, water rising and falling inside */
-.lb-launch{position:fixed;right:max(14px,env(safe-area-inset-right));bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));z-index:60;display:grid;place-items:center;width:62px;height:62px;padding:0;border:0;border-radius:50%;overflow:hidden;background:#0b2350;color:#fff;cursor:pointer;
+.lb-launch{position:fixed;right:max(29px,calc(env(safe-area-inset-right) + 15px));bottom:max(44px,calc(env(safe-area-inset-bottom) + 40px));z-index:60;display:grid;place-items:center;width:68px;height:68px;padding:0;border:0;border-radius:50%;overflow:hidden;background:#0b2350;color:#fff;cursor:pointer;
   box-shadow:0 0 0 4px #f5f0e6,0 0 0 5.5px #0b6e80,0 16px 30px -12px rgba(4,12,30,.8);transition:transform .4s var(--ease-film),box-shadow .4s,opacity .3s}
 .lb-launch:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 0 4px #fff,0 0 0 5.5px #0b6e80,0 22px 36px -12px rgba(4,12,30,.85)}
 .lb-launch:active{transform:scale(.96)}
@@ -252,6 +254,24 @@ const CSS = `
 @keyframes lb-lv2{50%{transform:translateX(-14%)}}
 .lb-lt{position:relative;display:flex;flex-direction:column;align-items:center;font-size:11.5px;font-weight:700;line-height:1.1;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 1px 2px rgba(4,12,30,.4)}
 @media (prefers-reduced-motion:reduce){.lb-lv,.lb-lv::before{animation:none}}
+.lb-face{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:-6px}
+/* a soft green ring keeps spreading out from the button, so it is noticed */
+.lb-launch:not([data-hidden]){animation:lb-call 2.4s ease-out infinite}
+@keyframes lb-call{0%{box-shadow:0 0 0 4px #f5f0e6,0 0 0 5.5px #0b6e80,0 0 0 5.5px rgba(47,181,122,.7),0 16px 30px -12px rgba(4,12,30,.8)}80%,100%{box-shadow:0 0 0 4px #f5f0e6,0 0 0 5.5px #0b6e80,0 0 0 22px rgba(47,181,122,0),0 16px 30px -12px rgba(4,12,30,.8)}}
+.lb-eyes{display:flex;gap:10px;animation:lb-look 6s ease-in-out infinite}
+.lb-eye{display:block;width:8px;height:12px;border-radius:4px;background:#fff;transform-origin:50% 50%;animation:lb-blink 3.4s infinite}
+.lb-smile{display:block;width:16px;height:7px;border:2.5px solid #fff;border-top:0;border-radius:0 0 10px 10px}
+@keyframes lb-blink{0%,88%,100%{transform:scaleY(1)}92%{transform:scaleY(.12)}96%{transform:scaleY(1)}}
+@keyframes lb-look{0%,35%,100%{transform:translateX(0)}42%,55%{transform:translateX(-3px)}62%,75%{transform:translateX(3px)}}
+.lb-hint{position:fixed;right:calc(max(29px,calc(env(safe-area-inset-right) + 15px)) + 68px + 14px);bottom:calc(max(44px,calc(env(safe-area-inset-bottom) + 40px)) + 34px);z-index:60;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:#fff;color:#0b2350;font-size:13.5px;font-weight:600;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 0 0 1px rgba(11,35,80,.1),0 14px 28px -14px rgba(4,12,30,.55);transform:translateY(50%);animation:lb-hint-in .5s 1.2s cubic-bezier(.2,.8,.2,1) both,lb-hint-bob 3.2s 2s ease-in-out infinite;transition:opacity .3s}
+.lb-hint::after{content:"";position:absolute;right:-5px;top:50%;width:10px;height:10px;margin-top:-5px;background:#fff;transform:rotate(45deg);box-shadow:1px -1px 0 0 rgba(11,35,80,.06)}
+.lb-hint-dot{width:8px;height:8px;border-radius:50%;background:#2fb57a;box-shadow:0 0 0 3px rgba(47,181,122,.2)}
+.lb-hint[data-hidden="1"]{opacity:0;pointer-events:none}
+@keyframes lb-hint-in{from{opacity:0;transform:translate(10px,50%)}to{opacity:1;transform:translate(0,50%)}}
+@keyframes lb-hint-bob{0%,100%{transform:translate(0,50%)}50%{transform:translate(-4px,50%)}}
+@media (max-width:599px){.lb-hint{font-size:12px;padding:8px 11px;animation:lb-hint-in .5s 1.2s cubic-bezier(.2,.8,.2,1) both,lb-hint-out .4s 9s forwards}}
+@keyframes lb-hint-out{to{opacity:0;visibility:hidden;transform:translate(10px,50%)}}
+@media (prefers-reduced-motion:reduce){.lb-eye,.lb-eyes,.lb-launch,.lb-hint{animation:none !important}}
 .lb-drop{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:999px;background:#0b6e80}
 .lb-drop::after{content:"";position:absolute;inset:-3px;border-radius:999px;border:2px solid #4fc3d4;opacity:0;animation:lb-ring 2.8s ease-out infinite}
 @keyframes lb-ring{0%{opacity:.8;transform:scale(.9)}70%,100%{opacity:0;transform:scale(1.35)}}
@@ -647,11 +667,19 @@ export function LeakBot() {
         onClick={() => setOpen(true)}
       >
         <span className="lb-lv" aria-hidden />
-        <span className="lb-lt">
-          <span>{t.launcherAsk}</span>
-          <span>{t.launcherGo}</span>
+        <span className="lb-face" aria-hidden>
+          <span className="lb-eyes">
+            <i className="lb-eye" />
+            <i className="lb-eye" />
+          </span>
+          <b className="lb-smile" />
         </span>
       </button>
+      {/* the label beside the button, so it is plain that this is an AI helper */}
+      <span className="lb-hint" aria-hidden data-hidden={open || rateList ? "1" : undefined} onClick={() => setOpen(true)}>
+        <i className="lb-hint-dot" />
+        {t.launcherHint}
+      </span>
 
       <AnimatePresence>
         {open && (

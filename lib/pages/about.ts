@@ -103,8 +103,11 @@ export function aboutMarkup(d: AboutData) {
       ${mark("03", "Our values")}
       <h2 class="pg-h2" id="ab-values-h" data-rv>Six values on every site.</h2>
     </div>
-    <ul class="ab-vlist" data-rv-stagger="70">${d.principles
-      .map((p, i) => `<li data-rv style="--d:${i * 50}ms"><span class="ab-vno">${two(i + 1)}</span><div><h3 class="pg-h3">${esc(p.title)}</h3><p>${esc(p.body)}</p></div></li>`)
+    <ul class="ab-vcards" data-rv-stagger="70">${d.principles
+      .map(
+        (p, i) =>
+          `<li class="ab-vcard" data-rv style="--d:${i * 60}ms"><span class="ab-vcbig" aria-hidden="true">${two(i + 1)}</span><span class="ab-vcic">${markOf(p.title)}</span><h3 class="ab-vctitle">${esc(p.title)}</h3><p class="ab-vcbody">${esc(p.body)}</p></li>`,
+      )
       .join("")}</ul>
   </div>
 </section>`;
@@ -139,13 +142,13 @@ export const ABOUT_CSS = `
 /* vision and mission: the vision large in the middle, the four promises under it, each with its mark */
 .ab-vm{text-align:center}
 .ab-vision{max-width:62rem;margin:0 auto}
-.ab-vh{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
-.ab-vtext{margin:1rem auto 0;max-width:24ch;font-family:var(--display);font-weight:600;font-size:var(--fs-title);line-height:1.15;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
+.ab-vh{margin:0;font-size:calc(var(--fs-body) + 2px);font-weight:600;letter-spacing:.04em;color:var(--accent)}
+.ab-vtext{margin:1rem auto 0;max-width:30ch;font-family:var(--display);font-weight:500;font-size:clamp(1.45rem,1.05rem + 1.1vw,2.1rem);line-height:1.32;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
 .ab-mission{margin-top:clamp(2.8rem,8vh,4.5rem)}
 .ab-vh--rule{display:flex;align-items:center;gap:1.2rem;max-width:40rem;margin:0 auto}
 .ab-vh--rule::before,.ab-vh--rule::after{content:"";flex:1;height:1px;background:rgba(39,86,160,.28)}
 .ab-mission ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.2rem,3vw,3rem);margin:clamp(1.8rem,4vh,2.6rem) 0 0;padding:0;list-style:none}
-.ab-mission li{display:flex;flex-direction:column;align-items:center;gap:1rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink);text-wrap:pretty}
+.ab-mission li{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:17rem;margin:0 auto;font-size:calc(var(--fs-body) * 1.06);font-weight:500;line-height:1.6;color:var(--ink2);text-wrap:pretty}
 .ab-mic{display:grid;place-items:center;width:4rem;height:4rem;border-radius:50%;background:var(--navy);color:#f5f0e6;box-shadow:0 0 0 6px rgba(11,35,80,.08);transition:transform .3s}
 .ab-mission li:hover .ab-mic{transform:translateY(-3px)}
 .ab-mic svg{width:1.7rem;height:1.7rem}
@@ -154,6 +157,24 @@ export const ABOUT_CSS = `
 /* values */
 .ab-vhead{margin-bottom:clamp(1.8rem,4vh,2.6rem)}
 .ab-vhead .pg-h2{margin-top:.7rem}
+/* the values: six white cards, three to a row, each with its mark and a large faint number; a card turns navy under the pointer */
+.ab-vcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin:0;padding:0;list-style:none}
+.ab-vcard{position:relative;display:grid;grid-template-columns:2.6rem minmax(0,1fr);column-gap:.9rem;align-items:start;padding:1rem 1.1rem 1.05rem;overflow:hidden;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line),0 16px 30px -28px rgba(11,35,80,.55);transition:background-color .3s,box-shadow .3s,transform .3s}
+.ab-vcard::after{content:"";position:absolute;left:1.1rem;right:1.1rem;bottom:0;height:2px;border-radius:2px 2px 0 0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.ab-vcbig{position:absolute;top:.35rem;right:.7rem;font-family:var(--display);font-size:1.9rem;font-weight:700;line-height:1;letter-spacing:-.04em;color:rgba(11,35,80,.07);transition:color .3s;pointer-events:none}
+.ab-vcic{grid-row:1/3;display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:11px;background:var(--navy);color:#f5f0e6;transition:background-color .3s,color .3s}
+.ab-vcic .ab-mk{width:1.25rem;height:1.25rem}
+.ab-vctitle{margin:.1rem 2.2rem 0 0;font-family:var(--display);font-size:calc(var(--fs-body) * 1.08);font-weight:600;letter-spacing:-.01em;color:var(--ink);transition:color .3s}
+.ab-vcbody{margin:.3rem 0 0;font-size:calc(var(--fs-body) * .92);line-height:1.5;color:var(--ink2);transition:color .3s}
+.ab-vcard:hover{transform:translateY(-2px);background:var(--navy);box-shadow:0 34px 56px -34px rgba(4,12,30,.9)}
+.ab-vcard:hover::after{transform:scaleX(1);background:#9fbbe6}
+.ab-vcard:hover .ab-vcbig{color:rgba(255,255,255,.07)}
+.ab-vcard:hover .ab-vcic{background:#f5f0e6;color:var(--navy)}
+.ab-vcard:hover .ab-vctitle{color:#fff}
+.ab-vcard:hover .ab-vcbody{color:rgba(245,240,230,.84)}
+@media (max-width:1023px){.ab-vcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:599px){.ab-vcards{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.ab-vcard,.ab-vcard::after{transition:none}.ab-vcard:hover{transform:none}}
 .ab-vlist{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(1.4rem,3vw,3rem);margin:0;padding:0;list-style:none}
 .ab-vlist li{display:grid;grid-template-columns:2rem 1fr;align-content:start;column-gap:.2rem;padding:1.3rem 0;border-top:1px solid var(--line)}
 .ab-vno{grid-row:1/3;padding-top:.12rem;font-size:var(--fs-body);font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent)}

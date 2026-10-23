@@ -160,6 +160,13 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
 .pjs{padding:calc(var(--nav-room) + clamp(2rem,6vh,3.8rem)) 0 0}
 .pjs-head{margin-bottom:clamp(1.1rem,2.6vh,1.6rem)}
 .pjs-head .pg-mark{margin-bottom:.9rem}
+/* the opening band: the same shaded photograph as every page's opening, behind the title; the view of the town rises over its foot */
+.pjs{position:relative;isolation:isolate;overflow-x:clip}
+.pjs-head{position:relative;padding-bottom:clamp(1rem,2.4vh,1.4rem)}
+.pjs-head::before{content:"";position:absolute;z-index:-1;left:50%;width:100vw;margin-left:-50vw;top:calc(-1 * (var(--nav-room) + clamp(2rem,6vh,3.8rem)));bottom:-7rem;background:linear-gradient(90deg,rgba(7,20,44,.9) 0%,rgba(7,20,44,.72) 50%,rgba(7,20,44,.45) 100%),linear-gradient(180deg,rgba(7,20,44,.55),rgba(7,20,44,0) 35%),url("/images/hero-final.jpg") center 42%/cover no-repeat #0b2350}
+.pjs-head .pg-mark{color:rgba(245,240,230,.78)}
+.pjs-head .pg-idx{color:#9fbbe6}
+.pjs-head .pj-h1{color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25)}
 .pjs-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:.9rem;align-items:stretch}
 .pjs-scene{position:relative;margin:0;aspect-ratio:1376/768;overflow:hidden;border-radius:18px;background:#20303f;box-shadow:0 30px 60px -40px rgba(18,34,59,.55)}
 .pjs-scene img{display:block;width:100%;height:100%;object-fit:cover}

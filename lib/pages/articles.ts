@@ -138,7 +138,7 @@ export function blogIndexMarkup(d: { posts: readonly PostData[]; contact: Contac
     ${
       rest.length
         ? `<div class="bl-morehead"><h2 class="pg-h3">More articles</h2><p class="bl-status" data-topic-status aria-live="polite">Showing all ${d.posts.length} articles</p></div>
-    <ul class="bl-grid" data-rv-stagger="80">${rest.map((p) => postCard(p, o, true)).join("")}</ul>`
+    <ul class="bl-grid bl-grid--rows" data-rv-stagger="80">${rest.map((p) => postCard(p, o, true)).join("")}</ul>`
         : `<p class="bl-status" data-topic-status aria-live="polite">Showing all ${d.posts.length} articles</p>`
     }
     <p class="bl-empty" hidden>No articles match your search. <button type="button" data-reset>Show all articles</button></p>
@@ -257,6 +257,21 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 .bl-card a:hover .bl-title{color:var(--accent)}
 .bl-card .bl-ex{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .bl-card .bl-when{margin-top:auto;padding-top:1rem}
+/* the blog's list as rows: the picture on the left, the article beside it */
+.bl-grid.bl-grid--rows{grid-template-columns:minmax(0,1fr);gap:.9rem}
+.bl-grid--rows .bl-card a{display:grid;grid-template-columns:minmax(12rem,20rem) minmax(0,1fr);gap:clamp(1rem,2.5vw,2rem);align-items:center;padding:.6rem}
+.bl-grid--rows .bl-cover{height:100%;min-height:10rem;aspect-ratio:auto !important;border-radius:6px}
+.bl-grid--rows .bl-cardcopy{padding:.8rem 1rem .8rem 0}
+.bl-grid--rows .bl-title{font-size:var(--fs-sub);line-height:1.25}
+.bl-grid--rows .bl-ex{-webkit-line-clamp:2;max-width:62ch}
+.bl-grid--rows .bl-when{margin-top:.8rem;padding-top:0}
+@media (max-width:767px){
+  .bl-grid--rows .bl-card a{grid-template-columns:minmax(0,7.5rem) minmax(0,1fr);gap:.9rem;align-items:start}
+  .bl-grid--rows .bl-cover{min-height:6.5rem}
+  .bl-grid--rows .bl-cardcopy{padding:.2rem .4rem .3rem 0}
+  .bl-grid--rows .bl-title{font-size:var(--fs-body)}
+  .bl-grid--rows .bl-ex{display:none}
+}
 
 /* reading progress, along the very top */
 .po-progress{position:fixed;inset:0 0 auto;z-index:60;height:3px;pointer-events:none}

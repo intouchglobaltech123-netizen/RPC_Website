@@ -16,7 +16,7 @@ const tel = `tel:${contact.phone.replace(/[^0-9+]/g, "")}`;
 /** the page's sand, for the pill behind the page you are on */
 const SAND = "#ece6da";
 /** pages that open on a dark picture, where the logo's name is drawn in white */
-const DARK_TOP = new Set(["/", "/classic", "/waterproofing"]);
+const DARK_TOP = new Set(["/", "/classic", "/waterproofing", "/about", "/products", "/projects", "/services", "/blog"]);
 /** the bars' material: the logo's dark blue, a little lighter at the top, with a fine light edge and a soft shadow */
 const BAR = {
   background: "linear-gradient(180deg, rgba(19,49,108,0.94), rgba(11,35,80,0.94) 60%)",
@@ -72,7 +72,7 @@ export function Nav() {
   useEffect(() => {
     // not while a dark section (the home film) is under the bar: the bar sits on it as it is
     const onDark = () =>
-      Array.from(document.querySelectorAll<HTMLElement>("main [data-nav-tone='dark']")).some((el) => {
+      Array.from(document.querySelectorAll<HTMLElement>("main [data-nav-tone='dark'], main .pg-head, main .pjs-head")).some((el) => {
         const r = el.getBoundingClientRect();
         return r.top <= 72 && r.bottom > 72;
       });
@@ -131,7 +131,7 @@ export function Nav() {
   if (pathname?.startsWith("/studio")) return null;
 
   const visible = open || !filmHome || pastHero || heroNavVisible;
-  const darkTop = DARK_TOP.has(pathname ?? "");
+  const darkTop = DARK_TOP.has(pathname ?? "") || (pathname ?? "").startsWith("/blog/");
   // the light logo only while it sits on the dark film; on the page's strip it is dark
   const lightLogo = darkTop && !scrolled;
   const isActive = (href: string) => (href === "/" ? pathname === "/" : Boolean(pathname?.startsWith(href)));

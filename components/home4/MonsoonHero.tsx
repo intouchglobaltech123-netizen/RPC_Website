@@ -24,11 +24,12 @@ import { visit } from "@/lib/visit";
  * with the hook showing (its places still play each leak).
  */
 
-/** the page the browser itself loaded in this tab (not one reached through the site's links) */
+/** the home page is the page the browser itself loaded in this tab (not reached through the site's links) */
 function loadedHere() {
   try {
     const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-    return nav ? new URL(nav.name).pathname === location.pathname : true;
+    // the home page's own path: while the site moves here from another page, the address still shows that page
+    return nav ? new URL(nav.name).pathname === "/" : true;
   } catch {
     return true;
   }
