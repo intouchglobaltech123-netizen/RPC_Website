@@ -302,6 +302,8 @@ export const KIT_CSS = `
 .pg-head,.pjs-head{--head-h:27rem;--head-pb:clamp(2rem,4.5vh,3rem)}
 @media (max-width:1023px){.pg-head,.pjs-head{--head-h:28rem}}
 @media (max-width:599px){.pg-head,.pjs-head{--head-h:30rem;--head-pb:1.8rem}}
+/* phones: a shorter opening, so the page's own content starts higher up the screen (it still grows if a long title needs the room) */
+@media (max-width:767px){.pg-head,.pjs-head{--head-h:21rem;--head-pb:1.6rem}}
 .pg-head{display:flex !important;flex-direction:column;justify-content:flex-end;min-height:var(--head-h);height:auto;box-sizing:border-box;padding:var(--nav-room) 0 var(--head-pb) !important}
 .pg-head > .pg-wrap{width:100%}
 

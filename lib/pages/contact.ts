@@ -344,6 +344,40 @@ export const CONTACT_CSS = ROUTES_CSS + `
 .ct-reach .ab-go-town{background:#eef3f9}
 .ct-reach .ab-go-town[aria-selected=true]{background:var(--navy)}
 
+/* phones: only what is needed to get in touch. The title, two quick ways to reach us (call and WhatsApp) and a short form;
+   the email, the office, the opening hours and the map are on the desktop page */
+@media (max-width:767px){
+  .ct-page{min-height:100svh;padding:calc(var(--nav-room) + 1.1rem) 0 5.5rem}
+  .ct-page .ct-grid{gap:1.4rem}
+  .ct-page .ct-info .pg-mark,.ct-page .ct-lede{display:none}
+  .ct-page .ct-h1{font-size:1.75rem;line-height:1.15}
+  .ct-page .ct-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;gap:.6rem;margin-top:1rem}
+  .ct-page .ct-tiles > li:nth-child(n+3){display:none}
+  .ct-page .ct-tile{display:flex;flex-direction:column;align-items:flex-start;min-height:0;height:100%;padding:.9rem .9rem 1rem;border-radius:16px}
+  .ct-page .ct-tile .ct-ico{grid-row:auto;width:2.4rem;height:2.4rem;border-radius:12px}
+  .ct-page .ct-tk{margin-top:.7rem;font-size:.95rem}
+  .ct-page .ct-tv{margin-top:.1rem;font-size:.82rem;font-weight:500;line-height:1.35;color:var(--mute)}
+  .ct-page .ct-tile--call .ct-tv{color:var(--ink);font-weight:600}
+  .ct-page .ct-tile .ct-open,.ct-page .ct-tgo{display:none}
+  .ct-page .ct-card{border-radius:18px}
+  .ct-page .ct-cardtop{padding:.95rem 1.1rem}
+  .ct-page .ct-cardtop p{display:none}
+  .ct-page .ct-cardh{font-size:1.1rem}
+  .ct-page .ct-card .ct-form{gap:.8rem;padding:1rem 1.1rem 1.15rem}
+  .ct-page .ct-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem .6rem}
+  .ct-page .ct-f{grid-column:span 1}
+  .ct-page .ct-row > .ct-f:nth-child(n+3){grid-column:1/-1}
+  .ct-page .ct-field{gap:.25rem}
+  .ct-page .ct-field > span{font-size:.8rem}
+  .ct-page .ct-field input,.ct-page .ct-field select{height:2.6rem;padding:0 .75rem;font-size:.95rem}
+  .ct-page .ct-field select{padding-right:2rem}
+  .ct-page .ct-field textarea,.ct-page .ct-field textarea[rows]{height:3.6rem;min-height:3.6rem;padding:.6rem .75rem;font-size:.95rem}
+  .ct-page .ct-send{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+  .ct-page .ct-sbtn{height:2.8rem;padding:0 .4rem;gap:.4rem;font-size:.88rem}
+  .ct-page .ct-sbtn .pg-ar{display:none}
+  .ct-reach{display:none}
+}
+
 /* the four ways to reach us: all white; navy only under the pointer */
 .ct-tile,.ct-tile--call{background:#fff;color:var(--ink);box-shadow:0 0 0 1px rgba(39,86,160,.12),0 20px 40px -32px rgba(11,35,80,.55);transition:transform .25s,box-shadow .25s,background-color .25s,color .25s}
 .ct-tile--call .ct-tk{color:var(--accent)}

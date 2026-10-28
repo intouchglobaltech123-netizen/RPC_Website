@@ -309,4 +309,40 @@ export const SERVICES_CSS = `
   .sv-jl{padding:.75rem .75rem .85rem}
   .sv-jl i{display:none}
 }
+
+/* phones: every service is a small card, two to a row, with only what is needed:
+   a waterproofing service shows its photograph and name; a building service its mark and name */
+@media (max-width:767px){
+  .sv-head{padding-bottom:1rem}
+  .sv-wsec{padding-top:1.2rem;padding-bottom:2rem}
+  .sv-wgrid,.sv-blist{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .sv-card{border-radius:16px}
+  .sv-card:hover{transform:none}
+
+  .sv-w{padding:.4rem .4rem .8rem;border-radius:16px}
+  .sv-ba{aspect-ratio:1/1;border-radius:12px}
+  .sv-ba-k{display:none}
+  .sv-ba-line i{width:1.7rem;height:1.7rem}
+  .sv-ba-line svg{width:.8rem;height:.8rem}
+  .sv-ba-mark{width:2.6rem;height:2.6rem}
+  .sv-wbody{padding:.7rem .35rem 0}
+  .sv-w .sv-ct{display:block;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:2.5em}
+  .sv-w .sv-ct .sv-icon,.sv-w .sv-cp{display:none}
+
+  .sv-bsec{padding-top:2.4rem;padding-bottom:2.6rem}
+  .sv-bsec .pg-shead{gap:.5rem;margin-bottom:1.1rem;padding-top:1rem}
+  .sv-bsec .pg-h2,.sv-fsec .pg-h2{font-size:1.45rem;line-height:1.18}
+  .sv-bsec .pg-lede,.sv-fsec .pg-lede{display:none}
+  .sv-b{padding:.95rem .85rem 1rem}
+  .sv-b .sv-icon{width:2.4rem;height:2.4rem;border-radius:12px}
+  .sv-b .sv-icon svg{width:1.2rem;height:1.2rem}
+  .sv-b .sv-ct{margin-top:.8rem;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:2.5em}
+  .sv-b .sv-cp{display:none}
+
+  .sv-fsec{padding-top:2.4rem;padding-bottom:2.6rem}
+  .sv-fgrid{gap:1.1rem}
+  .sv-q summary{padding:.85rem 1rem}
+  .sv-q h3{font-size:.92rem}
+  .sv-q p{padding:0 1rem .95rem;font-size:.9rem}
+}
 `;

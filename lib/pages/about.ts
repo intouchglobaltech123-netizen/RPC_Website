@@ -313,4 +313,44 @@ export const ABOUT_CSS = `
   .ab-ptph{max-width:22rem}
   .ab-vlist{grid-template-columns:1fr}
 }
+
+/* phones: a short, even page. The opening keeps its title; who we are keeps its first paragraph; the two partners sit side by side
+   with just a photograph, role and name; vision and mission are two compact cards; the six values are small tiles, two to a row */
+@media (max-width:767px){
+  .ab-head .pg-intro{display:none}
+  .ab-who,.ab-vm,.ab-values{padding:2.4rem 0}
+  .ab-who .pg-h2,.ab-vm .pg-h2,.ab-values .pg-h2{font-size:1.5rem;line-height:1.18}
+  .ab-whohead{gap:.4rem}
+  .ab-whohead .pg-h2{margin-top:.5rem}
+  .ab-whotext .ab-lead{margin-top:.8rem;font-size:.95rem;line-height:1.6;color:var(--ink2)}
+  .ab-whotext .ab-p{display:none}
+
+  .ab-pts{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin-top:1.6rem}
+  .ab-pt,.ab-pt--flip{gap:.7rem;align-items:start;padding:.45rem .45rem .85rem;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 24px -20px rgba(18,34,59,.45)}
+  .ab-pt .ab-ptph,.ab-pt--flip .ab-ptph{order:0;justify-self:stretch;max-width:none}
+  .ab-ptph img,.ab-ptph .pg-ph{aspect-ratio:4/5 !important;border-radius:12px;box-shadow:none}
+  .ab-pt .ab-ptcopy,.ab-pt--flip .ab-ptcopy{order:0;justify-self:stretch;max-width:none;padding:0 .4rem;border-left:0}
+  .ab-ptrole{font-size:.74rem;line-height:1.3}
+  .ab-ptname{margin-top:.2rem;font-size:.95rem;line-height:1.2}
+  .ab-ptq,.ab-ptcopy .ab-p{display:none}
+
+  .ab-vmhead,.ab-vhead{margin-bottom:1.1rem}
+  .ab-vmhead .pg-h2{margin-top:.5rem}
+  .ab-vmgrid{gap:.7rem}
+  .ab-vmcard{gap:.9rem;padding:1.15rem 1.1rem;border-radius:16px}
+  .ab-vmcard:hover{transform:none}
+  .ab-vmbg,.ab-vmno,.ab-vmfoot{display:none}
+  .ab-vmic{width:2.3rem;height:2.3rem;border-radius:10px}
+  .ab-vmic svg{width:1.15rem;height:1.15rem}
+  .ab-vh{font-size:.8rem}
+  .ab-vmtext{font-size:1.02rem;line-height:1.45}
+
+  .ab-vhead .pg-h2{margin-top:.5rem}
+  .ab-vcards{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .ab-vcard{display:flex;flex-direction:column;align-items:flex-start;padding:.95rem .9rem 1rem;border-radius:16px}
+  .ab-vcard:hover{transform:none}
+  .ab-vcbig,.ab-vcbody{display:none}
+  .ab-vcic{width:2.4rem;height:2.4rem;border-radius:12px}
+  .ab-vctitle{margin:.75rem 0 0;font-size:.95rem}
+}
 `;

@@ -280,4 +280,26 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
   .pj-hero{padding:2.4rem 0 1.4rem}
   .pj-row{padding:1.2rem 1.1rem 1.2rem}
 }
+
+/* phones: the title band, the search, then the projects as small cards two to a row:
+   the photograph with where the project stands on it, then its name and town (the aerial view and the long text are on larger screens) */
+@media (max-width:767px){
+  .pjs-grid{display:none}
+  .pjs-head{margin-bottom:0 !important}
+  .pj-hero{padding:1.1rem 0 .9rem}
+  .pj-herogrid{gap:0}
+  .pj-herogrid > div:first-child{display:none}
+  .pj-heroside{padding-bottom:0}
+  .pj-listwrap{padding:.1rem 0 3.2rem}
+  .pj-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
+  .pj-list .pj-row{position:relative;padding:0 0 .85rem;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 24px -20px rgba(18,34,59,.45)}
+  .pj-list .pj-row:hover{transform:none}
+  .pj-list .pj-pic{margin:0;border-radius:0;aspect-ratio:4/3}
+  .pj-list .pj-top{position:absolute;top:.5rem;left:.5rem;right:auto}
+  .pj-list .pj-type,.pj-list .pj-lead,.pj-list .pj-wp{display:none}
+  .pj-list .pj-stat{height:1.5rem;padding:0 .55rem;gap:.35rem;background:rgba(255,255,255,.95);font-size:.72rem;box-shadow:0 2px 8px -2px rgba(18,34,59,.35)}
+  .pj-list .pj-name{margin:.7rem .75rem 0;font-size:.95rem;line-height:1.22;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.44em}
+  .pj-list .pj-loc{margin:.35rem .75rem 0;font-size:.78rem;line-height:1.3}
+  .pj-list .pj-loc svg{width:.8rem;height:.8rem}
+}
 `;

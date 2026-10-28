@@ -170,4 +170,23 @@ const BASE_CSS = `
 }
 `;
 
-export const METHODS_PAGE_CSS = BASE_CSS + METHODS_TOOLS_CSS + RAIN_CSS;
+const METHODS_MOBILE_CSS = `
+@media (max-width:767px){
+  /* phones: just the house, the place tabs and the methods for that place */
+  .rt-sec,.wpx-hint,.wpx-help{display:none}
+  .wpx-map{padding:1.4rem 0 2.2rem}
+  .wpx-top{margin-bottom:.9rem;padding-top:1.2rem}
+  .wpx-h{font-size:1.4rem}
+  .wpx-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;overflow:visible;margin-inline:0;padding:0}
+  .wpx-tab{flex:none;justify-content:flex-start;gap:.5rem;height:2.5rem;padding:0 .5rem 0 .4rem;font-size:.95rem;min-width:0}
+  .wpx-tab span{width:1.5rem;height:1.5rem;flex:none;font-size:.8rem}
+  .wpx-panel .wpx-ma{display:none}
+  .wpx-panel .wpx-ms .wpx-mrow{padding:.8rem 0}
+  .wpx-panel .wpx-mn{font-size:1rem}
+  .wpx-phead{padding:.8rem 1.1rem}
+  .wpx-panel .wpx-ms{margin:0 1.1rem}
+  .wpx-panel .wpx-acts{padding:.8rem 1.1rem}
+}
+`;
+
+export const METHODS_PAGE_CSS = BASE_CSS + METHODS_TOOLS_CSS + RAIN_CSS + METHODS_MOBILE_CSS;

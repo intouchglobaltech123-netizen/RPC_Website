@@ -335,4 +335,21 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
   .po-cover{border-radius:6px}
   .po-lead{margin-bottom:1.6rem}
 }
+
+/* phones: the blog is one even list of cards. The latest article is no longer set apart: it is a card like the rest
+   (a small picture, its topic, the title and the date), and the "More articles" heading goes since every one is an article */
+@media (max-width:767px){
+  .bl-sec{padding-top:1.2rem;padding-bottom:3rem}
+  .bl-feat a,.bl-grid--rows .bl-card a{display:grid;grid-template-columns:6.6rem minmax(0,1fr);gap:.85rem;align-items:center;padding:.55rem;border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 24px -20px rgba(18,34,59,.45)}
+  .bl-feat a:hover,.bl-grid--rows .bl-card a:hover{box-shadow:0 0 0 1.5px var(--navy),0 10px 24px -20px rgba(18,34,59,.45)}
+  .bl-feat .bl-cover,.bl-grid--rows .bl-cover{width:100%;height:6.6rem;min-height:0;aspect-ratio:auto !important;border-radius:12px}
+  .bl-featcopy,.bl-grid--rows .bl-cardcopy{display:flex;flex-direction:column;justify-content:center;gap:0;min-width:0;padding:.15rem .35rem .15rem 0}
+  .bl-feat .bl-cat,.bl-grid--rows .bl-cat{font-size:.82rem}
+  .bl-feat .bl-new,.bl-feat .bl-ex,.bl-feat .pg-btn,.bl-feat .bl-when > span:first-child{display:none}
+  .bl-featt,.bl-grid--rows .bl-title{margin:.3rem 0 0;font-size:1rem;line-height:1.28;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .bl-feat .bl-when,.bl-grid--rows .bl-when{margin:.5rem 0 0;padding:0;gap:.1rem .7rem;font-size:.8rem}
+  .bl-feat + .bl-morehead{display:none}
+  .bl-feat ~ .bl-grid{margin-top:.8rem}
+  .bl-grid--rows{gap:.8rem}
+}
 `;

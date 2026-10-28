@@ -36,7 +36,7 @@ export function Footer() {
 
       <div className="bg-night">
         <div className="gutter mx-auto max-w-[1600px]">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-8 pb-8 pt-3 md:grid-cols-[auto_auto_minmax(0,1fr)] md:gap-x-10 md:pb-10 md:pt-5 lg:grid-cols-[minmax(0,1.2fr)_auto_auto_minmax(15.5rem,1fr)] xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.25fr)] xl:gap-x-12">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-5 pb-5 pt-3 md:grid-cols-[auto_auto_minmax(0,1fr)] md:gap-y-8 md:gap-x-10 md:pb-10 md:pt-5 lg:grid-cols-[minmax(0,1.2fr)_auto_auto_minmax(15.5rem,1fr)] xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.25fr)] xl:gap-x-12">
             {/* who we are: logo and socials side by side on a phone; a strip above the columns on a tablet; the first column on laptops */}
             <div className="col-span-2 flex flex-wrap items-center justify-between gap-4 md:col-span-3 md:flex-nowrap md:justify-start md:gap-10 lg:col-span-1 lg:block">
               <Link href="/" aria-label={`${brand.name} — home`} className={`inline-block shrink-0 rounded-[12px] ${focus}`}>
@@ -64,10 +64,10 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* pages */}
-            <nav aria-label="Footer">
-              <p className={head}>Explore</p>
-              <ul className="flex flex-col items-start gap-2">
+            {/* pages: one wrapped row of links on a phone, a column from tablets up */}
+            <nav aria-label="Footer" className="col-span-2 md:col-span-1">
+              <p className={`${head} hidden md:block`}>Explore</p>
+              <ul className="flex flex-row flex-wrap items-center gap-x-5 gap-y-1 md:flex-col md:items-start md:gap-2">
                 {nav.map((n) => (
                   <li key={n.href}>
                     <Link href={n.href} className={link}>
@@ -78,8 +78,8 @@ export function Footer() {
               </ul>
             </nav>
 
-            {/* waterproofing services */}
-            <div>
+            {/* waterproofing services: not on a phone */}
+            <div className="hidden md:block">
               <p className={head}>Waterproofing</p>
               <ul className="flex flex-col items-start gap-2">
                 {SERVICE_CATEGORIES.map((s) => (
@@ -94,24 +94,25 @@ export function Footer() {
 
             {/* how to reach us */}
             <address className="col-span-2 not-italic md:col-span-1">
-              <p className={head}>Get in touch</p>
+              <p className={`${head} hidden md:block`}>Get in touch</p>
               <ul className="space-y-2 text-body text-white/72">
                 <li>
                   <a href={tel} className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <Phone size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.phone}
                   </a>
                 </li>
-                <li>
+                {/* a phone keeps only the number to call; the rest is on the contact page */}
+                <li className="hidden md:block">
                   <a href={`mailto:${contact.email}`} className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <Mail size={15} aria-hidden className="shrink-0 text-water-2" /> <span className="min-w-0 break-all">{contact.email}</span>
                   </a>
                 </li>
-                <li>
+                <li className="hidden md:block">
                   <a href={maps} target="_blank" rel="noopener noreferrer" className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
                     <MapPin size={15} aria-hidden className="shrink-0 text-water-2" /> 142 Perundurai Road, Erode
                   </a>
                 </li>
-                <li className="flex items-center gap-2">
+                <li className="hidden items-center gap-2 md:flex">
                   <Clock size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.hours}
                 </li>
               </ul>

@@ -415,4 +415,18 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .cmp-t tbody th{grid-column:1 / -1;padding-bottom:0}
   .cmp-t .fo-rate{width:100%;justify-content:center}
 }
+
+/* phones, polish: tidy filter rows and equal, quiet two-up cards (picture, kind, name, one pack, button) */
+@media (max-width:599px){
+  .pf-bt--none{display:none}
+  .pf-lists[data-view="grid"] .pf-rows{gap:.7rem}
+  .pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:18.2rem}
+  .pf-lists[data-view="grid"] .pf-sum{grid-template-rows:7.2rem auto auto minmax(0,1fr);padding:.6rem .6rem 3.4rem;gap:.3rem}
+  .pf-lists[data-view="grid"] .pf-ico{height:7.2rem;max-height:7.2rem}
+  .pf-lists[data-view="grid"] .pf-fam{margin-top:.1rem;font-size:.8rem;font-weight:600;letter-spacing:.02em}
+  .pf-lists[data-view="grid"] .pf-name{min-height:2.7em;font-size:.95rem;line-height:1.35}
+  .pf-lists[data-view="grid"] .pf-cat,.pf-lists[data-view="grid"] .pf-use{display:none}
+  .pf-lists[data-view="grid"] .pf-packs span:nth-child(n+2){display:none}
+  .pf-lists[data-view="grid"] .pf-packs span{height:1.6rem;font-size:.85rem}
+}
 `;
