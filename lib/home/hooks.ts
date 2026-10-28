@@ -199,33 +199,8 @@ export function mountHooks(root: HTMLElement) {
 }
 
 /** every hook, in the order of the top menu */
-/** phones: one short section in place of the long hooks: what we do, four ways in, and two ways to reach us */
-function mobileHook(home: HomeData) {
-  const tel = home.contact.phone.replace(/[^+\d]/g, "");
-  const tiles: [string, string, string][] = [
-    ["/waterproofing", "Waterproofing", "Where water gets in"],
-    ["/products", "Products", "Fosroc, Sika and more"],
-    ["/projects", "Projects", "Work we have finished"],
-    ["/services", "Services", "Repair and build"],
-  ];
-  return `<section class="hk-m" aria-label="RPC Constructions">
-    <p class="hk-m-k">Erode · since 2012</p>
-    <h2 class="hk-m-h">Leaks fixed once, for good.</h2>
-    <p class="hk-m-p">Waterproofing and construction chemicals for homes, offices and factories in five towns.</p>
-    <ul class="hk-m-grid">${tiles
-      .map(([href, t, sub]) => `<li><a href="${href}" data-internal><b>${esc(t)}</b><span>${esc(sub)}</span>${arrow}</a></li>`)
-      .join("")}</ul>
-    <div class="hk-m-acts">
-      <a class="hk-m-btn hk-m-btn--main" href="/contact" data-internal>Book a free inspection</a>
-      <a class="hk-m-btn" href="tel:${tel}">Call us</a>
-    </div>
-  </section>`;
-}
-
 export function hooksMarkup(home: HomeData, d: HookData) {
   return [
-    mobileHook(home),
-    `<div class="hk-desk">`,
     rootedAboutMarkup(home, { n: "01" }),
     products(d),
     waterproofing(d),
@@ -241,7 +216,6 @@ export function hooksMarkup(home: HomeData, d: HookData) {
       ],
       reach: true,
     })}</div>`,
-    `</div>`,
   ].join("\n");
 }
 
@@ -250,24 +224,6 @@ export const HOOKS_CSS =
   ROOTED_ABOUT_CSS +
   BRANDS_MARQUEE_CSS +
   `
-/* phones: the long hooks give way to one short section; wider screens keep the hooks */
-.hk-desk{display:contents}
-.hk-m{display:none}
-@media (max-width:767px){
-  .hk-desk{display:none}
-  .hk-m{display:block;position:relative;z-index:10;padding:2.2rem var(--gutter,16px) 2.4rem;background:var(--navy);color:#f5f0e6}
-  .hk-m-k{margin:0;font-size:.85rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9fd3ea}
-  .hk-m-h{margin:.5rem 0 0;font-family:var(--display);font-weight:600;font-size:1.9rem;line-height:1.12;letter-spacing:-.015em;color:#fff}
-  .hk-m-p{margin:.7rem 0 0;font-size:1rem;line-height:1.5;color:rgba(245,240,230,.78)}
-  .hk-m-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:1.4rem 0 0;padding:0;list-style:none}
-  .hk-m-grid a{position:relative;display:flex;flex-direction:column;gap:.15rem;min-height:5.6rem;padding:.9rem .9rem .8rem;border-radius:14px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);color:#fff;text-decoration:none}
-  .hk-m-grid b{font-size:1.02rem;font-weight:600;line-height:1.2;padding-right:1.2rem}
-  .hk-m-grid span{font-size:.85rem;line-height:1.35;color:rgba(245,240,230,.7)}
-  .hk-m-grid .hm-ar{position:absolute;top:.85rem;right:.8rem;width:.9rem;height:.9rem;color:#9fd3ea}
-  .hk-m-acts{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;margin-top:1.1rem}
-  .hk-m-btn{display:flex;align-items:center;justify-content:center;height:3rem;padding:0 1.2rem;border-radius:999px;font-size:1rem;font-weight:600;color:#fff;text-decoration:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
-  .hk-m-btn--main{background:#f5f0e6;color:var(--navy);box-shadow:none}
-}
 /* the hooks: one short section per page, in the order of the top menu; the grounds alternate, light sand and stone */
 .hm-services,.hm-contact{background:var(--paper)}
 .hm-services{padding-bottom:clamp(2rem,5vh,3.5rem)}
@@ -400,6 +356,44 @@ export const HOOKS_CSS =
   .hk-pol{width:84%}
   .hk-btn{width:100%}
   .hk-side{align-items:stretch}
+}
+/* phones: every hook is one short screen: a heading, a few cards and the button */
+@media (max-width:767px){
+  .hk{padding:2.4rem 0 2.2rem}
+  .hk .hm-h2{font-size:1.55rem;line-height:1.15;margin-top:.6rem}
+  /* products: four tiles, two to a row */
+  .hk-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+  .hk-shelf li:nth-child(n+5){display:none}
+  .hk-tile{padding:.45rem .45rem .7rem;border-radius:16px}
+  .hk-pic{aspect-ratio:16/10}
+  .hk-foot{display:none}
+  .hk-kind{font-size:.82rem}
+  .hk-name{font-size:.95rem}
+  .hk-prod .hk-after{margin-top:.9rem}
+  .hk-brands{margin-top:1.2rem;padding-top:1rem}
+  .hk-brands .hm-pbh{font-size:1rem}
+  .hk-brands .hm-pbrands img,.hk-brands img{max-height:2.2rem}
+  /* waterproofing: four before and after pictures, two to a row */
+  .hk-bas{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+  .hk-ba{padding:.4rem .4rem .7rem;border-radius:16px}
+  .hk-bap{aspect-ratio:1/1}
+  .hk-bat b,.hk-baf{display:none}
+  .hk-bat em{font-size:.95rem;font-style:normal;font-weight:600;color:var(--ink)}
+  .hk-bago{display:none}
+  .hk-wp .hk-after{margin-top:.9rem}
+  /* projects: the prints, the name and the button */
+  .hk-psum{display:none}
+  /* services: the core card, then six small tiles, in one screen */
+  .hm-services{padding:2.4rem 0 2rem}
+  .hm-services .hm-h2{font-size:1.55rem;line-height:1.15}
+  .hm-services .hm-schk,.hm-services .hm-tl{display:none}
+  .hm-services .hm-sfeat{padding:1.1rem}
+  .hm-services .hm-sbody{margin:.4rem 0 .9rem}
+  .hm-services .hm-sgrid{gap:.6rem}
+  .hm-services .hm-tile{min-height:0;padding:.7rem .8rem .8rem;gap:.35rem}
+  .hm-services .hm-tt{font-size:.95rem;line-height:1.25}
+  .hm-services .hm-sbtns{margin-top:0}
+  .hm-services .hm-sbtns .hm-btn{width:100%;justify-content:center}
 }
 @media (prefers-reduced-motion:reduce){.hk-pol,.hk-pi{transition:none;animation:none}.hk-ba,.hk-ba-before,.hk-bad,.hk-card img,.hk-pic img,.hk-pic svg{transition:none}.hk-card a:hover img{transform:none}.hk-tile:hover .hk-pic img,.hk-tile:hover .hk-pic svg{transform:none}.hk-tile:hover{transform:none}}
 `;
