@@ -13,7 +13,7 @@ export interface AboutData {
   /** RPC's two partners; a photo is shown when `image` is set, otherwise its empty frame */
   partners: readonly { name: string; role: string; qualification: string; bio: string; image: string }[];
   vision: string;
-  mission: readonly string[];
+  mission: string;
   principles: readonly { title: string; body: string }[];
   services: readonly { title: string; line?: string }[];
   contact: ContactInfo;
@@ -38,15 +38,11 @@ const markOf = (t: string) =>
   `<svg class="ab-mk" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${MARKS[t] ?? MARKS.Honesty!}</svg>`;
 
 
-/** one drawn mark for each mission promise, in order: the price, the date, safety, the team */
-const ic = (body: string) =>
-  `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${body}</svg>`;
-const MISSION_ICONS = [
-  ic(`<path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3"/><path d="M9.5 9h5M9.5 11.5h5M11 9c2.6 0 2.6 4.5 0 4.5H9.5l4 3.5"/>`),
-  ic(`<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="m9 14.6 2 2 4-4.2"/>`),
-  ic(`<path d="M4 16.5a8 8 0 0 1 16 0"/><path d="M12 8.5V5.5M9.5 9l-1-2.6M14.5 9l1-2.6"/><path d="M2.5 16.5h19v2.5h-19z"/>`),
-  ic(`<circle cx="9" cy="8" r="3"/><path d="M3.5 19.5c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/><path d="M15.5 11.5 18 9l2.5 2.5M18 9v6.5"/>`),
-];
+/** drawn emblems and subtle architectural corner marks for the vision & mission diptych */
+const VISION_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.2 12s3.6-6.5 9.8-6.5 9.8 6.5 9.8 6.5-3.6 6.5-9.8 6.5S2.2 12 2.2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const MISSION_ICON = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg>`;
+const VISION_BG = `<svg class="ab-vmbg" viewBox="0 0 240 240" aria-hidden="true" fill="none"><circle cx="200" cy="40" r="64" stroke="currentColor" stroke-dasharray="4 6"/><circle cx="200" cy="40" r="118" stroke="currentColor" stroke-dasharray="4 6"/><circle cx="200" cy="40" r="172" stroke="currentColor"/><path d="M20 40h200M200 0v200" stroke="currentColor" stroke-opacity=".55"/></svg>`;
+const MISSION_BG = `<svg class="ab-vmbg" viewBox="0 0 240 240" aria-hidden="true" fill="none"><rect x="84" y="18" width="138" height="138" rx="8" stroke="currentColor"/><rect x="118" y="52" width="70" height="70" rx="4" stroke="currentColor" stroke-dasharray="4 5"/><path d="M56 87h184M153 0v184" stroke="currentColor" stroke-opacity=".55"/></svg>`;
 
 export function aboutMarkup(d: AboutData) {
   const head = `<header class="pg-head ab-head">
@@ -62,11 +58,11 @@ export function aboutMarkup(d: AboutData) {
 </header>`;
 
   const partner = (p: AboutData["partners"][number], i: number) => `<article class="ab-pt${i % 2 ? " ab-pt--flip" : ""}" aria-label="${esc(p.name)}, ${esc(p.role)}">
-      <div class="ab-ptph" data-rv>${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}, ${esc(p.role)} at RPC Constructions" loading="lazy" decoding="async">` : ph({ ratio: "4/5", label: `Photo: ${p.name}` })}</div>
+      <div class="ab-ptph" data-rv>${p.image ? `<img src="${esc(p.image)}" width="800" height="960" alt="${esc(p.name)}, ${esc(p.role)} at RPC Constructions" loading="lazy" decoding="async">` : ph({ ratio: "5/6", label: `Photo: ${p.name}` })}</div>
       <div class="ab-ptcopy" data-rv>
         <p class="ab-ptrole">${esc(p.role)}</p>
         <h3 class="ab-ptname">${esc(p.name)}</h3>
-        <p class="ab-ptq">${esc(p.qualification)}</p>
+        ${p.qualification ? `<p class="ab-ptq">${esc(p.qualification)}</p>` : ""}
         <p class="ab-p">${esc(p.bio)}</p>
       </div>
     </article>`;
@@ -84,23 +80,45 @@ export function aboutMarkup(d: AboutData) {
   </div>
 </section>`;
 
-  const vm = `<section class="pg-sec pg-sec--sky ab-vm" aria-label="Vision and mission">
+  const vm = `<section class="pg-sec pg-sec--sky ab-vm" aria-labelledby="ab-vm-h">
   <div class="pg-wrap">
-    <article class="ab-vision" aria-labelledby="ab-vision-h" data-rv>
-      <h2 class="ab-vh" id="ab-vision-h">Our vision</h2>
-      <p class="ab-vtext">${esc(d.vision)}</p>
-    </article>
-    <article class="ab-mission" aria-labelledby="ab-mission-h">
-      <h2 class="ab-vh ab-vh--rule" id="ab-mission-h" data-rv><span>Our mission</span></h2>
-      <ul data-rv-stagger="80">${d.mission.map((m, i) => `<li data-rv><span class="ab-mic">${MISSION_ICONS[i % MISSION_ICONS.length]}</span><span>${esc(m)}</span></li>`).join("")}</ul>
-    </article>
+    <div class="ab-vmhead">
+      ${mark("03", "Vision & mission")}
+      <h2 class="pg-h2" id="ab-vm-h" data-rv>One clear vision, one mission on site.</h2>
+    </div>
+    <div class="ab-vmgrid" data-rv-stagger="90">
+      <article class="ab-vmcard ab-vmcard--vision" aria-labelledby="ab-vision-h" data-rv>
+        ${VISION_BG}
+        <div class="ab-vmtop">
+          <div class="ab-vmbadge">
+            <span class="ab-vmic">${VISION_ICON}</span>
+            <h3 class="ab-vh" id="ab-vision-h">Our vision</h3>
+          </div>
+          <span class="ab-vmno" aria-hidden="true">01</span>
+        </div>
+        <p class="ab-vmtext">${esc(d.vision)}</p>
+        <p class="ab-vmfoot"><i aria-hidden="true"></i><span>Western Tamil Nadu · Trusted from foundation to roof</span></p>
+      </article>
+      <article class="ab-vmcard ab-vmcard--mission" aria-labelledby="ab-mission-h" data-rv>
+        ${MISSION_BG}
+        <div class="ab-vmtop">
+          <div class="ab-vmbadge">
+            <span class="ab-vmic">${MISSION_ICON}</span>
+            <h3 class="ab-vh" id="ab-mission-h">Our mission</h3>
+          </div>
+          <span class="ab-vmno" aria-hidden="true">02</span>
+        </div>
+        <p class="ab-vmtext">${esc(d.mission)}</p>
+        <p class="ab-vmfoot"><i aria-hidden="true"></i><span>Diagnosed on site · Tested with water · Held to our word</span></p>
+      </article>
+    </div>
   </div>
 </section>`;
 
   const values = `<section class="pg-sec ab-values" aria-labelledby="ab-values-h">
   <div class="pg-wrap">
     <div class="ab-vhead">
-      ${mark("03", "Our values")}
+      ${mark("04", "Our values")}
       <h2 class="pg-h2" id="ab-values-h" data-rv>Six values on every site.</h2>
     </div>
     <ul class="ab-vcards" data-rv-stagger="70">${d.principles
@@ -130,29 +148,56 @@ export const ABOUT_CSS = `
 .ab-pt--flip{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
 .ab-pt--flip .ab-ptph{order:2}
 .ab-pt--flip .ab-ptcopy{order:1;justify-self:end}
-.ab-ptph{width:100%;max-width:26rem}
+.ab-ptph{width:100%;max-width:25rem}
 .ab-pt--flip .ab-ptph{justify-self:end}
-.ab-ptph img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:8px}
+.ab-ptph img{display:block;width:100%;height:auto;aspect-ratio:5/6;object-fit:cover;object-position:center top;border-radius:14px;box-shadow:0 24px 48px -28px rgba(11,35,80,.45),0 0 0 1px var(--line)}
 .ab-ptcopy{max-width:36rem;padding-left:1.4rem;border-left:2px solid var(--accent)}
 .ab-ptrole{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .ab-ptname{margin:.4rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.015em;color:var(--ink)}
 .ab-ptq{margin:.3rem 0 0;font-size:var(--fs-body);color:var(--mute)}
-.ab-ptcopy .ab-p{margin-top:1rem}
+.ab-ptcopy .ab-p{margin-top:.85rem}
 
-/* vision and mission: the vision large in the middle, the four promises under it, each with its mark */
-.ab-vm{text-align:center}
-.ab-vision{max-width:62rem;margin:0 auto}
-.ab-vh{margin:0;font-size:calc(var(--fs-body) + 2px);font-weight:600;letter-spacing:.04em;color:var(--accent)}
-.ab-vtext{margin:1rem auto 0;max-width:30ch;font-family:var(--display);font-weight:500;font-size:clamp(1.45rem,1.05rem + 1.1vw,2.1rem);line-height:1.32;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
-.ab-mission{margin-top:clamp(2.8rem,8vh,4.5rem)}
-.ab-vh--rule{display:flex;align-items:center;gap:1.2rem;max-width:40rem;margin:0 auto}
-.ab-vh--rule::before,.ab-vh--rule::after{content:"";flex:1;height:1px;background:rgba(39,86,160,.28)}
-.ab-mission ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2rem clamp(1.2rem,3vw,3rem);margin:clamp(1.8rem,4vh,2.6rem) 0 0;padding:0;list-style:none}
-.ab-mission li{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:17rem;margin:0 auto;font-size:calc(var(--fs-body) * 1.06);font-weight:500;line-height:1.6;color:var(--ink2);text-wrap:pretty}
-.ab-mic{display:grid;place-items:center;width:4rem;height:4rem;border-radius:50%;background:var(--navy);color:#f5f0e6;box-shadow:0 0 0 6px rgba(11,35,80,.08);transition:transform .3s}
-.ab-mission li:hover .ab-mic{transform:translateY(-3px)}
-.ab-mic svg{width:1.7rem;height:1.7rem}
-@media (prefers-reduced-motion:reduce){.ab-mic{transition:none}.ab-mission li:hover .ab-mic{transform:none}}
+/* vision and mission: an architectural two-panel diptych — deep navy for the long-term vision, crisp ivory for our single mission on site */
+.ab-vmhead{margin-bottom:clamp(1.8rem,4vh,2.6rem)}
+.ab-vmhead .pg-h2{margin-top:.7rem;max-width:24ch}
+.ab-vmgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(1rem,2vw,1.5rem);align-items:stretch}
+.ab-vmcard{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:clamp(1.6rem,3.6vh,2.6rem);padding:clamp(1.6rem,3vw,2.4rem);border-radius:20px;overflow:hidden;isolation:isolate;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.ab-vmcard:hover{transform:translateY(-3px)}
+.ab-vmbg{position:absolute;top:-10px;right:-10px;width:13.5rem;height:13.5rem;pointer-events:none;z-index:-1}
+.ab-vmtop{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.ab-vmbadge{display:inline-flex;align-items:center;gap:.75rem}
+.ab-vmic{display:grid;place-items:center;width:2.85rem;height:2.85rem;border-radius:12px;flex:none;transition:transform .3s}
+.ab-vmcard:hover .ab-vmic{transform:scale(1.05)}
+.ab-vmic svg{width:1.35rem;height:1.35rem}
+.ab-vh{margin:0;font-size:var(--fs-body);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ab-vmno{font-family:var(--display);font-size:1.75rem;font-weight:700;line-height:1;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.ab-vmtext{margin:0;font-family:var(--display);font-weight:500;font-size:clamp(1.3rem,.96rem + .95vw,1.78rem);line-height:1.36;letter-spacing:-.015em;text-wrap:pretty}
+.ab-vmfoot{display:flex;align-items:center;gap:.6rem;margin:0;padding-top:1.15rem;font-size:calc(var(--fs-body) * .9);font-weight:500;line-height:1.4}
+.ab-vmfoot i{width:.5rem;height:.5rem;border-radius:50%;flex:none}
+
+/* vision panel: deep architectural navy */
+.ab-vmcard--vision{background:var(--navy);color:#f5f0e6;box-shadow:0 28px 54px -32px rgba(7,20,44,.75)}
+.ab-vmcard--vision:hover{box-shadow:0 36px 64px -30px rgba(7,20,44,.88)}
+.ab-vmcard--vision .ab-vmbg{color:rgba(159,187,230,.14)}
+.ab-vmcard--vision .ab-vmic{background:rgba(245,240,230,.12);color:#9fbbe6;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.ab-vmcard--vision .ab-vh{color:#9fbbe6}
+.ab-vmcard--vision .ab-vmno{color:rgba(255,255,255,.16)}
+.ab-vmcard--vision .ab-vmtext{color:#fff}
+.ab-vmcard--vision .ab-vmfoot{border-top:1px solid rgba(255,255,255,.14);color:rgba(245,240,230,.74)}
+.ab-vmcard--vision .ab-vmfoot i{background:#9fbbe6;box-shadow:0 0 0 4px rgba(159,187,230,.18)}
+
+/* mission panel: crisp warm ivory with signature accent bar */
+.ab-vmcard--mission{background:#fff;color:var(--ink);box-shadow:0 0 0 1px var(--line),0 24px 48px -32px rgba(11,35,80,.42)}
+.ab-vmcard--mission::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--water))}
+.ab-vmcard--mission:hover{box-shadow:0 0 0 1px rgba(39,86,160,.32),0 32px 58px -30px rgba(11,35,80,.55)}
+.ab-vmcard--mission .ab-vmbg{color:rgba(39,86,160,.09)}
+.ab-vmcard--mission .ab-vmic{background:var(--navy);color:#f5f0e6}
+.ab-vmcard--mission .ab-vh{color:var(--accent)}
+.ab-vmcard--mission .ab-vmno{color:rgba(11,35,80,.11)}
+.ab-vmcard--mission .ab-vmtext{color:var(--ink)}
+.ab-vmcard--mission .ab-vmfoot{border-top:1px solid var(--line);color:var(--mute)}
+.ab-vmcard--mission .ab-vmfoot i{background:var(--water);box-shadow:0 0 0 4px rgba(11,110,128,.14)}
+@media (prefers-reduced-motion:reduce){.ab-vmcard,.ab-vmic{transition:none}.ab-vmcard:hover,.ab-vmcard:hover .ab-vmic{transform:none}}
 
 /* values */
 .ab-vhead{margin-bottom:clamp(1.8rem,4vh,2.6rem)}
@@ -249,18 +294,17 @@ export const ABOUT_CSS = `
 
 @media (max-width:1023px){
   .ab-whohead{grid-template-columns:1fr;align-items:start}
-  .ab-mission ul{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ab-vlist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ab-reach2{grid-template-columns:1fr}
 }
-@media (max-width:519px){.ab-mission ul{grid-template-columns:1fr}}
+@media (max-width:899px){
+  .ab-vmgrid{grid-template-columns:1fr}
+  .ab-wgrid{grid-template-columns:1fr;align-items:start}
+}
 @media (max-width:639px){
   .ab-towns{grid-template-columns:1fr}
   .ab-hq-hud{flex-direction:column;align-items:flex-start;gap:.6rem}
   .ab-hq-hud-actions{width:100%;justify-content:space-between}
-}
-@media (max-width:899px){
-  .ab-wgrid{grid-template-columns:1fr;align-items:start}
 }
 @media (max-width:767px){
   .ab-pt,.ab-pt--flip{grid-template-columns:1fr}

@@ -60,7 +60,7 @@ const picOf = (slug: string) => {
 const STILLS: Readonly<Record<string, { before: string; after: string }>> = {
   terrace: { before: "/images/rain/terrace-before.webp", after: "/images/rain/terrace-after.webp" },
   ceiling: { before: "/images/rain/leak-before.webp", after: "/images/rain/leak-after.webp" },
-  bathroom: { before: "/images/rain/bath-before.webp", after: "/images/rain/bath-after.webp" },
+  bathroom: { before: "/images/rain/bath-before.webp?v=2", after: "/images/rain/bath-after.webp?v=2" },
   walls: { before: "/images/rain/wall-before.webp", after: "/images/rain/wall-after.webp" },
 };
 

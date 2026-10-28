@@ -370,33 +370,28 @@ export const company = {
     "Hard summers followed by heavy monsoons mean that water is what damages most buildings here first. So new buildings get their protection in six stages as they rise, and in existing ones we repair a leak where it enters, not where it shows.",
   ],
   vision: "To be the first call in western Tamil Nadu when water gets into a building, and the builder trusted to keep it out from the start.",
-  mission: [
-    "Hold to the price we quote, and agree any change in writing before it happens.",
-    "Finish when we say we will, with a progress update every week we are on site.",
-    "Work safely at height, inside tanks and around torch-applied membranes.",
-    "Keep investing in our engineers and site teams, and in the towns where we work.",
-  ],
+  mission:
+    "To trace every leak to its source, apply tested waterproofing and construction systems with our own engineers on site, and hand over dry work on the date and price we promised.",
 } as const;
 
 /**
- * PLACEHOLDER — RPC's two partners, shown on the About page: the first with
- * the photo on the left, the second with it on the right. Replace each name,
- * qualification and line, and add the photo (e.g. public/images/partners/1.jpg).
+ * RPC's two partners, shown on the About page: the first with the photo on
+ * the left, the second with it on the right.
  */
 export const partners: readonly { name: string; role: string; qualification: string; bio: string; image: string }[] = [
   {
-    name: "[Partner 1 name]",
+    name: "Velmurugan Sivanantham",
     role: "Partner",
-    qualification: "[Qualification, e.g. B.E. Civil]",
-    bio: "[Two or three lines about this partner: their background, and what they look after at RPC.]",
-    image: "",
+    qualification: "",
+    bio: "Leads site inspections, leak diagnostics and waterproofing specifications across Erode, Coimbatore and western Tamil Nadu, following each job from the first survey through to water testing and handover.",
+    image: "/images/partners/velmurugan-sivanantham.webp",
   },
   {
-    name: "[Partner 2 name]",
+    name: "Aravinth Sivanantham",
     role: "Partner",
-    qualification: "[Qualification, e.g. B.E. Civil]",
-    bio: "[Two or three lines about this partner: their background, and what they look after at RPC.]",
-    image: "",
+    qualification: "",
+    bio: "Oversees turnkey construction, material standards, programme planning and client coordination across residential, commercial and industrial sites, keeping every stage on schedule and held to the written scope.",
+    image: "/images/partners/aravinth-sivanantham.webp",
   },
 ];
 

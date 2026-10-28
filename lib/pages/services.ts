@@ -93,11 +93,15 @@ export function serviceFaq(d: Pick<ServicesData, "services" | "process" | "conta
   ];
 }
 
-/** RPC's before and after photographs, by the place a service covers (the rest wait for theirs) */
+/** RPC's before and after photographs, for every waterproofing service */
 const BA: Readonly<Record<string, readonly [string, string]>> = {
   terrace: ["/images/rain/terrace-before.webp", "/images/rain/terrace-after.webp"],
-  bathroom: ["/images/rain/bath-before.webp", "/images/rain/bath-after.webp"],
+  bathroom: ["/images/rain/bath-before.webp?v=2", "/images/rain/bath-after.webp?v=2"],
+  tank: ["/images/rain/tank-before.webp", "/images/rain/tank-after.webp"],
+  basement: ["/images/rain/basement-before.webp", "/images/rain/basement-after.webp"],
+  balcony: ["/images/rain/balcony-before.webp", "/images/rain/balcony-after.webp"],
   walls: ["/images/rain/wall-before.webp", "/images/rain/wall-after.webp"],
+  podium: ["/images/rain/podium-before.webp", "/images/rain/podium-after.webp"],
   cracks: ["/images/rain/leak-before.webp", "/images/rain/leak-after.webp"],
 };
 const HANDLE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;

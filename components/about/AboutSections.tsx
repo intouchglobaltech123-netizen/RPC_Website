@@ -43,58 +43,27 @@ export function CompanyStory({ index = "02" }: { index?: string }) {
   );
 }
 
-/** Vision & mission — two panels on a dark band. */
+/** Vision & mission — two architectural panels side by side. */
 export function VisionMission({ index = "03" }: { index?: string }) {
-  const icons = [CalendarCheck, ShieldCheck, Handshake, HardHat];
   return (
     <section aria-label="Vision and mission" className="relative z-10 bg-paper py-12 md:py-24">
       <div className="gutter">
         <SectionMarker index={index} label="Vision & mission" />
 
-        {/* vision — one statement over a finished building */}
-        <Reveal className="relative mt-8 overflow-hidden rounded-2xl bg-night text-paper">
-          <div className="absolute inset-0">
-            <Image src="/stages/12-completed.jpg" alt="A completed RPC Constructions building" fill sizes="100vw" className="object-cover" />
-            <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#0b111c]/90 via-[#0b111c]/60 to-transparent" />
-          </div>
-          <div className="relative flex min-h-[46svh] max-w-3xl flex-col justify-end p-5 md:p-12">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.18em] text-paper/85 backdrop-blur-md">
+        <div className="mt-8 grid gap-5 md:gap-8 lg:grid-cols-2">
+          <Reveal className="flex flex-col justify-between rounded-2xl bg-night p-6 text-paper md:p-10">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.18em] text-paper/85">
               <Eye size={14} /> Our vision
             </span>
-            <p className="display mt-4 text-2xl leading-[1.12] md:text-[clamp(2.2rem,3.4vw,3.4rem)]">{company.vision}</p>
-          </div>
-        </Reveal>
+            <p className="display mt-6 text-2xl leading-[1.2] md:text-[clamp(1.7rem,2.4vw,2.4rem)]">{company.vision}</p>
+          </Reveal>
 
-        {/* mission — four commitments */}
-        <div className="mt-10 grid gap-5 md:mt-14 md:gap-8 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-4">
-            <span className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.18em] text-mute">
-              <Target size={14} className="text-rpc" /> Our mission
+          <Reveal delay={0.08} className="flex flex-col justify-between rounded-2xl border border-ink/10 bg-white/70 p-6 md:p-10">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-rpc/10 px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.18em] text-rpc">
+              <Target size={14} /> Our mission
             </span>
-            <h3 className="display mt-4 text-4xl leading-[1] md:text-5xl">
-              Four promises on <em>every site.</em>
-            </h3>
-          </div>
-          <ol className="grid grid-cols-2 gap-2.5 md:gap-3 lg:col-span-8">
-            {company.mission.map((m, i) => {
-              const Icon = icons[i] ?? ShieldCheck;
-              return (
-                <li key={m}>
-                  <Reveal delay={i * 0.06} className="h-full">
-                  <div className="group flex h-full flex-col justify-between gap-4 rounded-2xl border border-ink/10 bg-white/50 p-4 md:gap-8 md:p-6 transition-colors duration-500 hover:border-ink hover:bg-ink hover:text-paper">
-                    <div className="flex items-center justify-between">
-                      <span className="grid h-11 w-11 place-items-center rounded-full bg-rpc/10 text-rpc transition-colors duration-500 group-hover:bg-rpc group-hover:text-white">
-                        <Icon size={19} strokeWidth={1.6} />
-                      </span>
-                      <span className="display text-2xl text-ink/15 md:text-3xl transition-colors duration-500 group-hover:text-paper/25">0{i + 1}</span>
-                    </div>
-                    <p className="text-[13px] leading-snug md:text-[16px]">{m}</p>
-                  </div>
-                  </Reveal>
-                </li>
-              );
-            })}
-          </ol>
+            <p className="display mt-6 text-2xl leading-[1.2] text-ink md:text-[clamp(1.7rem,2.4vw,2.4rem)]">{company.mission}</p>
+          </Reveal>
         </div>
       </div>
     </section>
