@@ -315,7 +315,8 @@ export const KIT_CSS = `
 
 /* phones: the closing band is small: the title, two buttons, the three steps as short titles and the phone */
 @media (max-width:767px){
-  .pg-ctabox{padding:1.2rem 1rem 1.1rem}
+  .pg-ctabox{padding:1.2rem 1rem 1.1rem;background:linear-gradient(160deg,#102a5c 0%,var(--navy) 60%);box-shadow:inset 0 3px 0 #2f9ab3,0 20px 40px -28px rgba(18,34,59,.6)}
+  .pg-ctan{background:rgba(255,255,255,.14)}
   .pg-ctahead{gap:.9rem}
   .pg-ctah{font-size:1.35rem;line-height:1.15;max-width:none}
   .pg-ctaacts{flex-wrap:nowrap;gap:.5rem}

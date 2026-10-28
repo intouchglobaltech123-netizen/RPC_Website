@@ -337,7 +337,7 @@ export const ABOUT_CSS = `
   .ab-vmhead,.ab-vhead{margin-bottom:1.1rem}
   .ab-vmhead .pg-h2{margin-top:.5rem}
   .ab-vmgrid{gap:.7rem}
-  .ab-vmcard{gap:.9rem;padding:1.15rem 1.1rem;border-radius:16px}
+  .ab-vmcard{gap:.8rem;padding:1rem 1rem 1.05rem;border-radius:16px}
   .ab-vmcard:hover{transform:none}
   .ab-vmbg,.ab-vmno,.ab-vmfoot{display:none}
   .ab-vmic{width:2.3rem;height:2.3rem;border-radius:10px}
@@ -347,10 +347,10 @@ export const ABOUT_CSS = `
 
   .ab-vhead .pg-h2{margin-top:.5rem}
   .ab-vcards{grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}
-  .ab-vcard{display:flex;flex-direction:column;align-items:flex-start;padding:.95rem .9rem 1rem;border-radius:16px}
+  .ab-vcard{display:flex;flex-direction:row;align-items:center;gap:.7rem;padding:.75rem .8rem;border-radius:16px}
   .ab-vcard:hover{transform:none}
   .ab-vcbig,.ab-vcbody{display:none}
-  .ab-vcic{width:2.4rem;height:2.4rem;border-radius:12px}
-  .ab-vctitle{margin:.75rem 0 0;font-size:.95rem}
+  .ab-vcic{flex:none;width:2.4rem;height:2.4rem;border-radius:12px}
+  .ab-vctitle{margin:0;font-size:.95rem;line-height:1.2}
 }
 `;

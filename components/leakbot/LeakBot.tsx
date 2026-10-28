@@ -16,7 +16,7 @@ import { contact } from "@/lib/content";
  * (see lib/leakbot/limits.ts); photos are shrunk in the browser and not stored.
  */
 
-const HIDE = ["/studio"];
+const HIDE = ["/studio", "/contact"];
 const MAX_PHOTOS = 3;
 /** the longest side a photo is shrunk to before it is sent */
 const PHOTO_SIDE = 1024;

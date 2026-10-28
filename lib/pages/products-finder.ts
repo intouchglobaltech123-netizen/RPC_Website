@@ -242,14 +242,18 @@ function filters(bs: readonly BrandInfo[], total: number) {
   return `<div class="pf-chips" data-chips>
   <div class="pf-chiprow" role="group" aria-labelledby="pf-ff">
     <p class="pf-fh" id="pf-ff">Product category<span class="pf-picked" data-picked="fam"></span></p>
+    <div class="pf-cs">
     <button type="button" class="pf-chip pf-chip--all" data-chip-fam="all" aria-pressed="true">All categories<span>${total}</span></button>
     ${fams.map((f) => `<button type="button" class="pf-chip" data-chip-fam="${f.key}" data-label="${esc(f.label)}" aria-pressed="false">${tick}${esc(f.label)}<span data-chip-n>${count(f.key)}</span></button>`).join("")}
+    </div>
   </div>
   <div class="pf-chiprow pf-chiprow--brands" role="group" aria-labelledby="pf-fb">
     <p class="pf-fh" id="pf-fb">Brand<span class="pf-picked" data-picked="brand"></span></p>
+    <div class="pf-cs">
     <button type="button" class="pf-chip pf-chip--all" data-chip-brand="all" aria-pressed="true">All brands<span>${total}</span></button>
     ${bs.map((b) => `<button type="button" class="pf-chip pf-bt" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<em class="pf-blogo">${brandFace(b.name)}</em><span>${b.count}</span></button>`).join("")}
     ${otherBrands(bs.map((b) => b.name)).map((name) => `<span class="pf-chip pf-bt pf-bt--none" role="note" aria-label="${esc(name)}: no products on our list yet" title="No products on our list yet"><em class="pf-blogo">${brandFace(name)}</em><span>0</span></span>`).join("")}
+    </div>
   </div>
 </div>`;
 }
@@ -332,6 +336,7 @@ export const FINDER_CSS = `
 .pf-side::-webkit-scrollbar{display:none}
 .pf-chips{display:flex;flex-direction:column;gap:1.8rem}
 .pf-chiprow{display:flex;flex-direction:column}
+.pf-cs{display:contents}
 .pf-fh{margin:0 0 .3rem;padding-bottom:.55rem;border-bottom:1px solid rgba(18,34,59,.32);font-size:var(--fs-body);font-weight:600;color:var(--mute)}
 .pf-chip{display:flex;align-items:center;gap:.6rem;width:100%;padding:.5rem .55rem;border:0;border-radius:4px;background:none;font:inherit;font-size:var(--fs-body);line-height:1.3;color:var(--ink);text-align:left;cursor:pointer;transition:background-color .15s,color .15s}
 .pf-chip i{flex:none;width:.5rem;height:.5rem;border-radius:1px;background:var(--c)}

@@ -172,8 +172,8 @@ const BASE_CSS = `
 
 const METHODS_MOBILE_CSS = `
 @media (max-width:767px){
-  /* phones: just the house, the place tabs and the methods for that place */
-  .rt-sec,.wpx-hint,.wpx-help{display:none}
+  /* phones: the house, the place tabs and the methods for that place, then the rain test */
+  .wpx-hint,.wpx-help{display:none}
   .wpx-map{padding:1.4rem 0 2.2rem}
   .wpx-top{margin-bottom:.9rem;padding-top:1.2rem}
   .wpx-h{font-size:1.4rem}

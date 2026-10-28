@@ -333,10 +333,10 @@ export const SERVICES_CSS = `
   .sv-bsec .pg-shead{gap:.5rem;margin-bottom:1.1rem;padding-top:1rem}
   .sv-bsec .pg-h2,.sv-fsec .pg-h2{font-size:1.45rem;line-height:1.18}
   .sv-bsec .pg-lede,.sv-fsec .pg-lede{display:none}
-  .sv-b{padding:.95rem .85rem 1rem}
-  .sv-b .sv-icon{width:2.4rem;height:2.4rem;border-radius:12px}
+  .sv-b{display:flex;flex-direction:row;align-items:center;gap:.7rem;padding:.75rem .8rem}
+  .sv-b .sv-icon{flex:none;width:2.4rem;height:2.4rem;border-radius:12px}
   .sv-b .sv-icon svg{width:1.2rem;height:1.2rem}
-  .sv-b .sv-ct{margin-top:.8rem;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:2.5em}
+  .sv-b .sv-ct{margin:0;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:0}
   .sv-b .sv-cp{display:none}
 
   .sv-fsec{padding-top:2.4rem;padding-bottom:2.6rem}

@@ -429,4 +429,51 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pf-lists[data-view="grid"] .pf-packs span:nth-child(n+2){display:none}
   .pf-lists[data-view="grid"] .pf-packs span{height:1.6rem;font-size:.85rem}
 }
+
+/* logos stand alone: a brand with a logo shows no separate name, here or in the compare lists */
+.pf-bh--logo .pf-bhn,.bc-face:not(.bc-face--txt) + b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.bc-list .bc-meta{margin-left:auto}
+.pf-bh--logo{gap:.9rem}
+
+/* phones and small tablets: the two filter rows, tidy and labelled */
+@media (max-width:767px){
+  .pf-chips{gap:1rem}
+  .pf-chiprow{display:block;overflow:visible;margin-inline:0;padding:0}
+  .pf-fh{display:flex;margin:0 0 .5rem;padding:0;border:0;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .pf-picked{font-size:.78rem;letter-spacing:0;text-transform:none}
+  .pf-cs{display:flex;gap:.45rem;overflow-x:auto;margin-inline:calc(-1 * var(--gutter,16px));padding:0 var(--gutter,16px) 4px;scrollbar-width:none}
+  .pf-cs::-webkit-scrollbar{display:none}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-cs{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,2.5rem);grid-auto-columns:max-content}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{height:2.5rem;padding:0 .95rem;border-radius:999px;font-size:.95rem}
+  .pf-chip .pf-ck{display:none}
+  .pf-chiprow--brands .pf-chip{height:3.4rem;border-radius:12px}
+  .pf-chiprow--brands .pf-chip--all{padding:0 1.1rem}
+  .pf-chiprow--brands .pf-bt{width:7.4rem;padding:.4rem .6rem}
+  .pf-chiprow--brands .pf-bt > span{top:.3rem;right:.5rem;transform:none;font-size:.78rem}
+  .pf-bt--none{display:none}
+}
+
+/* phones: the banner's button is a small pill, not a bar */
+@media (max-width:767px){
+  .pg-head .pg-actions{margin-top:1rem}
+  .pg-head .pg-actions .pg-btn{flex:0 0 auto !important;width:auto !important;height:2.7rem;padding:0 1.2rem;font-size:.95rem}
+}
+
+/* phones: the comparison as two product cards and one small card for each fact */
+@media (max-width:599px){
+  .fo-k{display:none}
+  .fo-panel{padding:.9rem .8rem 1rem}
+  .bc-k{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .cmp-wrap{margin-top:.9rem;background:none;box-shadow:none;border-radius:0}
+  .cmp-t thead tr{column-gap:.5rem}
+  .cmp-t thead th{padding:.7rem .7rem .8rem;border-bottom:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+  .cmp-pick > span{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .cmp-t tbody tr{column-gap:0;margin-top:.5rem;overflow:hidden;border:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
+  .cmp-t tbody tr[data-row=brand]{display:none}
+  .cmp-t tbody th{padding:.7rem .85rem .15rem;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .cmp-t tbody td{padding:.2rem .85rem .8rem;font-size:.95rem;line-height:1.4}
+  .cmp-t tbody td[data-s=b]{border-left:1px solid var(--line)}
+  .cmp-t tbody td span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .cmp-t tfoot td{padding:.7rem 0 0}
+}
 `;
