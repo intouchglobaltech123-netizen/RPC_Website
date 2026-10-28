@@ -206,6 +206,23 @@ const METHODS_MOBILE_CSS = `
   .wpx-popf{gap:.7rem;padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom,0px))}
   .wpx-popbk{flex:none;height:2.7rem;padding:0 1rem;border-radius:999px;background:rgba(18,34,59,.07)}
   .wpx-popf .pg-btn{flex:1;justify-content:center;width:auto;height:2.7rem;border-radius:999px}
+
+  /* the rain test: the drawing, then the methods as one tidy swipe of coloured pills, then the words */
+  .rt-sec{padding-top:2.4rem}
+  .rt{gap:.9rem}
+  .rt-head{gap:.5rem}
+  .rt-head .pg-h2{font-size:1.5rem;line-height:1.15;margin-top:.4rem}
+  .rt-head .pg-lede{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.95rem;line-height:1.5}
+  .rt-stage{display:contents}
+  .rt-scene{order:1;width:100%;min-height:0;height:auto;aspect-ratio:16/9;border-radius:16px}
+  .rt-pick{order:2;display:grid;grid-template-columns:none;grid-auto-flow:column;grid-template-rows:repeat(2,2.5rem);grid-auto-columns:max-content;gap:.45rem;margin-inline:calc(var(--gutter,1.25rem) * -1);padding:0 var(--gutter,1.25rem) 4px;overflow-x:auto;scrollbar-width:none}
+  .rt-group,.rt-opts,.rt-group--coat .rt-opts{display:contents}
+  .rt-gh{display:none}
+  .rt-chip{height:2.5rem;gap:.5rem;padding:0 .95rem 0 .75rem;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.95rem;white-space:nowrap}
+  .rt-chip .rt-r{box-shadow:inset 0 0 0 2px var(--k)}
+  .rt-chip[aria-pressed=true]{box-shadow:none}
+  .rt-info{order:3;padding:1rem 1.1rem 1.1rem;border-radius:16px}
+  .rt-name{font-size:1.2rem}
 }
 @keyframes wpx-sheet{from{transform:translateY(40px);opacity:0}}
 `;
