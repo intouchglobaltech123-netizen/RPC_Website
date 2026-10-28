@@ -251,8 +251,8 @@ function filters(bs: readonly BrandInfo[], total: number) {
     <p class="pf-fh" id="pf-fb">Brand<span class="pf-picked" data-picked="brand"></span></p>
     <div class="pf-cs">
     <button type="button" class="pf-chip pf-chip--all" data-chip-brand="all" aria-pressed="true">All brands<span>${total}</span></button>
-    ${bs.map((b) => `<button type="button" class="pf-chip pf-bt" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<em class="pf-blogo">${brandFace(b.name)}</em><span>${b.count}</span></button>`).join("")}
-    ${otherBrands(bs.map((b) => b.name)).map((name) => `<span class="pf-chip pf-bt pf-bt--none" role="note" aria-label="${esc(name)}: no products on our list yet" title="No products on our list yet"><em class="pf-blogo">${brandFace(name)}</em><span>0</span></span>`).join("")}
+    ${bs.map((b) => `<button type="button" class="pf-chip pf-bt" data-chip-brand="${b.key}" aria-pressed="false" style="--c:${brandMark(b.name)}">${tick}<em class="pf-blogo">${brandFace(b.name)}</em><small class="pf-bn">${esc(b.name)}</small><span>${b.count}</span></button>`).join("")}
+    ${otherBrands(bs.map((b) => b.name)).map((name) => `<span class="pf-chip pf-bt pf-bt--none" role="note" aria-label="${esc(name)}: no products on our list yet" title="No products on our list yet"><em class="pf-blogo">${brandFace(name)}</em><small class="pf-bn">${esc(name)}</small><span>0</span></span>`).join("")}
     </div>
   </div>
 </div>`;

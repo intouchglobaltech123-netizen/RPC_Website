@@ -215,13 +215,14 @@ const METHODS_MOBILE_CSS = `
   .rt-head .pg-lede{display:none}
   .rt-step{order:2;display:flex;align-items:baseline;justify-content:space-between;margin:.1rem 0 -.4rem}
   .rt-step b{font-size:1rem;font-weight:600;color:var(--ink)}
-  .rt-step span{font-size:.85rem;color:var(--mute)}
+  .rt-step span{display:none}
   .rt-stage{display:contents}
   .rt-scene{order:1;width:100%;min-height:0;height:auto;aspect-ratio:16/9;border-radius:16px;box-shadow:inset 0 0 0 1px var(--line),0 18px 36px -28px rgba(18,34,59,.5)}
-  .rt-pick{order:3;display:grid;grid-template-columns:none;grid-auto-flow:column;grid-template-rows:repeat(2,2.5rem);grid-auto-columns:max-content;gap:.45rem;margin-inline:calc(var(--gutter,1.25rem) * -1);padding:0 var(--gutter,1.25rem) 4px;overflow-x:auto;scrollbar-width:none}
+  .rt-pick{order:3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row;grid-template-rows:none;grid-auto-columns:auto;gap:.45rem;margin:0;padding:0;overflow:visible}
   .rt-group,.rt-opts,.rt-group--coat .rt-opts{display:contents}
   .rt-gh{display:none}
-  .rt-chip{height:2.5rem;gap:.5rem;padding:0 .95rem 0 .75rem;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.95rem;white-space:nowrap}
+  .rt-group--none .rt-chip{grid-column:1 / -1}
+  .rt-chip{width:100%;height:auto;min-height:2.6rem;gap:.5rem;padding:.35rem .8rem .35rem .7rem;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.92rem;line-height:1.2;white-space:normal;text-align:left}
   .rt-chip .rt-r{box-shadow:inset 0 0 0 2px var(--k)}
   .rt-chip[aria-pressed=true]{box-shadow:none}
   .rt-info{order:4;padding:1rem 1.1rem 1.1rem;border-radius:16px}

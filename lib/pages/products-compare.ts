@@ -89,8 +89,10 @@ export const COMPARE_CSS = `
   .bc-picks{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:.4rem}
   .bc-vs{width:2rem;height:2rem;margin-bottom:.6rem}
   .bc-btn{min-height:3rem;padding:.35rem .5rem}
-  .bc-face{width:3.6rem;height:2.2rem}
-  .bc-cur b{display:none}
+  .bc-face{width:3.2rem;height:2.4rem;padding:.2rem .3rem}
+  .bc-cur{gap:.4rem}
+  .bc-cur b{font-size:.95rem}
+  .bc-btn{gap:.3rem}
 }
 `;
 
