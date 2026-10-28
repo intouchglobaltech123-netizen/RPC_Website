@@ -499,6 +499,33 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pr-headside .pg-actions .pg-btn{flex:0 0 auto;width:auto;min-height:2.6rem;padding:0 1.15rem;font-size:.92rem;border-radius:999px}
 }
 
+/* phones, finish: the two filters sit in one soft panel, white pills and tiles, the picked ones ringed in navy */
+@media (max-width:767px){
+  .pf-chips{gap:1.05rem;padding:1.05rem .85rem 1.1rem;border-radius:20px;background:rgba(255,255,255,.5);box-shadow:inset 0 0 0 1px var(--line)}
+  .pf-fh{margin-bottom:.6rem;font-size:.7rem;letter-spacing:.14em}
+  .pf-picked{letter-spacing:0}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip,.pf-chiprow--brands .pf-chip--all{background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.14);transition:box-shadow .2s,background-color .2s}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip:not(.pf-chip--all)[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy);font-weight:600;color:var(--navy)}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all[aria-pressed="true"],.pf-chiprow--brands .pf-chip--all[aria-pressed="true"]{background:var(--navy);box-shadow:none;color:#fff}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all[aria-pressed="true"] span,.pf-chiprow--brands .pf-chip--all[aria-pressed="true"] span{opacity:.75;color:#fff}
+  .pf-chiprow--brands{padding-top:1rem;border-top:1px solid var(--line)}
+  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;justify-self:start;width:auto;height:1.85rem;min-height:0;padding:0 .8rem;gap:.35rem;border-radius:999px;font-size:.76rem}
+  .pf-chiprow--brands .pf-cs{gap:.4rem}
+  .pf-chiprow--brands .pf-bt{border-radius:14px;box-shadow:inset 0 0 0 1px rgba(18,34,59,.12)}
+  .pf-chiprow--brands .pf-bt[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
+  .pf-chiprow--brands .pf-bt .pf-blogo{width:100%;padding-inline:.1rem}
+  .pf-chiprow--brands .pf-bt .pf-blogo img{max-width:100%;width:auto;object-fit:contain}
+  .pf-chiprow--brands .pf-bn{font-size:.66rem;font-weight:600;color:var(--ink2)}
+  .pf-chiprow--brands .pf-bt[aria-pressed="true"] .pf-bn{color:var(--navy)}
+}
+
+@media (max-width:380px){
+  .pf-chips{padding-inline:.65rem}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{padding:0 .5rem;gap:.25rem;font-size:.72rem}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{font-size:.64rem}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-cs{gap:.22rem}
+}
+
 /* phones: the comparison as two product cards and one small card for each fact */
 @media (max-width:599px){
   .fo-k{display:none}
