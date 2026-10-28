@@ -36,8 +36,8 @@ export const intro = {
   title: "The right chemical at every stage.",
   lede: "Watch one apartment building go up from the basement to the terrace, and see the chemical each stage needs to stay strong and dry.",
   /** under the stages: scroll on for the next stage, or (at the last) for the finished building */
-  next: "Scroll down for the next stage",
-  last: "Scroll down to see it finished",
+  next: "for the next stage",
+  last: "to see it finished",
   ask: "Stage by stage",
 };
 

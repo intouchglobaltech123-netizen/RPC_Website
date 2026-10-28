@@ -83,7 +83,7 @@ export function buildMarkup(d: BuildData) {
     </div>
   </div>
 </div>
-<p class="mh-hint" aria-hidden="true">${mouse}<span>${esc(intro.next)}</span>${down}</p>
+<p class="mh-hint" aria-hidden="true"><i class="mh-hint-ico">${mouse}</i><em><b>Scroll down</b><span>${esc(intro.next)}</span></em>${down}</p>
 </div>
 <template class="mh-captions">${stages
     .map(
@@ -169,16 +169,19 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 .mh-ch:hover,.mh-ch[aria-current="true"]{color:#fff}
 .mh-ch i{display:block;height:2px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden}
 .mh-ch b{display:block;height:100%;width:100%;border-radius:inherit;background:#fff;transform:scaleX(var(--p,0));transform-origin:left center}
-/* the scroll cue: a pill centred at the bottom of the screen, a mouse wheel that rolls and an arrow that nods, so anyone sees at once to scroll */
-.mh-hint{position:absolute;left:50%;bottom:clamp(.9rem,3.2vh,1.75rem);z-index:2;display:flex;align-items:center;gap:.8rem;margin:0;padding:.7rem 1.35rem .7rem 1.05rem;border-radius:999px;background:rgba(6,16,24,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 14px 34px -14px rgba(0,0,0,.7);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:calc(var(--fs-body,1rem)*1.06);font-weight:600;letter-spacing:.005em;line-height:1;color:#fff;white-space:nowrap;transform:translateX(-50%);transition:opacity .35s ease,visibility 0s linear 0s}
-.mh-hint span{text-shadow:0 1px 10px rgba(0,0,0,.5)}
-.mh-hint svg{flex:none}
-.mh-hint .mh-mouse{width:19px;height:29px;color:var(--mh-blue)}
+/* the scroll cue: a light pill centred at the bottom, a navy button with a rolling mouse wheel, the words in two lines and an arrow that nods; a soft ring breathes round it so it is seen at once */
+.mh-hint{position:absolute;left:50%;bottom:clamp(.9rem,3.2vh,1.75rem);z-index:2;display:flex;align-items:center;gap:.85rem;margin:0;padding:.4rem 1.2rem .4rem .4rem;border-radius:999px;background:#f3f6f7;color:#0b2350;white-space:nowrap;transform:translateX(-50%);box-shadow:0 18px 38px -14px rgba(0,0,0,.65),0 0 0 4px rgba(255,255,255,.14);animation:mh-ring 2.6s ease-out infinite;transition:opacity .35s ease,visibility 0s linear 0s}
+.mh-hint-ico{flex:none;display:grid;place-items:center;width:2.9rem;height:2.9rem;border-radius:50%;background:linear-gradient(160deg,#17407f,#0b2350);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.mh-hint .mh-mouse{width:17px;height:26px}
 .mh-hint .mh-wheel{animation:mh-wheel 1.7s ease-in-out infinite}
-.mh-hint svg:last-child{width:18px;height:18px;color:var(--mh-blue);animation:mh-nudge 1.7s ease-in-out infinite}
-.mh-hint.is-off{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s}
+.mh-hint em{display:flex;flex-direction:column;gap:.22rem;font-style:normal;line-height:1.1}
+.mh-hint em b{font-family:var(--font-inter-tight),system-ui,sans-serif;font-size:calc(var(--fs-body,1rem)*1.08);font-weight:700;letter-spacing:-.01em;color:#0b2350}
+.mh-hint em span{font-size:calc(var(--fs-body,1rem)*.88);font-weight:500;color:rgba(11,35,80,.68)}
+.mh-hint > svg{flex:none;width:18px;height:18px;margin-left:.2rem;color:#17407f;animation:mh-nudge 1.7s ease-in-out infinite}
+.mh-hint.is-off{opacity:0;visibility:hidden;animation:none;transition:opacity .35s ease,visibility 0s linear .35s}
 .mh-js:not(.is-live) .mh-hint{opacity:0}
 @keyframes mh-wheel{0%{transform:translateY(0);opacity:1}60%{transform:translateY(7px);opacity:0}100%{transform:translateY(0);opacity:0}}
+@keyframes mh-ring{0%{box-shadow:0 18px 38px -14px rgba(0,0,0,.65),0 0 0 3px rgba(255,255,255,.28)}70%,100%{box-shadow:0 18px 38px -14px rgba(0,0,0,.65),0 0 0 14px rgba(255,255,255,0)}}
 @keyframes mh-nudge{0%,100%{transform:none}50%{transform:translateY(3px)}}
 .mh a:focus-visible,.mh button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
@@ -246,7 +249,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 @media (prefers-reduced-motion:reduce){
   .mh-js .mh-foot,.mh-now::before,.mh-chip,.mh-hint{transition:none !important}
   .mh-js .mh-now>*{transition:none !important}
-  .mh-hint svg,.mh-hint .mh-wheel{animation:none}
+  .mh-hint,.mh-hint svg,.mh-hint .mh-wheel{animation:none}
   .mh-js .mh-hook>*,.mh-shade-end{transition:none !important;animation:none !important}
 }
 @media (pointer:coarse){
