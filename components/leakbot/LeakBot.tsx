@@ -561,7 +561,7 @@ export function LeakBot() {
         const r = z.getBoundingClientRect();
         return r.top < window.innerHeight - 60 && r.bottom > 80;
       });
-      const covered = inZone || !!document.querySelector("#mobile-menu, .wpx-pop:not([hidden]), .pv[open], [data-lb-hide]");
+      const covered = inZone || !!document.querySelector("#mobile-menu, .wpx-pop:not([hidden]), .pv[open], .bc-list:not([hidden]), [data-lb-hide]");
       setAtFoot(covered || (!!f && f.getBoundingClientRect().top < window.innerHeight - 40));
     };
     const queue = () => {

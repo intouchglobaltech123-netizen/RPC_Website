@@ -485,6 +485,20 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pf-chiprow--brands .pf-bn{margin-top:0;font-size:.64rem}
 }
 
+/* phones, products banner: a small label above the heading, room under the logo, a button that fits its words */
+@media (max-width:767px){
+  .pr-head{--head-h:15.5rem;--head-pb:1.4rem}
+  .pg-head.pr-head{padding-top:calc(var(--nav-room) + 1.3rem) !important}
+  .pr-head .pg-mark{display:flex;align-items:center;gap:.55rem;margin:0 0 .65rem;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9fbbe6}
+  .pr-head .pg-mark .pg-idx{display:none}
+  .pr-head .pg-mark .pg-rule{display:none}
+  .pr-head .pg-mark::before{content:"";width:1.6rem;height:2px;border-radius:2px;background:#9fbbe6}
+  .pr-head .pg-h1{max-width:15ch;font-size:1.7rem;line-height:1.14;letter-spacing:-.025em}
+  .pr-headgrid{gap:1.1rem}
+  .pr-headside .pg-actions{justify-content:flex-start}
+  .pr-headside .pg-actions .pg-btn{flex:0 0 auto;width:auto;min-height:2.6rem;padding:0 1.15rem;font-size:.92rem;border-radius:999px}
+}
+
 /* phones: the comparison as two product cards and one small card for each fact */
 @media (max-width:599px){
   .fo-k{display:none}
