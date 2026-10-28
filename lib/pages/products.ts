@@ -465,6 +465,26 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pf-bt--none{display:none}
 }
 
+/* phones, compact: small wrapping pills for categories, one tight row of brand cards, so the filters take little height */
+@media (max-width:767px){
+  .pf-chips{gap:.7rem}
+  .pf-fh{margin:0 0 .35rem;font-size:.72rem}
+  .pf-cs{display:flex;flex-wrap:wrap;gap:.25rem}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{width:auto;min-height:0;height:1.85rem;padding:0 .55rem;gap:.3rem;border-radius:999px;font-size:.76rem;line-height:1;white-space:nowrap}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{margin-left:0;font-size:.68rem;opacity:.65}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all{grid-column:auto}
+  .pf-chiprow--brands .pf-cs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem}
+  .pf-chiprow--brands .pf-chip{border-radius:10px}
+  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;min-height:1.85rem;height:1.85rem;font-size:.76rem}
+  .pf-chiprow--brands .pf-chip--all span{font-size:.72rem}
+  .pf-chiprow--brands .pf-bt{min-height:4.1rem;padding:.9rem .2rem .3rem;gap:0}
+  .pf-chiprow--brands .pf-bt > span{top:.2rem;right:.3rem;font-size:.64rem}
+  .pf-chiprow--brands .pf-bt .pf-blogo{min-height:1.7rem}
+  .pf-chiprow--brands .pf-bt .pf-blogo img{max-height:1.7rem}
+  .pf-chiprow--brands .pf-bt .pf-blogo img[src$="/sika.png"],.pf-chiprow--brands .pf-bt .pf-blogo img[src$="/cci.svg"]{max-height:2.3rem}
+  .pf-chiprow--brands .pf-bn{margin-top:0;font-size:.64rem}
+}
+
 /* phones: the comparison as two product cards and one small card for each fact */
 @media (max-width:599px){
   .fo-k{display:none}
