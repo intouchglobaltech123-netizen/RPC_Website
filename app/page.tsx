@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/contact/Footer";
 import { HomeHooks } from "@/components/home3/HomeHooks";
-import { MonsoonHero } from "@/components/home4/MonsoonHero";
+import { StagesHero } from "@/components/home4/StagesHero";
 import { brand, projects } from "@/lib/content";
 import type { HookData } from "@/lib/home/hooks";
 import { steps } from "@/lib/monsoon/copy";
@@ -83,8 +83,8 @@ const hookData: HookData = {
 };
 
 /**
- * Home: the monsoon house (a film of a house in the rain: each leak, from the
- * terrace to the outside walls, is shown and sealed in turn), then one hook
+ * Home: one house built stage by stage (a film from the foundation pit to the
+ * finished house, with what each stage needs and what we use), then one hook
  * for each page in the order of the top menu (about, products, waterproofing,
  * projects, services, blog, contact), each with a button to it; and the
  * site's own footer.
@@ -93,7 +93,7 @@ export default function Home() {
   return (
     <>
       <main id="main" className="relative">
-        <MonsoonHero />
+        <StagesHero />
         <HomeHooks data={hookData} />
       </main>
       <Footer />

@@ -1,0 +1,108 @@
+"use client";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { LoadProgress } from "@/components/home3/ArtLoader";
+import { contact } from "@/lib/content";
+import { BuildLoader } from "./BuildLoader";
+import { BUILD_CSS, buildMarkup } from "@/lib/build-film/markup";
+import { mountBuild, type BuildControls } from "@/lib/build-film/mount";
+import { visit } from "@/lib/visit";
+
+/**
+ * Home hero: a film of one seven-storey apartment building being built, from
+ * the dug basement pit to the finished building (lib/build-film), played by
+ * scrolling. The screen stays pinned while the page scrolls through six
+ * stages (the basement, the concrete, the structure, the floor tiles, the
+ * bathrooms and the terrace): each scroll plays the next stage and stops in
+ * close on the chemical it uses, with the words at the bottom left saying
+ * what that product is, what it does and why the stage needs it. One more
+ * scroll shows the finished building and the hook with its two buttons, and
+ * the page carries on.
+ *
+ * It opens behind the loading screen, and starts, only when the home page is
+ * the page the browser loaded (arriving on it, or refreshing it): the RPC cube
+ * built, sealed and flown up into the top bar (components/home4/BuildLoader.tsx).
+ * Reached from another page, there is no loading screen and it starts at once.
+ */
+
+/** the home page is the page the browser itself loaded in this tab (not reached through the site's links) */
+function loadedHere() {
+  try {
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    // the home page's own path: while the site moves here from another page, the address still shows that page
+    return nav ? new URL(nav.name).pathname === "/" : true;
+  } catch {
+    return true;
+  }
+}
+export function StagesHero() {
+  const ref = useRef<HTMLElement>(null);
+  const router = useRouter();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const html = useMemo(() => buildMarkup({ whatsapp: contact.whatsapp }), []);
+  const loading = useRef<LoadProgress>({ share: 0, done: false });
+  const controls = useRef<BuildControls | null>(null);
+  // reached from another page (not a refresh): no loading screen, the film rests on its end
+  const [resume] = useState(() => visit.homeShown || (typeof window !== "undefined" && !loadedHere()));
+  const released = useRef(resume);
+
+  useEffect(() => {
+    visit.homeShown = true;
+  }, []);
+
+  useEffect(() => {
+    const section = ref.current;
+    if (!section) return;
+    const ctl = mountBuild(section, { held: !released.current, atEnd: resume });
+    controls.current = ctl;
+    // the loading screen waits for the type faces and the film's first frames, or three seconds at most
+    let live = true;
+    const video = section.querySelector<HTMLVideoElement>(".mh-film");
+    const film = new Promise<void>((done) => {
+      if (!video || video.readyState >= 2) return done();
+      video.preload = "auto";
+      video.addEventListener("loadeddata", () => done(), { once: true });
+      video.addEventListener("error", () => done(), { once: true });
+    });
+    const fonts = document.fonts?.ready ?? Promise.resolve();
+    const cap = new Promise<void>((done) => window.setTimeout(done, 3000));
+    const ready = () => {
+      if (live) loading.current = { share: 1, done: true };
+    };
+    Promise.race([Promise.all([film, fonts]), cap]).then(ready, ready);
+    return () => {
+      live = false;
+      ctl.destroy();
+      controls.current = null;
+    };
+  }, []);
+
+  // the film starts as the loading screen's water runs off
+  const onStart = useCallback(() => {
+    released.current = true;
+    controls.current?.release();
+  }, []);
+  const onGone = useCallback(() => {}, []);
+
+  // links to other pages go through the router
+  useEffect(() => {
+    const section = ref.current;
+    if (!section) return;
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as HTMLElement).closest<HTMLAnchorElement>("a[data-internal]");
+      if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      router.push(a.getAttribute("href")!);
+    };
+    section.addEventListener("click", onClick);
+    return () => section.removeEventListener("click", onClick);
+  }, [router]);
+
+  return (
+    <>
+      {!resume && <BuildLoader progress={loading} onStart={onStart} onReveal={onStart} onGone={onGone} />}
+      <style dangerouslySetInnerHTML={{ __html: BUILD_CSS }} />
+      <section ref={ref} className="mh" aria-label="An apartment building built stage by stage, and the construction chemicals each stage needs" data-nav-tone="dark" dangerouslySetInnerHTML={{ __html: html }} />
+    </>
+  );
+}
