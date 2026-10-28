@@ -186,7 +186,28 @@ const METHODS_MOBILE_CSS = `
   .wpx-phead{padding:.8rem 1.1rem}
   .wpx-panel .wpx-ms{margin:0 1.1rem}
   .wpx-panel .wpx-acts{padding:.8rem 1.1rem}
+
+  /* the method's box opens as a sheet from the foot of the screen, with the page dimmed behind it */
+  .wpx-pop{inset:auto 0 0 0;width:auto;max-width:none;height:auto;max-height:86svh;margin:0;border-radius:22px 22px 0 0;box-shadow:0 0 0 100vmax rgba(4,12,30,.5),0 -20px 60px -24px rgba(4,12,30,.5);animation:wpx-sheet .3s cubic-bezier(.2,.8,.2,1)}
+  .wpx-poph{position:relative;align-items:flex-start;padding:1.3rem 1rem .9rem 1.2rem;border-radius:22px 22px 0 0}
+  .wpx-poph::before{content:"";position:absolute;top:.5rem;left:50%;width:2.4rem;height:4px;margin-left:-1.2rem;border-radius:3px;background:rgba(255,255,255,.3)}
+  .wpx-popn{margin-top:.25rem;font-size:1.2rem;line-height:1.2}
+  .wpx-popx{width:2.4rem;height:2.4rem}
+  .wpx-popb{padding:1rem 1.2rem 1.1rem}
+  .wpx-poptop{grid-template-columns:5.6rem minmax(0,1fr);gap:.9rem}
+  .wpx-popart{max-width:none;padding:.3rem;border-radius:12px}
+  .wpx-dh{font-size:.95rem;line-height:1.55}
+  .wpx-duse{margin-top:.6rem;font-size:.9rem}
+  .wpx-dnotes{gap:.5rem;margin-top:1rem}
+  .wpx-dnotes .wpx-dn{padding:.75rem .85rem;border-radius:12px}
+  .wpx-dprod{margin-top:0;padding-top:1rem}
+  .wpx-dp{gap:.4rem}
+  .wpx-dp a,.wpx-dp span{min-height:2.4rem;padding:.3rem .85rem;border-radius:999px;font-size:.92rem}
+  .wpx-popf{gap:.7rem;padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom,0px))}
+  .wpx-popbk{flex:none;height:2.7rem;padding:0 1rem;border-radius:999px;background:rgba(18,34,59,.07)}
+  .wpx-popf .pg-btn{flex:1;justify-content:center;width:auto;height:2.7rem;border-radius:999px}
 }
+@keyframes wpx-sheet{from{transform:translateY(40px);opacity:0}}
 `;
 
 export const METHODS_PAGE_CSS = BASE_CSS + METHODS_TOOLS_CSS + RAIN_CSS + METHODS_MOBILE_CSS;

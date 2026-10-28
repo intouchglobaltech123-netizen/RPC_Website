@@ -1,6 +1,6 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Clock, Mail, Phone } from "lucide-react";
+import { ArrowUpRight, Clock, MessageCircle, Phone } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -269,36 +269,45 @@ export function Nav() {
             <Link href="/" aria-label={`${brand.name} — home`} onClick={() => setOpen(false)} className={`absolute left-[var(--gutter)] top-2 inline-flex h-12 items-center rounded-[12px] ${focus}`}>
               <Wordmark size="sm" />
             </Link>
-            <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center">
-              {[...links, { label: "Contact", href: "/contact" }].map((n, i) => (
-                <div key={n.href} className="overflow-hidden border-b border-white/10">
-                  <motion.div initial={{ y: "105%" }} animate={{ y: 0 }} exit={{ y: "105%" }} transition={{ duration: 0.8, ease, delay: 0.12 + i * 0.05 }}>
-                    <Link
-                      href={n.href}
-                      aria-current={isActive(n.href) ? "page" : undefined}
-                      className="flex items-center justify-between py-3.5 text-sub font-semibold"
-                      style={{ fontFamily: "var(--font-display)" }}
-                      onClick={() => setOpen(false)}
-                    >
-                      <span className={isActive(n.href) ? "text-water-2" : ""}>{n.label}</span>
-                      <ArrowUpRight size={18} className="opacity-50" aria-hidden />
-                    </Link>
-                  </motion.div>
-                </div>
-              ))}
+            <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center py-4">
+              <p className="mb-2 text-[.78rem] font-semibold uppercase tracking-[.12em] text-white/45">Menu</p>
+              {[...links, { label: "Contact", href: "/contact" }].map((n, i) => {
+                const on = isActive(n.href);
+                return (
+                  <div key={n.href} className="overflow-hidden border-b border-white/10">
+                    <motion.div initial={{ y: "105%" }} animate={{ y: 0 }} exit={{ y: "105%" }} transition={{ duration: 0.8, ease, delay: 0.12 + i * 0.05 }}>
+                      <Link
+                        href={n.href}
+                        aria-current={on ? "page" : undefined}
+                        className="flex items-center gap-4 py-3 text-[1.35rem] font-semibold leading-tight"
+                        style={{ fontFamily: "var(--font-display)" }}
+                        onClick={() => setOpen(false)}
+                      >
+                        <span className="w-6 text-[.8rem] font-semibold tabular-nums text-white/35">{String(i + 1).padStart(2, "0")}</span>
+                        <span className={`flex-1 ${on ? "text-water-2" : ""}`}>{n.label}</span>
+                        <span className={`grid h-8 w-8 place-items-center rounded-full ${on ? "bg-water-2 text-night" : "bg-white/[0.08] text-white/70"}`}>
+                          <ArrowUpRight size={15} aria-hidden />
+                        </span>
+                      </Link>
+                    </motion.div>
+                  </div>
+                );
+              })}
             </nav>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.45, duration: 0.5 }} className="mt-8 grid gap-3 text-body">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.45, duration: 0.5 }} className="mt-4 rounded-[18px] bg-white/[0.06] p-3 text-body ring-1 ring-white/10">
               <Link
-                href="/contact"
+                href="/contact#enquiry"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-12 items-center justify-between rounded-[10px] bg-water-2 pl-5 pr-1.5 font-semibold text-night"
+                className="inline-flex h-12 w-full items-center justify-between rounded-[12px] bg-[#f5f0e6] pl-5 pr-1.5 font-semibold text-night"
               >
                 Book a free inspection
-                <span className="grid h-9 w-9 place-items-center rounded-[8px] bg-night text-white"><ArrowUpRight size={16} /></span>
+                <span className="grid h-9 w-9 place-items-center rounded-[9px] bg-night text-white"><ArrowUpRight size={16} /></span>
               </Link>
-              <a href={tel} className="flex items-center gap-3 text-white/85"><Phone size={16} className="text-water-2" />{contact.phone}</a>
-              <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-white/85"><Mail size={16} className="text-water-2" />{contact.email}</a>
-              <p className="flex items-center gap-3 text-white/60"><Clock size={16} className="text-water-2" />{contact.hours}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <a href={tel} className="flex h-11 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><Phone size={15} className="text-water-2" />Call us</a>
+                <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="flex h-11 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><MessageCircle size={15} className="text-water-2" />WhatsApp</a>
+              </div>
+              <p className="mt-3 flex items-center justify-center gap-2 text-[.88rem] text-white/55"><Clock size={14} className="text-water-2" />{contact.hours}</p>
             </motion.div>
           </motion.div>
         )}

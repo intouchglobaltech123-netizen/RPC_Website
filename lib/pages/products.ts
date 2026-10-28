@@ -476,4 +476,28 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .cmp-t tbody td span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
   .cmp-t tfoot td{padding:.7rem 0 0}
 }
+
+/* phones: the product page: a calmer top, two small fact cards a row, one wide enquire button, tabs that fit */
+@media (max-width:767px){
+  .pv-hero{gap:1rem;padding:1rem 1rem 1.1rem}
+  .pv-stage-wrap{height:16.5rem;border-radius:16px}
+  .pv-thumbs{gap:.45rem}
+  .pv-thumb-box{height:3.4rem}
+  .pv-info{padding-right:0}
+  .pv-title{font-size:1.5rem;line-height:1.2}
+  .pv-subtitle{margin:.3rem 0 .6rem;font-size:.95rem;color:var(--accent)}
+  .pv-summary{display:none}
+  .pv-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-bottom:.9rem}
+  .pv-feat{flex-direction:row;justify-content:flex-start;text-align:left;gap:.55rem;padding:.6rem .7rem;border-radius:12px;background:#fff}
+  .pv-feat-title{font-size:.82rem}
+  .pv-purchase-row{flex-direction:column;align-items:stretch;gap:.8rem;margin-top:0;padding:.9rem;border-radius:16px;background:#f1f5fb}
+  .pv-pack-chip{height:2.3rem;border-radius:999px}
+  .pv-enquire-btn{width:100%;justify-content:center;height:3rem;border-radius:12px;background:var(--navy,#12223b)}
+  .pv-tabs-bar{gap:.2rem;padding:0 .5rem;overflow-x:auto;scrollbar-width:none}
+  .pv-tabs-bar::-webkit-scrollbar{display:none}
+  .pv-tab{flex:none;height:3rem;padding:0 .85rem;font-size:.9rem}
+  .pv-tab svg{display:none}
+  .pv-content{padding:1rem .9rem 2.4rem}
+  .pv-overview-grid{gap:1rem}
+}
 `;

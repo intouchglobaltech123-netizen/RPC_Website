@@ -16,7 +16,7 @@ import { contact } from "@/lib/content";
  * (see lib/leakbot/limits.ts); photos are shrunk in the browser and not stored.
  */
 
-const HIDE = ["/studio", "/contact"];
+const HIDE = ["/studio"];
 const MAX_PHOTOS = 3;
 /** the longest side a photo is shrunk to before it is sent */
 const PHOTO_SIDE = 1024;
@@ -556,7 +556,9 @@ export function LeakBot() {
     const check = () => {
       raf = 0;
       const f = document.querySelector("footer[data-site-footer]");
-      setAtFoot(!!f && f.getBoundingClientRect().top < window.innerHeight - 40);
+      // out of the way at the foot of the page and under any open menu or box
+      const covered = !!document.querySelector("#mobile-menu, .wpx-pop:not([hidden]), .pv[open], [data-lb-hide]");
+      setAtFoot(covered || (!!f && f.getBoundingClientRect().top < window.innerHeight - 40));
     };
     const queue = () => {
       if (!raf) raf = requestAnimationFrame(check);
@@ -564,7 +566,7 @@ export function LeakBot() {
     queue();
     window.addEventListener("scroll", queue, { passive: true });
     window.addEventListener("resize", queue);
-    const poll = setInterval(queue, 1000);
+    const poll = setInterval(queue, 400);
     return () => {
       window.removeEventListener("scroll", queue);
       window.removeEventListener("resize", queue);
