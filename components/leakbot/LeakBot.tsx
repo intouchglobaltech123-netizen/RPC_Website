@@ -557,7 +557,11 @@ export function LeakBot() {
       raf = 0;
       const f = document.querySelector("footer[data-site-footer]");
       // out of the way at the foot of the page and under any open menu or box
-      const covered = !!document.querySelector("#mobile-menu, .wpx-pop:not([hidden]), .pv[open], [data-lb-hide]");
+      const inZone = window.innerWidth < 768 && [...document.querySelectorAll("[data-lb-zone]")].some((z) => {
+        const r = z.getBoundingClientRect();
+        return r.top < window.innerHeight - 60 && r.bottom > 80;
+      });
+      const covered = inZone || !!document.querySelector("#mobile-menu, .wpx-pop:not([hidden]), .pv[open], [data-lb-hide]");
       setAtFoot(covered || (!!f && f.getBoundingClientRect().top < window.innerHeight - 40));
     };
     const queue = () => {

@@ -109,7 +109,7 @@ export function rainMarkup() {
         .join("")}</div></div>`,
   ).join("");
   const tag = (cls: string, text: string) => `<span class="rt-lb ${cls}">${esc(text)}</span>`;
-  return `<section class="pg-sec rt-sec" id="rain-test" aria-labelledby="rt-h" data-rain-test>
+  return `<section class="pg-sec rt-sec" id="rain-test" data-lb-zone aria-labelledby="rt-h" data-rain-test>
   <div class="pg-wrap">
     <div class="rt" data-from="above" data-leak>
       <div class="rt-head">
@@ -132,6 +132,7 @@ export function rainMarkup() {
           <button type="button" class="rt-again" data-rain-again><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg>Drop again</button>
         </div>
       </div>
+      <p class="rt-step" aria-hidden="true"><b>Pick a method</b><span>Swipe for more</span></p>
       <div class="rt-pick" role="group" aria-label="Choose a method">
         <div class="rt-group rt-group--none"><p class="rt-gh"><i class="rt-sw" aria-hidden="true"></i>Start with</p><div class="rt-opts"><button type="button" class="rt-chip" data-rain="none" aria-pressed="true"><i class="rt-r" aria-hidden="true"></i><span>No waterproofing</span></button></div></div>
         ${chips}
@@ -144,6 +145,7 @@ export function rainMarkup() {
 export const RAIN_CSS = `
 /* the rain test: one screen. The heading; the drawing of one drop's journey beside the words; the methods in one band under them */
 .rt-sec{scroll-margin-top:var(--nav-bar,80px)}
+.rt-step{display:none}
 /* the last section on the page: 70px of sand before the footer (which rises 32px over it) */
 .rt-sec{padding-bottom:calc(70px + 32px) !important}
 .rt{display:flex;flex-direction:column;gap:clamp(.9rem,2vh,1.3rem)}

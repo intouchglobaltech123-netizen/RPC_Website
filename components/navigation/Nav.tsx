@@ -260,7 +260,8 @@ export function Nav() {
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
-            className="gutter fixed inset-0 z-40 flex flex-col overflow-y-auto bg-night pb-8 pt-24 text-white lg:hidden"
+            data-lenis-prevent
+            className="gutter fixed inset-0 z-40 flex h-dvh flex-col overflow-y-auto overscroll-contain bg-night pb-[max(1rem,env(safe-area-inset-bottom))] pt-[4.5rem] text-white [@media(max-height:700px)]:pt-[4.2rem] lg:hidden"
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
@@ -269,8 +270,7 @@ export function Nav() {
             <Link href="/" aria-label={`${brand.name} — home`} onClick={() => setOpen(false)} className={`absolute left-[var(--gutter)] top-2 inline-flex h-12 items-center rounded-[12px] ${focus}`}>
               <Wordmark size="sm" />
             </Link>
-            <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center py-4">
-              <p className="mb-2 text-[.78rem] font-semibold uppercase tracking-[.12em] text-white/45">Menu</p>
+            <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center py-2">
               {[...links, { label: "Contact", href: "/contact" }].map((n, i) => {
                 const on = isActive(n.href);
                 return (
@@ -279,7 +279,7 @@ export function Nav() {
                       <Link
                         href={n.href}
                         aria-current={on ? "page" : undefined}
-                        className="flex items-center gap-4 py-3 text-[1.35rem] font-semibold leading-tight"
+                        className="flex items-center gap-4 py-[.6rem] text-[1.25rem] [@media(max-height:700px)]:py-[.38rem] [@media(max-height:700px)]:text-[1.15rem] font-semibold leading-tight"
                         style={{ fontFamily: "var(--font-display)" }}
                         onClick={() => setOpen(false)}
                       >
@@ -294,20 +294,20 @@ export function Nav() {
                 );
               })}
             </nav>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.45, duration: 0.5 }} className="mt-4 rounded-[18px] bg-white/[0.06] p-3 text-body ring-1 ring-white/10">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.45, duration: 0.5 }} className="mt-3 shrink-0 rounded-[18px] bg-white/[0.06] p-2.5 text-body ring-1 ring-white/10">
               <Link
                 href="/contact#enquiry"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-12 w-full items-center justify-between rounded-[12px] bg-[#f5f0e6] pl-5 pr-1.5 font-semibold text-night"
+                className="inline-flex h-11 w-full items-center justify-between rounded-[12px] bg-[#f5f0e6] pl-5 pr-1.5 font-semibold text-night"
               >
                 Book a free inspection
                 <span className="grid h-9 w-9 place-items-center rounded-[9px] bg-night text-white"><ArrowUpRight size={16} /></span>
               </Link>
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <a href={tel} className="flex h-11 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><Phone size={15} className="text-water-2" />Call us</a>
-                <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="flex h-11 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><MessageCircle size={15} className="text-water-2" />WhatsApp</a>
+                <a href={tel} className="flex h-10 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><Phone size={15} className="text-water-2" />Call us</a>
+                <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="flex h-10 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><MessageCircle size={15} className="text-water-2" />WhatsApp</a>
               </div>
-              <p className="mt-3 flex items-center justify-center gap-2 text-[.88rem] text-white/55"><Clock size={14} className="text-water-2" />{contact.hours}</p>
+              <p className="mt-2 flex items-center justify-center gap-2 text-[.85rem] text-white/60 [@media(max-height:700px)]:hidden"><Clock size={14} className="text-water-2" />{contact.hours}</p>
             </motion.div>
           </motion.div>
         )}
