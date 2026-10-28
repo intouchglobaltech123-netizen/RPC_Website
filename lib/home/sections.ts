@@ -288,14 +288,19 @@ export const ROOTED_ABOUT_CSS = `
   .hm-agrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2.2rem}
 }
 @media (max-width:767px){
-  .hm-agrid{display:flex;flex-direction:column;gap:min(1.2rem,2.2svh);max-height:none}
-  .hm-acopy{flex:none}
-  .hm-statement{max-width:none;margin-top:min(1rem,1.8svh)}
-  .hm-lead{margin-top:min(1rem,1.8svh);line-height:1.6}
-  .hm-values{display:flex;flex-wrap:wrap;gap:6px;margin:min(1rem,1.8svh) 0}
-  .hm-values li{display:inline-flex;align-items:center;height:28px;padding:0 11px;border:0;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line)}
-  .hm-values .hm-vno,.hm-values p{display:none}
-  .hm-afig{flex:1 1 0;min-height:12rem}
+  /* phones: the statement, one line, four fact cards and the button; the photograph's empty frame stays off until there is a photograph */
+  .hm .hm-about{min-height:0;padding:2.6rem 0 2.4rem}
+  .hm-agrid{display:block;max-height:none}
+  .hm-acopy{display:block}
+  .hm-statement{max-width:none;margin:.7rem 0 0;font-size:1.7rem;line-height:1.12}
+  .hm-lead{margin:.7rem 0 0;font-size:1rem;line-height:1.5}
+  .hm-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:1.3rem 0 1.4rem}
+  .hm-values li{display:flex;flex-direction:column;gap:.2rem;height:auto;padding:.85rem .9rem .9rem;border:0;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line)}
+  .hm-values .hm-vno{display:block;grid-row:auto;padding:0;font-size:.8rem;letter-spacing:.04em}
+  .hm-values h3{font-size:1rem;line-height:1.25}
+  .hm-values p{display:-webkit-box;margin:0;font-size:.9rem;line-height:1.4}
+  .hm-acopy .hm-btn{width:100%;justify-content:center}
+  .hm-afig{display:none}
 }
 `;
 

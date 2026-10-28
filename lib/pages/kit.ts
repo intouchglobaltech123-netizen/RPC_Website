@@ -312,4 +312,22 @@ export const KIT_CSS = `
 @media (max-width:767px){.pg-head{padding-top:calc(var(--nav-room) + .9rem) !important}}
 .pg-head > .pg-wrap{width:100%}
 
+
+/* phones: the closing band is small: the title, two buttons, the three steps as short titles and the phone */
+@media (max-width:767px){
+  .pg-ctabox{padding:1.2rem 1rem 1.1rem}
+  .pg-ctahead{gap:.9rem}
+  .pg-ctah{font-size:1.35rem;line-height:1.15;max-width:none}
+  .pg-ctaacts{flex-wrap:nowrap;gap:.5rem}
+  .pg-ctaacts .pg-btn{flex:1 1 auto;justify-content:center;height:2.7rem;padding:0 .7rem;font-size:.9rem;white-space:nowrap}
+  .pg-ctaacts .pg-btn--line{flex:0 0 auto}
+  .pg-ctaacts .pg-btn .pg-ar{display:none}
+  .pg-ctasteps{grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-top:1rem;padding-top:.9rem}
+  .pg-ctasteps li{flex-direction:column;gap:.35rem}
+  .pg-ctasd{display:none}
+  .pg-ctast{font-size:.88rem;line-height:1.25}
+  .pg-ctaline{grid-template-columns:minmax(0,1fr);gap:.15rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.2);font-size:.88rem}
+  .pg-ctaline a[href^="mailto"]{display:none}
+  .pg-ctaline .pg-ctatel{font-size:1.05rem}
+}
 `;

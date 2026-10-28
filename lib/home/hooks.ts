@@ -370,9 +370,15 @@ export const HOOKS_CSS =
   .hk-kind{font-size:.82rem}
   .hk-name{font-size:.95rem}
   .hk-prod .hk-after{margin-top:.9rem}
-  .hk-brands{margin-top:1.2rem;padding-top:1rem}
-  .hk-brands .hm-pbh{font-size:1rem}
-  .hk-brands .hm-pbrands img,.hk-brands img{max-height:2.2rem}
+  /* brands: one quiet strip of small logo cards under a line of words */
+  .hk-brands{margin-top:1.4rem;padding-top:1.1rem;border-top:1px solid var(--line)}
+  .hk-bk{display:none}
+  .hm-pbhead{margin-bottom:.8rem}
+  .hk-brands .hm-pbh{font-size:1.05rem;line-height:1.25}
+  .hk-brands .wp-mtrack{gap:.6rem}
+  .hk-brands .wp-btile{width:7.6rem;height:3.9rem;padding:.55rem .9rem;border-radius:12px}
+  .hk-brands .wp-btile img{max-height:2.5rem}
+  .hk-brands .wp-bname{font-size:.9rem}
   /* waterproofing: four before and after pictures, two to a row */
   .hk-bas{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
   .hk-ba{padding:.4rem .4rem .7rem;border-radius:16px}
@@ -381,8 +387,21 @@ export const HOOKS_CSS =
   .hk-bat em{font-size:.95rem;font-style:normal;font-weight:600;color:var(--ink)}
   .hk-bago{display:none}
   .hk-wp .hk-after{margin-top:.9rem}
-  /* projects: the prints, the name and the button */
-  .hk-psum{display:none}
+  /* projects: the heading, the pile of prints (each names itself) and one row with the arrows and the button */
+  .hk-proj{min-height:0;padding:2.4rem 0 2.2rem}
+  .hk-pgrid{grid-template-columns:auto minmax(0,1fr);gap:0 .8rem}
+  .hk-pinfo{display:contents}
+  .hk-pinfo > :nth-child(1){grid-column:1 / -1;grid-row:1}
+  .hk-pinfo > :nth-child(2){display:none}
+  .hk-stack{order:0;grid-column:1 / -1;grid-row:2;aspect-ratio:1.18/1;width:100%;margin:1.3rem 0 .8rem}
+  .hk-pol{width:80%;padding:.55rem .55rem 0}
+  .hk-pol figcaption{padding:.55rem .15rem .7rem}
+  .hk-pol figcaption b,.hk-pol figcaption span{font-size:.95rem}
+  .hk-pinfo > .hk-pctl{grid-column:1;grid-row:3;gap:.3rem}
+  .hk-pinfo > :nth-child(4){grid-column:2;grid-row:3}
+  .hk-pinfo > :nth-child(4) .hm-btn{width:100%;justify-content:center}
+  .hk-arr{width:2.6rem;height:2.6rem}
+  .hk-pcount{min-width:2.8rem}
   /* services: the core card, then six small tiles, in one screen */
   .hm-services{padding:2.4rem 0 2rem}
   .hm-services .hm-h2{font-size:1.55rem;line-height:1.15}
