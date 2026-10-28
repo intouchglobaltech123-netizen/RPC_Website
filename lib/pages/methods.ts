@@ -227,6 +227,24 @@ const METHODS_MOBILE_CSS = `
   .rt-chip[aria-pressed=true]{box-shadow:none}
   .rt-info{order:4;padding:1rem 1.1rem 1.1rem;border-radius:16px}
   .rt-name{font-size:1.2rem}
+
+  /* the rain test, kept to one screen: a shorter header, three methods to a row, and one slim card for the words */
+  .rt-sec{padding-top:1.7rem;padding-bottom:calc(2.2rem + 32px) !important}
+  .rt{gap:.7rem}
+  .rt-head{gap:.2rem}
+  .rt-head .pg-h2{margin-top:.15rem;font-size:1.3rem}
+  .rt-step{margin:0 0 -.3rem}
+  .rt-step b{font-size:.85rem;color:var(--mute)}
+  .rt-pick{grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem}
+  .rt-chip{min-height:2.45rem;gap:.35rem;padding:.3rem .5rem;border-radius:12px;font-size:.76rem;line-height:1.15}
+  .rt-chip .rt-r{flex:none;width:.85rem;height:.85rem}
+  .rt-group--none .rt-chip{min-height:2.2rem;font-size:.84rem}
+  .rt-info{position:relative;gap:.25rem;padding:.8rem .95rem .85rem;border-radius:14px}
+  .rt-kind{display:none}
+  .rt-name{padding-right:6.4rem;font-size:1.05rem}
+  .rt-where{font-size:.86rem;line-height:1.45}
+  .rt-mind{display:none !important}
+  .rt-again{position:absolute;top:.6rem;right:.7rem;margin:0;padding:.35rem .7rem;font-size:.8rem}
 }
 @keyframes wpx-sheet{from{transform:translateY(40px);opacity:0}}
 `;

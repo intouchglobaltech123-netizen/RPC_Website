@@ -375,7 +375,21 @@ export const CONTACT_CSS = ROUTES_CSS + `
   .ct-page .ct-send{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
   .ct-page .ct-sbtn{height:2.8rem;padding:0 .4rem;gap:.4rem;font-size:.88rem}
   .ct-page .ct-sbtn .pg-ar{display:none}
-  .ct-reach{display:none}
+  /* directions stay: pick a town, then where you set out from, and the route opens in Google Maps */
+  .ct-reach{display:block;padding:1.6rem 0 calc(2.2rem + 32px)}
+  .ct-reach .ab-go{display:block;border-radius:20px}
+  .ct-reach .ab-go-side{gap:.85rem;padding:1.1rem 1rem 1.1rem}
+  .ct-reach .ab-go-h{font-size:1.15rem;font-weight:650;letter-spacing:-.015em}
+  .ct-reach .ab-go-towns{gap:.35rem}
+  .ct-reach .ab-go-town{height:2.1rem;padding:0 .85rem;font-size:.84rem}
+  .ct-reach .ab-go-from{grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}
+  .ct-reach .ab-go-route{align-items:center;gap:.5rem;padding:.55rem .65rem;border-radius:12px}
+  .ct-reach .ab-go-route svg{margin-top:0}
+  .ct-reach .ab-go-route b{font-size:.84rem;line-height:1.2}
+  .ct-reach .ab-go-route small{display:none}
+  .ct-reach .ab-go-open{align-self:stretch;justify-content:center;gap:.45rem;margin-top:.1rem;height:2.75rem;border-radius:999px;background:var(--navy);font-size:.92rem;color:#fff}
+  .ct-reach .ab-go-open:hover{text-decoration:none}
+  .ct-reach .ab-go-map{min-height:13rem;margin:0 .6rem .6rem;border-radius:14px;overflow:hidden}
 }
 
 /* the four ways to reach us: all white; navy only under the pointer */
