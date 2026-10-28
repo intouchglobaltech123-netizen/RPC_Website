@@ -17,6 +17,10 @@
  * number, the product we use there and what it does, and why the stage needs
  * it. The line beside them brightens while the camera is in close.
  *
+ * On phones and upright screens there is no scrolling through it: the film
+ * plays by itself from the first stage to the finished building, the words
+ * following it, and the hook comes in at the end; tapping a stage jumps there.
+ *
  * Where people ask for less motion, or to save data, or where the browser
  * will not play the film, nothing plays: each step shows its stage's still
  * frame (in close on the product), and the last the finished building.
@@ -98,6 +102,10 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const saveData = Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
   section.classList.add("mh-js");
+  /** phones and upright screens: no scrolling through it, the film plays by itself to the finished building */
+  const narrow = window.matchMedia("(max-width: 899px), (max-aspect-ratio: 7/5)");
+  let auto = narrow.matches;
+  section.classList.toggle("mh-auto", auto);
 
   const last = list.length; // the step after the last stage: the finished building
   let live = false;
@@ -198,7 +206,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
     if (!raf) raf = requestAnimationFrame(loop);
   }
   /** where step k stops (the end of the film for the last step) and where it starts from when jumped to */
-  const holdOf = (k: number) => (k >= last ? Infinity : list[k]!.back - 0.04);
+  const holdOf = (k: number) => (auto || k >= last ? Infinity : list[k]!.back - 0.04);
   const startOf = (k: number) => (k >= last ? list[last - 1]!.back : list[k]!.start + 0.02);
   function play() {
     if (stopped || !live || !onScreen || document.hidden) return;
@@ -213,6 +221,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   }
   /** take the film to step k */
   function go(k: number, again = false) {
+    if (auto && stopped) k = last; // nothing plays: the finished building
     if (k === step && !again) return;
     const from = step;
     step = k;
@@ -286,7 +295,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   }
   const onScroll = () => {
     helper();
-    if (!live) return;
+    if (!live || auto) return;
     window.clearTimeout(settle);
     settle = window.setTimeout(() => {
       if (performance.now() < heldUntil) return;
@@ -298,7 +307,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
 
   /* one gesture, one step: is this input ours (true), or does the page scroll on as usual (false)? */
   function ours(dir: number) {
-    if (!live || !dir || !pinned()) return false;
+    if (auto || !live || !dir || !pinned()) return false;
     const k = Math.max(0, step);
     if (dir > 0 && k >= last) return false; // the stages are done: on down the page
     if (dir < 0 && k <= 0) return false; // the first stage: up to the top of the page
@@ -354,7 +363,20 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
     const b = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-ch]");
     if (!b) return;
     const k = list.findIndex((x) => x.key === b.dataset.ch);
-    if (k >= 0) stepTo(k);
+    if (k < 0) return;
+    if (auto) {
+      // playing by itself: jump the film to that stage and carry on from there
+      if (stopped) return;
+      step = k;
+      setEnded(false);
+      stopAt = Infinity;
+      video!.currentTime = startOf(k);
+      update(true);
+      play();
+      kick();
+      return;
+    }
+    stepTo(k);
   };
   section.addEventListener("click", onChapter);
 
@@ -377,11 +399,20 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
     live = true;
     section.classList.add("is-live");
     if (!stopped) video!.preload = "auto";
-    const k = stepFromScroll();
+    const k = auto ? 0 : stepFromScroll();
     if (stopped && video!.readyState < 1) video!.addEventListener("loadedmetadata", () => go(k, true), { once: true });
     go(k, true);
     helper();
   }
+  // turning the screen, or resizing across the breakpoint: start over in the other way of playing
+  const onShape = () => {
+    if (narrow.matches === auto) return;
+    auto = narrow.matches;
+    section.classList.toggle("mh-auto", auto);
+    setEnded(false);
+    if (live) go(auto ? 0 : stepFromScroll(), true);
+  };
+  narrow.addEventListener("change", onShape);
   if (!opts.held || opts.atEnd) release();
 
   return {
@@ -405,7 +436,8 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
       section.removeEventListener("click", onChapter);
       seen.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      section.classList.remove("mh-js", "is-live", "is-ended");
+      narrow.removeEventListener("change", onShape);
+      section.classList.remove("mh-js", "mh-auto", "is-live", "is-ended");
     },
   };
 }

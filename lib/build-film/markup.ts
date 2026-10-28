@@ -33,6 +33,7 @@ const out = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5
 const tick = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const wa = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>`;
 const down = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const mouse = `<svg class="mh-mouse" viewBox="0 0 20 30" aria-hidden="true"><rect x="1.5" y="1.5" width="17" height="27" rx="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect class="mh-wheel" x="8.6" y="6" width="2.8" height="6" rx="1.4" fill="currentColor"/></svg>`;
 const total = String(stages.length).padStart(2, "0");
 /** the stage's place in the build: "03 / 06" */
 const count = (i: number) => `<span class="mh-flag"><i></i><b class="mh-count">${String(i + 1).padStart(2, "0")}</b><b class="mh-of">/ ${total}</b></span>`;
@@ -79,10 +80,10 @@ export function buildMarkup(d: BuildData) {
     <div class="mh-chapters">
       <p class="mh-ask mh-sr" id="mh-ask">${esc(intro.ask)}</p>
       <ol aria-labelledby="mh-ask">${chapters}</ol>
-      <p class="mh-hint" aria-hidden="true">${down}<span>${esc(intro.next)}</span></p>
     </div>
   </div>
 </div>
+<p class="mh-hint" aria-hidden="true">${mouse}<span>${esc(intro.next)}</span>${down}</p>
 </div>
 <template class="mh-captions">${stages
     .map(
@@ -107,7 +108,7 @@ export const BUILD_CSS = `
 .mh-chip{display:none}
 /* the site's leak helper (components/leakbot) stays away while the stages play, and comes back once they are done */
 html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden !important;pointer-events:none !important;transition:opacity .3s ease,visibility 0s linear .3s !important}
-.mh-body{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:calc(var(--nav-h,64px) + 2rem) clamp(1.5rem,5vw,4.5rem) clamp(1.5rem,4.5vh,2.75rem);box-sizing:border-box}
+.mh-body{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;padding:calc(var(--nav-h,64px) + 2rem) clamp(1.5rem,5vw,4.5rem) clamp(5rem,12vh,6.8rem);box-sizing:border-box}
 .mh-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* the hook, on the left in the middle of the height once the film has played (without scripts it is simply there) */
@@ -168,9 +169,16 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 .mh-ch:hover,.mh-ch[aria-current="true"]{color:#fff}
 .mh-ch i{display:block;height:2px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden}
 .mh-ch b{display:block;height:100%;width:100%;border-radius:inherit;background:#fff;transform:scaleX(var(--p,0));transform-origin:left center}
-.mh-hint{display:flex;align-items:center;gap:.45rem;margin:.95rem 0 0;font-size:calc(var(--fs-body,1rem)*.88);font-weight:500;color:rgba(226,236,240,.74);text-shadow:0 1px 10px rgba(0,0,0,.6);transition:opacity .3s ease}
-.mh-hint svg{width:15px;height:15px;animation:mh-nudge 1.8s ease-in-out infinite}
-.mh-hint.is-off{opacity:0}
+/* the scroll cue: a pill centred at the bottom of the screen, a mouse wheel that rolls and an arrow that nods, so anyone sees at once to scroll */
+.mh-hint{position:absolute;left:50%;bottom:clamp(.9rem,3.2vh,1.75rem);z-index:2;display:flex;align-items:center;gap:.8rem;margin:0;padding:.7rem 1.35rem .7rem 1.05rem;border-radius:999px;background:rgba(6,16,24,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3),0 14px 34px -14px rgba(0,0,0,.7);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:calc(var(--fs-body,1rem)*1.06);font-weight:600;letter-spacing:.005em;line-height:1;color:#fff;white-space:nowrap;transform:translateX(-50%);transition:opacity .35s ease,visibility 0s linear 0s}
+.mh-hint span{text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.mh-hint svg{flex:none}
+.mh-hint .mh-mouse{width:19px;height:29px;color:var(--mh-blue)}
+.mh-hint .mh-wheel{animation:mh-wheel 1.7s ease-in-out infinite}
+.mh-hint svg:last-child{width:18px;height:18px;color:var(--mh-blue);animation:mh-nudge 1.7s ease-in-out infinite}
+.mh-hint.is-off{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s}
+.mh-js:not(.is-live) .mh-hint{opacity:0}
+@keyframes mh-wheel{0%{transform:translateY(0);opacity:1}60%{transform:translateY(7px);opacity:0}100%{transform:translateY(0);opacity:0}}
 @keyframes mh-nudge{0%,100%{transform:none}50%{transform:translateY(3px)}}
 .mh a:focus-visible,.mh button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 
@@ -190,12 +198,15 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
   .mh-uses{margin-top:.7rem}
   .mh-prod{font-size:clamp(1.4rem,2vw,1.85rem)}
   .mh-chapters{margin-top:1.1rem}
-  .mh-hint{margin-top:.7rem}
 }
 @media (max-width:1180px) and (min-width:900px){.mh-foot{width:min(34rem,62vw)}}
 
 /* phones and upright screens: the whole frame at the top, the words under it, still held while scrolling */
 @media (max-width:899px),(max-aspect-ratio:7/5){
+  /* no scrolling through it: the film plays by itself to the finished building (lib/build-film/mount.ts, "auto") */
+  .mh.mh-js{height:auto;min-height:100vh;min-height:100svh}
+  .mh-js .mh-pin{position:relative;height:auto;min-height:100vh;min-height:100svh}
+  .mh-hint{display:none}
   .mh-pin{display:flex;flex-direction:column}
   .mh-stage{position:relative;inset:auto;margin-top:var(--nav-h,60px);aspect-ratio:16/9;width:100%;flex:none}
   .mh-film{object-position:50% 50%}
@@ -203,7 +214,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
   .mh-chip{position:absolute;left:.6rem;bottom:.6rem;display:flex;align-items:center;gap:.6rem;margin:0;padding:.35rem .75rem;border-radius:999px;background:rgba(5,14,21,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:var(--fs-body,1rem);font-weight:600;color:#fff;transition:opacity .22s ease}
   .mh-chip.is-swap{opacity:0}
   .mh:not(.mh-js) .mh-chip,.mh.is-ended .mh-chip{opacity:0}
-  .mh-body{flex:1;height:auto;justify-content:flex-start;padding:1.1rem 1rem 1.25rem}
+  .mh-body{flex:1;height:auto;justify-content:flex-start;padding:1.1rem 1rem 1.6rem}
   .mh-foot{width:100%;max-width:36rem;margin-inline:auto}
   .mh-now .mh-state{display:none}
   .mh-uses{margin-top:0}
@@ -235,7 +246,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 @media (prefers-reduced-motion:reduce){
   .mh-js .mh-foot,.mh-now::before,.mh-chip,.mh-hint{transition:none !important}
   .mh-js .mh-now>*{transition:none !important}
-  .mh-hint svg{animation:none}
+  .mh-hint svg,.mh-hint .mh-wheel{animation:none}
   .mh-js .mh-hook>*,.mh-shade-end{transition:none !important;animation:none !important}
 }
 @media (pointer:coarse){
