@@ -266,7 +266,7 @@ const CSS = `
 .lb-hint{position:fixed;right:calc(max(29px,calc(env(safe-area-inset-right) + 15px)) + 68px + 14px);bottom:calc(max(44px,calc(env(safe-area-inset-bottom) + 40px)) + 34px);z-index:60;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:#fff;color:#0b2350;font-size:13.5px;font-weight:600;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:0 0 0 1px rgba(11,35,80,.1),0 14px 28px -14px rgba(4,12,30,.55);transform:translateY(50%);animation:lb-hint-in .5s 1.2s cubic-bezier(.2,.8,.2,1) both,lb-hint-bob 3.2s 2s ease-in-out infinite;transition:opacity .3s}
 .lb-hint::after{content:"";position:absolute;right:-5px;top:50%;width:10px;height:10px;margin-top:-5px;background:#fff;transform:rotate(45deg);box-shadow:1px -1px 0 0 rgba(11,35,80,.06)}
 .lb-hint-dot{width:8px;height:8px;border-radius:50%;background:#2fb57a;box-shadow:0 0 0 3px rgba(47,181,122,.2)}
-.lb-hint[data-hidden="1"]{opacity:0;pointer-events:none}
+.lb-hint[data-hidden="1"]{opacity:0 !important;visibility:hidden;pointer-events:none;animation:none}
 @keyframes lb-hint-in{from{opacity:0;transform:translate(10px,50%)}to{opacity:1;transform:translate(0,50%)}}
 @keyframes lb-hint-bob{0%,100%{transform:translate(0,50%)}50%{transform:translate(-4px,50%)}}
 @media (max-width:599px){.lb-hint{font-size:12px;padding:8px 11px;animation:lb-hint-in .5s 1.2s cubic-bezier(.2,.8,.2,1) both,lb-hint-out .4s 9s forwards}}
@@ -549,6 +549,30 @@ export function LeakBot() {
     return () => mo.disconnect();
   }, []);
 
+  // the helper steps out of the way once the footer comes into view
+  const [atFoot, setAtFoot] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const f = document.querySelector("footer[data-site-footer]");
+      setAtFoot(!!f && f.getBoundingClientRect().top < window.innerHeight - 40);
+    };
+    const queue = () => {
+      if (!raf) raf = requestAnimationFrame(check);
+    };
+    queue();
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue);
+    const poll = setInterval(queue, 1000);
+    return () => {
+      window.removeEventListener("scroll", queue);
+      window.removeEventListener("resize", queue);
+      clearInterval(poll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     if (!quota) fetch("/api/leakbot").then((r) => r.json()).then((j: { quota?: Quota }) => j.quota && setQuota(j.quota)).catch(() => {});
@@ -660,7 +684,8 @@ export function LeakBot() {
         ref={launcher}
         type="button"
         className="lb-launch"
-        data-hidden={open || rateList ? "1" : undefined}
+        data-hidden={open || rateList || atFoot ? "1" : undefined}
+        tabIndex={atFoot && !open ? -1 : undefined}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={t.launcherCta}
@@ -676,7 +701,7 @@ export function LeakBot() {
         </span>
       </button>
       {/* the label beside the button, so it is plain that this is an AI helper */}
-      <span className="lb-hint" aria-hidden data-hidden={open || rateList ? "1" : undefined} onClick={() => setOpen(true)}>
+      <span className="lb-hint" aria-hidden data-hidden={open || rateList || atFoot ? "1" : undefined} onClick={() => setOpen(true)}>
         <i className="lb-hint-dot" />
         {t.launcherHint}
       </span>

@@ -23,7 +23,7 @@ export function Footer() {
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapQuery)}`;
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
   const head = "mb-3 text-body font-semibold text-water-2";
-  const link = `-my-2 inline-block py-2 rounded text-body text-white/72 transition-colors hover:text-white ${focus}`;
+  const link = `-my-2 inline-block py-2 rounded text-[.95rem] md:text-body text-white/72 transition-colors hover:text-white ${focus}`;
   const socials = contact.socials.filter((s) => s.label !== "WhatsApp");
 
   return (
@@ -67,7 +67,7 @@ export function Footer() {
             {/* pages: one wrapped row of links on a phone, a column from tablets up */}
             <nav aria-label="Footer" className="col-span-2 md:col-span-1">
               <p className={`${head} hidden md:block`}>Explore</p>
-              <ul className="flex flex-row flex-wrap items-center gap-x-5 gap-y-1 md:flex-col md:items-start md:gap-2">
+              <ul className="grid grid-cols-3 gap-x-3 gap-y-1 md:flex md:flex-col md:items-start md:gap-2">
                 {nav.map((n) => (
                   <li key={n.href}>
                     <Link href={n.href} className={link}>
@@ -97,7 +97,7 @@ export function Footer() {
               <p className={`${head} hidden md:block`}>Get in touch</p>
               <ul className="space-y-2 text-body text-white/72">
                 <li>
-                  <a href={tel} className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
+                  <a href={tel} className={`flex w-full items-center justify-center gap-2 rounded-full bg-white/[0.08] py-3 transition-colors hover:text-white md:-my-2 md:w-fit md:justify-start md:rounded md:bg-transparent md:py-2 ${focus}`}>
                     <Phone size={15} aria-hidden className="shrink-0 text-water-2" /> {contact.phone}
                   </a>
                 </li>

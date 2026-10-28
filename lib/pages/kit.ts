@@ -303,8 +303,13 @@ export const KIT_CSS = `
 @media (max-width:1023px){.pg-head,.pjs-head{--head-h:28rem}}
 @media (max-width:599px){.pg-head,.pjs-head{--head-h:30rem;--head-pb:1.8rem}}
 /* phones: a shorter opening, so the page's own content starts higher up the screen (it still grows if a long title needs the room) */
-@media (max-width:767px){.pg-head,.pjs-head{--head-h:21rem;--head-pb:1.6rem}}
+@media (max-width:767px){
+  .pg-head,.pjs-head{--head-h:13rem;--head-pb:1.2rem}
+  .pg-head .pg-h1,.pg-head h1,.pjs-head .pj-h1{font-size:1.55rem;line-height:1.15}
+  .pg-head .pg-mark,.pjs-head .pg-mark{display:none}
+}
 .pg-head{display:flex !important;flex-direction:column;justify-content:flex-end;min-height:var(--head-h);height:auto;box-sizing:border-box;padding:var(--nav-room) 0 var(--head-pb) !important}
+@media (max-width:767px){.pg-head{padding-top:calc(var(--nav-room) + .9rem) !important}}
 .pg-head > .pg-wrap{width:100%}
 
 `;
