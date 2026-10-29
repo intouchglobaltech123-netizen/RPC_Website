@@ -248,7 +248,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-stage::after{content:"";position:absolute;left:0;right:0;bottom:0;height:68%;background:linear-gradient(to bottom,rgba(10,24,35,0) 0,rgba(10,24,35,.55) 28%,rgba(10,24,35,.9) 52%,#0a1823 72%);pointer-events:none;transition:height .7s ease}
     .mh-js.is-ended .mh-stage::after{height:82%}
     .mh-film{transform-origin:50% 0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
-    .mh-js.is-ended .mh-film{transform:translateY(-13%) scale(1.16)}
+    .mh-js.is-ended .mh-film{transform:translateY(-15%)}
     .mh-chip{z-index:2;top:calc(var(--nav-h,60px) + 1.5rem);bottom:auto;left:.8rem}
     .mh-body{flex:none;padding:0 .9rem 1.2rem}
     /* the bar at the top is a solid page colour, so the logo and buttons read on any picture */

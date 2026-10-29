@@ -142,7 +142,7 @@ export const film = {
     "A film of one seven-storey apartment building being built, from the dug basement pit to the finished building and its gardens, moving in close at each stage as its product goes on: a membrane fixed to the basement wall, the slab concrete poured, grout under a column base, tile adhesive on a floor, a waterproof coat in a bathroom, and a white coat on the terrace.",
   duration: 28.07,
   /** the upright film has its own stage times */
-  phoneDuration: 28.07,
+  phoneDuration: 29.20,
   chapters: [
     { key: "basement", start: 0.00, uses: 1.50, back: 3.35, end: 3.40 },
     { key: "concrete", start: 3.40, uses: 4.90, back: 6.65, end: 6.70 },
@@ -157,6 +157,6 @@ export const film = {
     { key: "structure", start: 6.70, uses: 8.20, back: 9.65, end: 9.70 },
     { key: "tiling", start: 9.70, uses: 12.30, back: 15.70, end: 15.75 },
     { key: "wet", start: 15.75, uses: 18.90, back: 20.35, end: 20.40 },
-    { key: "terrace", start: 20.40, uses: 22.70, back: 25.20, end: 28.07 },
+    { key: "terrace", start: 20.40, uses: 22.70, back: 25.20, end: 29.20 },
   ] as readonly { key: StageKey; start: number; uses: number; back: number; end: number }[],
 };
