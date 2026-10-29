@@ -268,6 +268,9 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-does{display:block;margin:.5rem 0 0;font-size:.95rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
     .mh-why{display:block;margin:.4rem 0 0;font-size:.85rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
     .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:.88rem}
+    /* the closing words: just the line and the two buttons */
+    .mh-kicker,.mh-lede,.mh-points{display:none}
+    .mh-ctas{margin-top:1.2rem}
     /* kept short: the stage, the product, one line on what it does; no 1 to 6 buttons */
     .mh-uses-k,.mh-why,.mh-more{display:none}
     .mh-chapters{display:none}
