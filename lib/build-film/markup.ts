@@ -262,9 +262,12 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-uses{gap:.4rem}
     .mh-uses-k{align-self:flex-start;padding:.12rem .55rem;border-radius:999px;background:rgba(159,211,234,.14);font-size:.66rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
     .mh-more{margin-top:.6rem;padding:.35rem .75rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.8rem}
-    .mh-prod{font-size:clamp(1.12rem,4.8vw,1.35rem)}
-    .mh-does{margin-top:.35rem;font-size:.88rem;line-height:1.45}
-    .mh-why{margin-top:.3rem;font-size:.8rem;line-height:1.45}
+    .mh-prod{font-size:clamp(1.05rem,4.4vw,1.25rem)}
+    /* very short: just the product and where to read more */
+    .mh-uses-k,.mh-does,.mh-why{display:none}
+    .mh-now{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.7rem .8rem .7rem .95rem}
+    .mh-now .mh-uses{margin:0;min-width:0}
+    .mh-now .mh-more{margin:0;flex:none;white-space:nowrap}
     /* the six stages: numbered buttons, the one showing opens to its name and fills as it plays */
     .mh-chapters{margin-top:.6rem}
     .mh-chapters ol{display:flex;gap:.4rem;counter-reset:ch}
