@@ -256,18 +256,18 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     /* the chip names the stage; the numbers 1 to 6 are the buttons at the bottom */
     .mh-chip .mh-flag{display:none}
     .mh-chip{padding:.3rem .8rem;font-size:.88rem}
-    /* the words: a soft glass card */
-    .mh-now{padding:.8rem .9rem .85rem;border-radius:18px;background:linear-gradient(160deg,rgba(16,36,52,.74),rgba(8,20,30,.8));border:1px solid rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
-    .mh-now::before{display:none}
-    .mh-uses{gap:.4rem}
-    .mh-uses-k{align-self:flex-start;padding:.12rem .55rem;border-radius:999px;background:rgba(159,211,234,.14);font-size:.66rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-    .mh-more{margin-top:.6rem;padding:.35rem .75rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.8rem}
-    .mh-prod{font-size:clamp(1.05rem,4.4vw,1.25rem)}
-    /* very short: just the product and where to read more */
-    .mh-uses-k,.mh-does,.mh-why{display:none}
-    .mh-now{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.7rem .8rem .7rem .95rem}
-    .mh-now .mh-uses{margin:0;min-width:0}
-    .mh-now .mh-more{margin:0;flex:none;white-space:nowrap}
+    /* the words: the same as on the website, written straight on the film (no card) */
+    .mh-chip{display:none}
+    .mh-now{display:block;padding:0 0 0 .95rem;border-radius:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+    .mh-now::before{display:block}
+    .mh-now .mh-state{display:flex;font-size:.95rem}
+    .mh-now .mh-state>:not(.mh-place){display:none}
+    .mh-uses{display:flex;flex-direction:column;gap:.1rem;margin:.6rem 0 0}
+    .mh-uses-k{display:block;align-self:auto;padding:0;border-radius:0;background:none;font-size:.85rem;font-weight:500;letter-spacing:0;text-transform:none;color:var(--mh-blue)}
+    .mh-prod{font-size:clamp(1.4rem,6.2vw,1.65rem);text-shadow:0 2px 18px rgba(0,0,0,.5)}
+    .mh-does{display:block;margin:.5rem 0 0;font-size:.95rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+    .mh-why{display:block;margin:.4rem 0 0;font-size:.85rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+    .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:.88rem}
     /* the six stages: numbered buttons, the one showing opens to its name and fills as it plays */
     .mh-chapters{margin-top:.6rem}
     .mh-chapters ol{display:flex;gap:.4rem;counter-reset:ch}
