@@ -135,6 +135,9 @@ export const film = {
   wide: "/videos/build/build-apartment-1080.mp4",
   narrow: "/videos/build/build-apartment-720.mp4",
   poster: "/videos/build/build-apartment-poster.jpg",
+  /** the upright film (9:16, same length) for phones (up to 767px wide), and its poster */
+  phone: "/videos/build/build-apartment-portrait-720.mp4",
+  posterPhone: "/videos/build/build-apartment-portrait-poster.jpg",
   label:
     "A film of one seven-storey apartment building being built, from the dug basement pit to the finished building and its gardens, moving in close at each stage as its product goes on: a membrane fixed to the basement wall, the slab concrete poured, grout under a column base, tile adhesive on a floor, a waterproof coat in a bathroom, and a white coat on the terrace.",
   duration: 28.07,

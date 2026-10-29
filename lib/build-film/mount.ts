@@ -105,6 +105,8 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   /** phones and upright screens: no scrolling through it, the film plays by itself to the finished building */
   const narrow = window.matchMedia("(max-width: 899px), (max-aspect-ratio: 7/5)");
   let auto = narrow.matches;
+  const phone = window.matchMedia("(max-width: 767px)");
+  if (video) video.poster = phone.matches ? film.posterPhone : film.poster;
   section.classList.toggle("mh-auto", auto);
 
   const last = list.length; // the step after the last stage: the finished building
@@ -408,6 +410,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   const onShape = () => {
     if (narrow.matches === auto) return;
     auto = narrow.matches;
+    if (video) video.poster = phone.matches ? film.posterPhone : film.poster;
     section.classList.toggle("mh-auto", auto);
     setEnded(false);
     if (live) go(auto ? 0 : stepFromScroll(), true);

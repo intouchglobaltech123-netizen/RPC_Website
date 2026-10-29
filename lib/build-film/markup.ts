@@ -50,6 +50,7 @@ export function buildMarkup(d: BuildData) {
   return `<div class="mh-pin">
 <div class="mh-stage">
   <video class="mh-film" muted playsinline preload="metadata" poster="${esc(film.poster)}" aria-label="${esc(film.label)}">
+    <source src="${esc(film.phone)}" type="video/mp4" media="(max-width: 767px)">
     <source src="${esc(film.narrow)}" type="video/mp4" media="(max-width: 899px), (max-aspect-ratio: 7/5)">
     <source src="${esc(film.wide)}" type="video/mp4">
   </video>
@@ -207,6 +208,8 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
   .mh-hint{display:none}
   .mh-pin{display:flex;flex-direction:column}
   .mh-stage{position:relative;inset:auto;margin-top:var(--nav-h,60px);aspect-ratio:16/9;width:100%;flex:none}
+  /* phones: the film is upright, so the picture is tall and the words sit under it */
+  @media (max-width:767px){.mh-stage{aspect-ratio:auto;height:clamp(19rem,calc(100svh - var(--nav-h,60px) - 20.5rem),36rem)}}
   .mh-film{object-position:50% 50%}
   .mh-shade{display:none}
   .mh-chip{position:absolute;left:.6rem;bottom:.6rem;display:flex;align-items:center;gap:.6rem;margin:0;padding:.35rem .75rem;border-radius:999px;background:rgba(5,14,21,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:var(--fs-body,1rem);font-weight:600;color:#fff;transition:opacity .22s ease}
