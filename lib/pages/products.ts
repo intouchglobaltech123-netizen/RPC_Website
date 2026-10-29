@@ -554,7 +554,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pv-feat-title{font-size:.82rem}
   .pv-purchase-row{flex-direction:column;align-items:stretch;gap:.8rem;margin-top:0;padding:.9rem;border-radius:16px;background:#f1f5fb}
   .pv-pack-chip{height:2.3rem;border-radius:999px}
-  .pv-enquire-btn{width:100%;justify-content:center;height:3rem;border-radius:12px;background:var(--navy,#12223b)}
+  .pv-enquire-btn{width:100%;justify-content:center;height:3rem;border-radius:12px;background:var(--color-rpc,#2756a0)}
   .pv-tabs-bar{gap:.2rem;padding:0 .5rem;overflow-x:auto;scrollbar-width:none}
   .pv-tabs-bar::-webkit-scrollbar{display:none}
   .pv-tab{flex:none;height:3rem;padding:0 .85rem;font-size:.9rem}

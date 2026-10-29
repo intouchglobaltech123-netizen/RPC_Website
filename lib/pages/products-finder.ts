@@ -103,7 +103,7 @@ const VIEWER_HTML = `<dialog class="pv" data-pv data-lenis-prevent aria-labelled
           <div class="pv-pack-chips" data-pv-pack-chips></div>
         </div>
         <button type="button" class="pv-enquire-btn" data-pv-enquire>
-          <span>Enquire About This Product</span>
+          <span>Enquire Now</span>
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
         </button>
       </div>
@@ -843,8 +843,8 @@ html.pv-open,body.pv-open{overflow:hidden !important}
 .pv-pack-chip{height:2.3rem;padding:0 .95rem;border:0;border-radius:999px;background:var(--sand,#ece6da);color:var(--ink,#12223b);font-size:var(--pv-s);font-weight:600;box-shadow:none}
 .pv-pack-chip:hover:not(.is-active){background:#e2d9c9}
 .pv-pack-chip.is-active{background:var(--navy,#0b2350);color:#fff}
-.pv-enquire-btn{gap:.7rem;height:3.2rem;padding:0 1.6rem;border-radius:999px;background:var(--navy,#0b2350);font-size:var(--fs-body);font-weight:600;box-shadow:0 14px 26px -16px rgba(11,35,80,.9)}
-.pv-enquire-btn:hover{background:var(--accent,#2756a0);transform:translateY(-1px);box-shadow:0 18px 30px -16px rgba(39,86,160,.9)}
+.pv-enquire-btn{gap:.7rem;height:3.2rem;padding:0 1.6rem;border-radius:999px;background:var(--color-rpc,#2756a0);font-size:var(--fs-body);font-weight:600;box-shadow:0 14px 26px -16px rgba(39,86,160,.9)}
+.pv-enquire-btn:hover{background:#1e40af;transform:translateY(-1px);box-shadow:0 18px 30px -16px rgba(39,86,160,.9)}
 .pv-enquire-btn svg{transition:transform .2s}
 .pv-enquire-btn:hover svg{transform:translateX(3px)}
 
