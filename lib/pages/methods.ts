@@ -31,7 +31,7 @@ export function methodsPageMarkup(d: MethodsData, o: PageOptions = {}) {
   // the opening: the monsoon house film from the home page, on a loop, one screen tall, with the page's title in the middle of it
   const film = `<header class="wp-film" aria-label="A house in the monsoon rain, kept dry" data-nav-tone="dark">
   <figure class="wp-fbox">
-    <video class="wp-fvid" poster="/videos/hero/monsoon-house-poster.jpg" muted loop playsinline autoplay preload="metadata" data-loop aria-hidden="true"><source src="/videos/hero/monsoon-house-540.mp4" type="video/mp4" media="(max-width: 767px)"><source src="/videos/hero/monsoon-house-720.mp4" type="video/mp4"></video>
+    <video class="wp-fvid" poster="/videos/hero/monsoon-house-poster.jpg" muted loop playsinline autoplay preload="metadata" data-loop aria-hidden="true"><source src="/videos/hero/monsoon-house-square-960.mp4" type="video/mp4" media="(max-width: 767px)"><source src="/videos/hero/monsoon-house-720.mp4" type="video/mp4"></video>
     <div class="wp-fhead">
       <p class="pg-mark">Waterproofing</p>
       <h1 class="pg-h1">Waterproofing methods<br class="wp-br"> for every part of a&nbsp;building.</h1>
