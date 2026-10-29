@@ -123,6 +123,14 @@ const BASE_CSS = `
 .wp-fhead{position:absolute;inset:auto 0 0 0;z-index:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;width:100%;max-width:1360px;margin:0 auto;padding:0 var(--gutter,3rem) clamp(2.4rem,9vh,5.5rem);box-sizing:border-box;text-align:left}
 .wp-fhead .pg-mark{justify-content:flex-start;margin:0 0 1rem;color:rgba(255,255,255,.85)}
 .wp-fhead .pg-h1{max-width:20ch;margin:0;color:#fff;text-shadow:0 2px 24px rgba(0,0,0,.35)}
+/* phones: the square film at its own proportions, small and centred just below the bar, and the title under it */
+@media (max-width:767px){
+  .wp-film{background:#0a1823;padding:calc(var(--nav-h,60px) + 1rem) 0 0}
+  .wp-fbox{height:auto;overflow:visible;background:none;padding:0 var(--gutter,1rem)}
+  .wp-fbox::after{display:none}
+  .wp-fvid{height:auto;aspect-ratio:1/1;border-radius:18px;box-shadow:0 18px 40px -22px rgba(0,0,0,.8)}
+  .wp-fhead{position:static;inset:auto;padding:1.5rem 0 2.2rem;max-width:none}
+}
 /* the brands follow the methods on the same background, so they need little room above */
 .wp-msec{padding-bottom:clamp(1.2rem,3vh,2rem)}
 .wp-msec ~ .wp-bsec{padding-top:clamp(2rem,5vh,3rem)}
