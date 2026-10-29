@@ -304,9 +304,12 @@ export const KIT_CSS = `
 @media (max-width:599px){.pg-head,.pjs-head{--head-h:30rem;--head-pb:1.8rem}}
 /* phones: a shorter opening, so the page's own content starts higher up the screen (it still grows if a long title needs the room) */
 @media (max-width:767px){
-  .pg-head,.pjs-head{--head-h:13rem;--head-pb:1.2rem}
-  .pg-head .pg-h1,.pg-head h1,.pjs-head .pj-h1{font-size:1.55rem;line-height:1.15}
-  .pg-head .pg-mark,.pjs-head .pg-mark{display:none}
+  .pg-head,.pjs-head{--head-h:13.5rem;--head-pb:1.3rem}
+  /* the opening, the same everywhere: a short line and the page's name as the heading, then two lines of words */
+  .pg-head .pg-mark,.pjs-head .pg-mark{display:flex;align-items:center;gap:.65rem;margin:0 0 .55rem;font-family:var(--display);font-size:1.55rem;font-weight:650;line-height:1.1;letter-spacing:-.02em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.3)}
+  .pg-head .pg-mark::before,.pjs-head .pg-mark::before{content:"";flex:none;width:1.8rem;height:2px;border-radius:2px;background:#9fbbe6}
+  .pg-head .pg-mark .pg-idx,.pg-head .pg-mark .pg-rule,.pjs-head .pg-mark .pg-idx,.pjs-head .pg-mark .pg-rule{display:none}
+  .pg-head .pg-h1,.pg-head h1,.pjs-head .pj-h1{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;max-width:32rem;margin:0;font-family:var(--sans);font-size:1rem;font-weight:400;line-height:1.5;letter-spacing:0;color:rgba(245,240,230,.9);text-shadow:0 1px 14px rgba(0,0,0,.45);text-wrap:pretty}
 }
 .pg-head{display:flex !important;flex-direction:column;justify-content:flex-end;min-height:var(--head-h);height:auto;box-sizing:border-box;padding:var(--nav-room) 0 var(--head-pb) !important}
 @media (max-width:767px){.pg-head{padding-top:calc(var(--nav-room) + .9rem) !important}}
