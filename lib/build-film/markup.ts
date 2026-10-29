@@ -249,32 +249,35 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-js.is-ended .mh-stage::after{height:82%}
     .mh-film{transform-origin:50% 0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
     .mh-js.is-ended .mh-film{transform:translateY(-13%) scale(1.16)}
-    .mh-chip{z-index:2;top:calc(var(--nav-h,60px) + .8rem);bottom:auto;left:.8rem}
-    .mh-body{flex:none;padding:0 1rem 1.6rem}
+    .mh-chip{z-index:2;top:calc(var(--nav-h,60px) + 1.5rem);bottom:auto;left:.8rem}
+    .mh-body{flex:none;padding:0 .9rem 1.2rem}
     /* the bar at the top is a solid page colour, so the logo and buttons read on any picture */
-    .mh-stage::before{z-index:1;height:calc(var(--nav-h,60px) + 2.2rem);background:linear-gradient(to bottom,#0a1823 0,#0a1823 calc(100% - 2.2rem),rgba(10,24,35,0))}
+    .mh-stage::before{z-index:1;height:calc(var(--nav-h,60px) + 3.2rem);background:linear-gradient(to bottom,#0a1823 0,#0a1823 calc(100% - 1.8rem),rgba(10,24,35,0))}
     /* the chip names the stage; the numbers 1 to 6 are the buttons at the bottom */
     .mh-chip .mh-flag{display:none}
-    .mh-chip{padding:.4rem .95rem}
+    .mh-chip{padding:.3rem .8rem;font-size:.88rem}
     /* the words: a soft glass card */
-    .mh-now{padding:1.05rem 1.1rem 1.1rem;border-radius:22px;background:linear-gradient(160deg,rgba(16,36,52,.74),rgba(8,20,30,.8));border:1px solid rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
+    .mh-now{padding:.8rem .9rem .85rem;border-radius:18px;background:linear-gradient(160deg,rgba(16,36,52,.74),rgba(8,20,30,.8));border:1px solid rgba(255,255,255,.12);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);box-shadow:0 18px 40px -20px rgba(0,0,0,.7)}
     .mh-now::before{display:none}
-    .mh-uses{gap:.55rem}
-    .mh-uses-k{align-self:flex-start;padding:.18rem .65rem;border-radius:999px;background:rgba(159,211,234,.14);font-size:.74rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
-    .mh-more{margin-top:.8rem;padding:.5rem .95rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.9rem}
+    .mh-uses{gap:.4rem}
+    .mh-uses-k{align-self:flex-start;padding:.12rem .55rem;border-radius:999px;background:rgba(159,211,234,.14);font-size:.66rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+    .mh-more{margin-top:.6rem;padding:.35rem .75rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:.8rem}
+    .mh-prod{font-size:clamp(1.12rem,4.8vw,1.35rem)}
+    .mh-does{margin-top:.35rem;font-size:.88rem;line-height:1.45}
+    .mh-why{margin-top:.3rem;font-size:.8rem;line-height:1.45}
     /* the six stages: numbered buttons, the one showing opens to its name and fills as it plays */
-    .mh-chapters{margin-top:.8rem}
+    .mh-chapters{margin-top:.6rem}
     .mh-chapters ol{display:flex;gap:.4rem;counter-reset:ch}
     .mh-chapters li{display:flex;flex:none;counter-increment:ch}
     .mh-chapters li:has(.mh-ch[aria-current="true"]){flex:1 1 auto;min-width:0}
-    .mh-ch{position:relative;overflow:hidden;flex:1 1 auto;width:auto;flex-direction:row;align-items:center;justify-content:center;gap:.4rem;height:2.5rem;min-width:2.3rem;padding:0 .55rem;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,24,35,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);font-size:.92rem;font-weight:650;text-shadow:none}
+    .mh-ch{position:relative;overflow:hidden;flex:1 1 auto;width:auto;flex-direction:row;align-items:center;justify-content:center;gap:.35rem;height:2.1rem;min-width:2.1rem;padding:0 .45rem;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,24,35,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:650;text-shadow:none}
     .mh-ch::before{content:counter(ch);position:relative;z-index:1;font-variant-numeric:tabular-nums}
-    .mh-ch span{display:none;position:relative;z-index:1;font-size:.88rem;font-weight:600}
+    .mh-ch span{display:none;position:relative;z-index:1;font-size:.8rem;font-weight:600}
     .mh-ch[aria-current="true"]{border-color:rgba(159,211,234,.75);background:rgba(159,211,234,.12);color:#fff}
     .mh-ch[aria-current="true"] span{display:block}
     .mh-ch i{position:absolute;inset:0;height:auto;border-radius:0;background:none}
     .mh-ch b{background:rgba(159,211,234,.26)}
-    @media (max-width:370px){.mh-chapters ol{gap:.3rem}.mh-ch{min-width:2.1rem;padding:0 .4rem}.mh-ch span{font-size:.82rem}}
+    @media (max-width:370px){.mh-chapters ol{gap:.3rem}.mh-ch{min-width:1.95rem;padding:0 .35rem}.mh-ch span{font-size:.76rem}}
   }
 }
 @keyframes mh-hook-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
