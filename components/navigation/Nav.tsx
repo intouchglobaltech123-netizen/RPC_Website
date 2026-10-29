@@ -45,6 +45,7 @@ const NAV_CSS = `
   .rn-logo{height:52px}
 }
 @media (min-width:1280px){.rn-link{padding:0 15px}}
+@media (max-width:1023px){.rn-mini{margin-top:6px}}
 `;
 
 /**
