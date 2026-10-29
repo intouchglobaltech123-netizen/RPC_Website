@@ -250,7 +250,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-film{transform-origin:50% 0;transition:transform .9s cubic-bezier(.2,.7,.2,1)}
     .mh-js.is-ended .mh-film{transform:translateY(-15%)}
     .mh-chip{z-index:2;top:calc(var(--nav-h,60px) + 1.5rem);bottom:auto;left:.8rem}
-    .mh-body{flex:none;padding:0 .9rem 1.2rem}
+    .mh-body{flex:none;padding:0 .9rem 3rem}
     /* the bar at the top is a solid page colour, so the logo and buttons read on any picture */
     .mh-stage::before{z-index:1;height:calc(var(--nav-h,60px) + 3.2rem);background:linear-gradient(to bottom,#0a1823 0,#0a1823 calc(100% - 1.8rem),rgba(10,24,35,0))}
     /* the chip names the stage; the numbers 1 to 6 are the buttons at the bottom */
