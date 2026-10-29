@@ -68,7 +68,8 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   const pin = section.querySelector<HTMLElement>(".mh-pin");
   const now = section.querySelector<HTMLElement>(".mh-now");
   const chip = section.querySelector<HTMLElement>(".mh-chip");
-  const list = film.chapters;
+  const isPhone = window.matchMedia("(max-width: 767px)").matches;
+  const list = isPhone ? film.phoneChapters : film.chapters;
   if (!video || !pin || !now || !chip || !list.length) return { release() {}, destroy() {} };
   const q = <T extends HTMLElement>(s: string) => section.querySelector<T>(s);
   const place = now.querySelector<HTMLElement>(".mh-place")!;
@@ -233,7 +234,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
       // no playing: the stage's still, in close on its product, or the finished building
       video!.pause();
       stopAt = holdOf(k);
-      const d = Number.isFinite(video!.duration) ? video!.duration : film.duration;
+      const d = Number.isFinite(video!.duration) ? video!.duration : isPhone ? film.phoneDuration : film.duration;
       video!.currentTime = end ? Math.max(0, d - 0.05) : stopAt;
       setEnded(end);
       update(true);
