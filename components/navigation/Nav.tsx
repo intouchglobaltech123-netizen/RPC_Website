@@ -45,14 +45,6 @@ const NAV_CSS = `
   .rn-logo{height:52px}
 }
 @media (min-width:1280px){.rn-link{padding:0 15px}}
-/* phones and tablets: the logo and the buttons share one floating glass bar, inset from the edges */
-.rn-glass{display:none}
-@media (max-width:1023px){
-  .rn-glass{display:block;position:absolute;left:10px;right:10px;top:4px;height:58px;border-radius:20px;pointer-events:none;background:linear-gradient(180deg,rgba(20,50,110,.86),rgba(10,30,70,.82));-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.08),0 14px 28px -14px rgba(3,10,26,.75)}
-  .rn-in{padding-right:18px !important}
-  .rn-mini{background:rgba(255,255,255,.08) !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1) !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important;height:42px;gap:3px;padding:0 4px}
-  .rn-mini .rn-sq{width:34px;height:34px}
-}
 `;
 
 /**
@@ -178,8 +170,8 @@ export function Nav() {
             className={`rn-logo pointer-events-auto inline-flex min-h-12 items-center rounded-[12px] ${lightLogo ? "text-white" : "text-night"} ${focus}`}
           >
             {/* as big as the room beside the floating bar allows at each width */}
-            <span className="flex pl-2.5 text-white lg:hidden">
-              <Wordmark size="md" tile iso />
+            <span className="flex lg:hidden">
+              <Wordmark size="lg" tile={lightLogo} iso />
             </span>
             <span className="hidden lg:flex xl:hidden">
               <Wordmark size="md" tile={lightLogo} iso />
@@ -203,10 +195,9 @@ export function Nav() {
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 -bottom-2 hidden bg-paper lg:block shadow-[0_10px_24px_-18px_rgba(18,34,59,0.35)] transition-opacity duration-300"
+          className="pointer-events-none absolute inset-x-0 top-0 -bottom-2 bg-paper shadow-[0_10px_24px_-18px_rgba(18,34,59,0.35)] transition-opacity duration-300"
           style={{ opacity: scrolled && !open ? 1 : 0, background: pathname === "/contact" ? "#d9e2ee" : undefined }}
         />
-        <div aria-hidden className="rn-glass" />
         <div className="rn-in gutter relative mx-auto flex max-w-[1600px] justify-end pt-2">
           {/* from 1024px: room for the logo, the pages in a pill centred at the top, and Contact at the right */}
           <span aria-hidden className="rn-sp" />
