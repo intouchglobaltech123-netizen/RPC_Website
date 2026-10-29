@@ -270,7 +270,11 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:.88rem}
     /* the closing words: just the line and the two buttons */
     .mh-kicker,.mh-lede,.mh-points{display:none}
-    .mh-ctas{margin-top:1.2rem}
+    /* the closing words sit above the round chat button at the bottom right */
+    .mh-js.is-ended .mh-body{padding-bottom:8rem}
+    .mh-ctas{margin-top:1.2rem;flex-wrap:nowrap;justify-content:space-between;gap:.5rem}
+    .mh-ctas .mh-btn{height:2.9rem;padding:0 .85rem;gap:.4rem;font-size:.8rem}
+    .mh-ctas .mh-btn svg{width:16px;height:16px}
     /* kept short: the stage, the product, one line on what it does; no 1 to 6 buttons */
     .mh-uses-k,.mh-why,.mh-more{display:none}
     .mh-chapters{display:none}
