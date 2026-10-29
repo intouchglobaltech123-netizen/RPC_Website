@@ -268,6 +268,10 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-does{display:block;margin:.5rem 0 0;font-size:.95rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
     .mh-why{display:block;margin:.4rem 0 0;font-size:.85rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
     .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:.88rem}
+    /* kept short: the stage, the product, one line on what it does; no 1 to 6 buttons */
+    .mh-uses-k,.mh-why,.mh-more{display:none}
+    .mh-chapters{display:none}
+    .mh-uses{margin-top:.45rem}
     /* the six stages: numbered buttons, the one showing opens to its name and fills as it plays */
     .mh-chapters{margin-top:.6rem}
     .mh-chapters ol{display:flex;gap:.4rem;counter-reset:ch}
