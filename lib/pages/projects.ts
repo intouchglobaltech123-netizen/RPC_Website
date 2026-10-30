@@ -243,7 +243,7 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
 /* the projects as cards, three to a row */
 .pj-listwrap{padding:clamp(.4rem,1.6vh,1rem) 0 clamp(4.5rem,12vh,7.5rem)}
 /* the cards: plain and even, three to a row */
-.pj-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:clamp(.9rem,1.5vw,1.2rem)}
+.pj-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:clamp(.9rem,1.5vw,1.2rem)}
 .pj-row{display:flex;flex-direction:column;padding:1.3rem 1.35rem 1.4rem;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);scroll-margin-top:calc(var(--nav-bar,80px) + 1rem);transition:box-shadow .3s,transform .3s}
 .pj-row:hover{box-shadow:inset 0 0 0 1px rgba(18,34,59,.28),0 24px 44px -34px rgba(18,34,59,.55);transform:translateY(-2px)}
 .pj-row[hidden]{display:none}
@@ -273,7 +273,7 @@ main .pj-row h2.pj-name{margin:1rem 0 0;font-family:var(--display);font-weight:5
   .pj-heroside .pg-intro{max-width:40rem}
 }
 /* tablets: two to a row; phones: one */
-@media (max-width:1099px){.pj-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:1279px){.pj-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:699px){.pj-list{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:767px){
   .pj-bar{max-width:none}
