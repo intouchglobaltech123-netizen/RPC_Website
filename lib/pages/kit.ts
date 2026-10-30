@@ -159,7 +159,7 @@ export function ctaBand(c: ContactInfo, t: { title: string; steps?: readonly Cta
 export const KIT_CSS = `
 .pg{--sand:#ece6da;--sand-2:#e2d9c9;--card:#f5f0e6;--sky:#d9e2ee;--paper:var(--sand);--stone:var(--sand-2);--ink:#12223b;--ink2:rgba(18,34,59,.82);--mute:#5b6271;--line:rgba(18,34,59,.14);--accent:#2756a0;--water:#0b6e80;--navy:#0b2350;--night:#0b2350;--display:var(--font-inter-tight),"Segoe UI",system-ui,sans-serif;--serif:var(--display);--sans:var(--font-inter-tight),ui-sans-serif,system-ui,sans-serif;--nav-room:var(--nav-h,80px);position:relative;z-index:10;background:var(--sand);color:var(--ink);font-family:var(--sans)}
 .pg *,.pg *::before,.pg *::after{box-sizing:border-box}
-.pg-wrap{width:100%;max-width:1360px;margin:0 auto;padding-inline:var(--gutter,3rem)}
+.pg-wrap{width:100%;margin:0 auto;padding-inline:var(--gutter,3rem)}
 .pg img{display:block;width:100%;height:100%;object-fit:cover}
 :where(.pg) a{color:inherit}
 .pg-ar{width:15px;height:15px;flex:none;transition:transform .4s cubic-bezier(.2,.7,.2,1)}

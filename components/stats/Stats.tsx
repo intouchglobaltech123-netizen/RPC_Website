@@ -43,7 +43,7 @@ export function Stats({ index = "06" }: { index?: string }) {
 
   return (
     <section ref={root} aria-label="Performance record" className="relative z-10 flex items-center bg-paper py-12 text-ink md:min-h-[40svh] md:py-16">
-      <div className="gutter relative mx-auto grid w-full max-w-[1600px] gap-6 md:gap-10 lg:grid-cols-12 lg:items-center">
+      <div className="gutter relative mx-auto grid w-full max-w-none gap-6 md:gap-10 lg:grid-cols-12 lg:items-center">
         <div className="lg:col-span-4">
           <SectionMarker index={index} label="Performance record" className="text-mute [&>span:first-child]:text-rpc" />
           <h2 className="display mt-4 text-title md:mt-5">One dry building at a time.</h2>

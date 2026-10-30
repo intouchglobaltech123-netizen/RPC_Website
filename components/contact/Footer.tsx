@@ -35,7 +35,7 @@ export function Footer() {
       </svg>
 
       <div className="bg-night">
-        <div className="gutter mx-auto max-w-[1600px]">
+        <div className="gutter mx-auto max-w-none">
           <div className="grid grid-cols-2 gap-x-6 gap-y-5 pb-5 pt-3 md:grid-cols-[auto_auto_minmax(0,1fr)] md:gap-y-8 md:gap-x-10 md:pb-10 md:pt-5 lg:grid-cols-[minmax(0,1.2fr)_auto_auto_minmax(15.5rem,1fr)] xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.25fr)] xl:gap-x-12">
             {/* who we are: logo and socials side by side on a phone; a strip above the columns on a tablet; the first column on laptops */}
             <div className="col-span-2 flex flex-wrap items-center justify-between gap-4 md:col-span-3 md:flex-nowrap md:justify-start md:gap-10 lg:col-span-1 lg:block">

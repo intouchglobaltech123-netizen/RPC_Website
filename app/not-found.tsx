@@ -30,7 +30,7 @@ export default function NotFound() {
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water";
   return (
     <>
-      <main className="gutter relative z-10 mx-auto flex min-h-[100svh] max-w-[1600px] flex-col justify-center pb-16 pt-28">
+      <main className="gutter relative z-10 mx-auto flex min-h-[100svh] max-w-none flex-col justify-center pb-16 pt-28">
         <div className="grid items-center gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] md:gap-16">
           <div>
             <p className="m-0 flex items-center gap-3 text-body font-medium text-mute">

@@ -163,7 +163,7 @@ export function Nav() {
       {/* the logo, pinned at the top left with the bar, above the strip behind it (the open menu has its own) */}
       <div className="pointer-events-none fixed inset-x-0 top-0 z-[51] transition-opacity duration-700" style={{ opacity: visible && !open ? 1 : 0 }} aria-hidden={!visible || open}>
         {/* level with the middle of the floating bar */}
-        <div className="gutter mx-auto max-w-[1600px] pt-2 lg:pt-3">
+        <div className="gutter mx-auto max-w-none pt-2 lg:pt-3">
           <Link
             href="/"
             aria-label={`${brand.name} — home`}
@@ -199,7 +199,7 @@ export function Nav() {
           className="pointer-events-none absolute inset-x-0 top-0 -bottom-2 bg-paper shadow-[0_10px_24px_-18px_rgba(18,34,59,0.35)] transition-opacity duration-300"
           style={{ opacity: scrolled && !open ? 1 : 0, background: pathname === "/contact" ? "#d9e2ee" : undefined }}
         />
-        <div className="rn-in gutter relative mx-auto flex max-w-[1600px] justify-end pt-2">
+        <div className="rn-in gutter relative mx-auto flex max-w-none justify-end pt-2">
           {/* from 1024px: room for the logo, the pages in a pill centred at the top, and Contact at the right */}
           <span aria-hidden className="rn-sp" />
           <nav aria-label="Primary" className="rn-bar pointer-events-auto" style={BAR}>
