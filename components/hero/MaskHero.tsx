@@ -291,7 +291,7 @@ export function MaskHero() {
         <div className="gutter absolute inset-x-0 bottom-8 flex flex-col items-start justify-between gap-6 text-ink md:bottom-10 md:flex-row md:items-end">
           <div data-hero-ui>
             <p className="display text-5xl md:text-7xl"><em>Constructions</em></p>
-            <p className="mt-3 max-w-sm text-[15px] leading-relaxed text-ink-2">{brand.taglineA} {brand.taglineB} From open ground to handover.</p>
+            <p className="mt-3 max-w-sm text-body leading-relaxed text-ink-2">{brand.taglineA} {brand.taglineB} From open ground to handover.</p>
           </div>
           <div data-hero-ui className="flex flex-col items-start gap-5 md:items-end">
             <div className="flex flex-wrap gap-3">
@@ -317,7 +317,7 @@ export function MaskHero() {
             <div className="overflow-hidden pb-2">
               <h2 data-cap-title className="display text-6xl will-change-transform md:text-8xl">{c.title}</h2>
             </div>
-            <p data-cap-fade className="mt-3 max-w-sm text-[15px] leading-relaxed opacity-90">{c.line}</p>
+            <p data-cap-fade className="mt-3 max-w-sm text-body leading-relaxed opacity-90">{c.line}</p>
           </div>
         ))}
 
@@ -356,7 +356,7 @@ export function MaskHero() {
             <span className="block overflow-hidden pb-[0.06em]"><span data-end-line className="block">{brand.taglineA}</span></span>
             <span className="block overflow-hidden pb-[0.08em]"><em data-end-line className="block">{brand.taglineB}</em></span>
           </h1>
-          <p data-end-fade className="mt-6 max-w-md text-[15px] leading-relaxed opacity-85">From open ground to handover — one team, one standard, every floor.</p>
+          <p data-end-fade className="mt-6 max-w-md text-body leading-relaxed opacity-85">From open ground to handover — one team, one standard, every floor.</p>
           <div data-end-fade className="mt-8 flex flex-wrap gap-3">
             <ArrowLink href="/contact" variant="light">Start a project</ArrowLink>
             <ArrowLink href="/projects" variant="ghost" className="text-paper">Projects</ArrowLink>

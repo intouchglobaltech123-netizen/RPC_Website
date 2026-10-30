@@ -28,7 +28,7 @@ export function ProjectsDirectory() {
                 type="button"
                 onClick={() => setCat(c)}
                 aria-pressed={on}
-                className={`whitespace-nowrap rounded-full px-2 py-2 text-[13px] font-medium md:px-4 md:py-1.5 transition-all duration-300 ${
+                className={`whitespace-nowrap rounded-full px-2 py-2 text-body font-medium md:px-4 md:py-1.5 transition-all duration-300 ${
                   on ? "bg-ink text-paper" : "text-ink/70 hover:bg-ink/[0.06] hover:text-ink"
                 }`}
               >
@@ -37,7 +37,7 @@ export function ProjectsDirectory() {
             );
           })}
         </div>
-        <p className="hidden text-[12px] text-mute md:block">
+        <p className="hidden text-body text-mute md:block">
           Showing {list.length} of {projects.length}
         </p>
       </div>
@@ -49,14 +49,14 @@ export function ProjectsDirectory() {
             <Link href={`/contact?project=${encodeURIComponent(p.name)}#enquiry`} className="flex h-full flex-col overflow-hidden rounded-xl bg-paper-2 ring-1 ring-ink/10">
               <div className="relative aspect-[4/5] bg-stone">
                 <Image src={p.image} alt={`${p.name}, ${p.location}`} fill sizes="46vw" className="object-cover" />
-                <span className="absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-full bg-paper/90 px-2 py-0.5 text-[10px] text-ink">
+                <span className="absolute left-2 top-2 inline-flex items-center gap-1.5 rounded-full bg-paper/90 px-2 py-0.5 text-body text-ink">
                   <span className={`h-1.5 w-1.5 rounded-full ${statusDot(String(p.status))}`} />
                   {p.status}
                 </span>
               </div>
               <div className="flex flex-1 flex-col p-3">
-                <p className="line-clamp-2 text-[14px] font-medium leading-snug" style={{ minHeight: "2.6em" }}>{p.name}</p>
-                <p className="mt-1 line-clamp-2 text-[11.5px] leading-snug text-mute">{p.location}</p>
+                <p className="line-clamp-2 text-body font-medium leading-snug" style={{ minHeight: "2.6em" }}>{p.name}</p>
+                <p className="mt-1 line-clamp-2 text-body leading-snug text-mute">{p.location}</p>
               </div>
             </Link>
           </li>
@@ -81,7 +81,7 @@ export function ProjectsDirectory() {
                   sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-film)] group-hover:scale-[1.04]"
                 />
-                <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-paper/92 px-3.5 py-1.5 font-mono text-[11px] tracking-wider text-ink backdrop-blur-md">
+                <span className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full bg-paper/92 px-3.5 py-1.5 font-mono text-body tracking-wider text-ink backdrop-blur-md">
                   <span className={`h-2 w-2 rounded-full ${statusDot(String(p.status))}`} />
                   {p.status}
                 </span>
@@ -96,45 +96,45 @@ export function ProjectsDirectory() {
                     <p className="eyebrow text-mute">
                       Project {String(i + 1).padStart(2, "0")} — {p.type}
                     </p>
-                    {p.clientType && <span className="text-xs text-mute">{p.clientType}</span>}
+                    {p.clientType && <span className="text-body text-mute">{p.clientType}</span>}
                   </div>
                   <h2 className="display mt-4 text-4xl leading-[1] md:text-5xl lg:text-6xl">{p.name}</h2>
-                  <p className="mt-3 flex items-center gap-1.5 text-sm text-ink-2">
+                  <p className="mt-3 flex items-center gap-1.5 text-body text-ink-2">
                     <MapPin size={14} className="text-rpc" /> {p.location}
                   </p>
-                  <p className="mt-5 text-[15px] leading-relaxed text-ink-2">{p.summary}</p>
+                  <p className="mt-5 text-body leading-relaxed text-ink-2">{p.summary}</p>
 
                   <dl className="mt-8 grid grid-cols-3 gap-4 border-y border-ink/10 py-5">
                     <div>
                       <dt className="eyebrow text-mute">Area</dt>
-                      <dd className="mt-1.5 text-sm font-medium">{p.area}</dd>
+                      <dd className="mt-1.5 text-body font-medium">{p.area}</dd>
                     </div>
                     <div>
                       <dt className="eyebrow text-mute">Year</dt>
-                      <dd className="mt-1.5 text-sm font-medium">{p.year}</dd>
+                      <dd className="mt-1.5 text-body font-medium">{p.year}</dd>
                     </div>
                     <div>
                       <dt className="eyebrow text-mute">Typology</dt>
-                      <dd className="mt-1.5 text-sm font-medium">{p.type}</dd>
+                      <dd className="mt-1.5 text-body font-medium">{p.type}</dd>
                     </div>
                   </dl>
                   <dl className="mt-5 grid gap-4 sm:grid-cols-2">
                     {p.structuralSystem && (
                       <div>
                         <dt className="eyebrow text-mute">Structural system</dt>
-                        <dd className="mt-1.5 text-sm leading-relaxed text-ink-2">{p.structuralSystem}</dd>
+                        <dd className="mt-1.5 text-body leading-relaxed text-ink-2">{p.structuralSystem}</dd>
                       </div>
                     )}
                     {p.materials && (
                       <div>
                         <dt className="eyebrow text-mute">Primary materials</dt>
-                        <dd className="mt-1.5 text-sm leading-relaxed text-ink-2">{p.materials}</dd>
+                        <dd className="mt-1.5 text-body leading-relaxed text-ink-2">{p.materials}</dd>
                       </div>
                     )}
                     {p.waterproofing && (
                       <div className="sm:col-span-2">
                         <dt className="eyebrow text-rpc">Waterproofing</dt>
-                        <dd className="mt-1.5 text-sm leading-relaxed text-ink-2">{p.waterproofing}</dd>
+                        <dd className="mt-1.5 text-body leading-relaxed text-ink-2">{p.waterproofing}</dd>
                       </div>
                     )}
                   </dl>
@@ -142,7 +142,7 @@ export function ProjectsDirectory() {
 
                 <Link
                   href={`/contact?project=${p.slug}`}
-                  className="group mt-8 inline-flex items-center gap-3 self-start rounded-full border border-ink/20 py-2.5 pl-5 pr-2.5 text-xs font-medium uppercase tracking-wider transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+                  className="group mt-8 inline-flex items-center gap-3 self-start rounded-full border border-ink/20 py-2.5 pl-5 pr-2.5 text-body font-medium uppercase tracking-wider transition-colors hover:border-ink hover:bg-ink hover:text-paper"
                 >
                   Enquire about a similar project
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-ink/10 transition-transform group-hover:rotate-45 group-hover:bg-white/15">
@@ -155,13 +155,13 @@ export function ProjectsDirectory() {
         })}
       </div>
 
-      <p className="hidden text-xs text-mute md:block">Project details marked in [brackets] are indicative and will be confirmed.</p>
+      <p className="hidden text-body text-mute md:block">Project details marked in [brackets] are indicative and will be confirmed.</p>
 
       {/* closing call to action */}
       <div className="flex flex-col items-start justify-between gap-5 rounded-2xl bg-night p-6 text-paper md:flex-row md:items-center md:rounded-sm md:p-12">
         <div>
           <p className="display text-3xl md:text-5xl">Have a site or brief in mind?</p>
-          <p className="mt-2 text-sm text-paper/65">Share a few details and an engineer will call you back within one working day.</p>
+          <p className="mt-2 text-body text-paper/65">Share a few details and an engineer will call you back within one working day.</p>
         </div>
         <ArrowLink href="/contact#enquiry" variant="light">Start a project</ArrowLink>
       </div>

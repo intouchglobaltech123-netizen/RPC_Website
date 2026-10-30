@@ -223,7 +223,7 @@ rect.ly,.ly circle{fill:var(--k)}
 .rt:not(.is-live) .rt-again{display:none}
 
 /* the methods: each kind a small card with its colour, the methods in it as rows with a round marker */
-.rt-pick{display:grid;grid-template-columns:repeat(5,max-content);justify-content:space-between;gap:.5rem}
+.rt-pick{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:.5rem}
 .rt-pick .rt-chip{white-space:nowrap}
 .rt:not(.is-live) .rt-pick{display:none}
 .rt-group{--k:#2756a0;padding:.55rem .55rem .5rem;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
@@ -247,8 +247,8 @@ rect.ly,.ly circle{fill:var(--k)}
   .rt-sec{display:flex;align-items:center;min-height:calc(100svh - var(--nav-bar,80px));padding-block:clamp(1.2rem,3vh,2.4rem)}
   .rt-sec > .pg-wrap{width:100%}
 }
-@media (max-width:1320px){
-  .rt-pick{grid-template-columns:repeat(3,minmax(0,1fr));justify-content:stretch}
+@media (max-width:1500px) and (min-width:600px){
+  .rt-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-content:stretch}
   .rt-pick .rt-chip{white-space:normal}
   .rt-group--coat{grid-column:span 2}
   .rt-group--coat .rt-opts{grid-template-columns:repeat(3,minmax(0,1fr))}

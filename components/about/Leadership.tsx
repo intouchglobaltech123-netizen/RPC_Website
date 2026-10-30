@@ -24,10 +24,10 @@ export function Leadership({ index = "04" }: { index?: string }) {
           {team.map((member, i) => (
             <Reveal key={member.name} delay={i * 0.08} className="flex flex-col justify-between border-t border-ink/15 pt-6">
               <div>
-                {member.qualifications && <p className="text-xs font-semibold uppercase tracking-wider text-rpc">{member.qualifications}</p>}
+                {member.qualifications && <p className="text-body font-semibold uppercase tracking-wider text-rpc">{member.qualifications}</p>}
                 <h3 className="display mt-2 text-2xl md:text-3xl">{member.name}</h3>
-                <p className="mt-1 text-sm font-medium text-mute">{member.role}</p>
-                <p className="mt-3 text-sm leading-relaxed text-ink-2">{member.bio}</p>
+                <p className="mt-1 text-body font-medium text-mute">{member.role}</p>
+                <p className="mt-3 text-body leading-relaxed text-ink-2">{member.bio}</p>
               </div>
             </Reveal>
           ))}

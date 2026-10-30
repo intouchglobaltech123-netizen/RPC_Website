@@ -23,7 +23,7 @@ export function Footer() {
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.mapQuery)}`;
   const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-water-2";
   const head = "mb-3 text-body font-semibold text-water-2";
-  const link = `-my-2 inline-block py-2 rounded text-[.95rem] md:text-body text-white/72 transition-colors hover:text-white ${focus}`;
+  const link = `-my-2 inline-block py-2 rounded text-body md:text-body text-white/72 transition-colors hover:text-white ${focus}`;
   const socials = contact.socials.filter((s) => s.label !== "WhatsApp");
 
   return (

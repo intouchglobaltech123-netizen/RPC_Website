@@ -191,7 +191,7 @@ export const SERVICES_CSS = `
 .sv-jump{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}
 .sv-jl{position:relative;display:flex;flex-direction:column;gap:.2rem;padding:.9rem 1rem 1rem;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line);color:var(--ink);text-decoration:none;transition:transform .25s,box-shadow .25s,background-color .25s,color .25s}
 .sv-jl b{font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.1;color:var(--navy)}
-.sv-jl span{font-size:calc(var(--fs-body) * .88);line-height:1.35;color:var(--mute)}
+.sv-jl span{font-size:var(--fs-body,1rem);line-height:1.35;color:var(--mute)}
 .sv-jl i{position:absolute;top:.85rem;right:.85rem;display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--sand);color:var(--navy);transition:background-color .25s,color .25s,transform .25s}
 .sv-jl i svg{width:.85rem;height:.85rem}
 .sv-jl:hover{transform:translateY(-2px);background:var(--navy);box-shadow:0 18px 30px -20px rgba(11,35,80,.8)}
@@ -233,7 +233,7 @@ export const SERVICES_CSS = `
 .sv-ba{--x:50%;position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:14px;background:#d9d0bf;isolation:isolate;touch-action:pan-y}
 .sv-ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .sv-ba-before{clip-path:inset(0 calc(100% - var(--x)) 0 0)}
-.sv-ba-k{position:absolute;top:.6rem;z-index:2;padding:.28rem .65rem;border-radius:999px;font-size:calc(var(--fs-body) * .82);font-weight:600;line-height:1.2;pointer-events:none;transition:opacity .2s}
+.sv-ba-k{position:absolute;top:.6rem;z-index:2;padding:.28rem .65rem;border-radius:999px;font-size:var(--fs-body,1rem);font-weight:600;line-height:1.2;pointer-events:none;transition:opacity .2s}
 .sv-ba-k--b{left:.6rem;background:rgba(18,34,59,.78);color:#fff}
 .sv-ba-k--a{right:.6rem;background:rgba(255,255,255,.92);color:var(--ink)}
 .sv-ba-line{position:absolute;top:0;bottom:0;left:var(--x);z-index:2;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 14px rgba(0,0,0,.35);pointer-events:none}
@@ -248,7 +248,7 @@ export const SERVICES_CSS = `
 .sv-ba--none{display:grid;grid-template-columns:1fr 1fr;background:none}
 .sv-ba-half{display:flex;align-items:flex-start;padding:.6rem;background:#e2d9c9}
 .sv-ba-half + .sv-ba-half{justify-content:flex-end;background:#efe8da;border-left:2px solid #fff}
-.sv-ba-half em{padding:.28rem .65rem;border-radius:999px;background:rgba(255,255,255,.7);font-style:normal;font-size:calc(var(--fs-body) * .82);font-weight:600;color:var(--mute)}
+.sv-ba-half em{padding:.28rem .65rem;border-radius:999px;background:rgba(255,255,255,.7);font-style:normal;font-size:var(--fs-body,1rem);font-weight:600;color:var(--mute)}
 .sv-ba-mark{position:absolute;top:50%;left:50%;display:grid;place-items:center;width:3.4rem;height:3.4rem;border-radius:50%;background:#fff;color:var(--navy);box-shadow:0 8px 20px -10px rgba(18,34,59,.5);transform:translate(-50%,-50%)}
 .sv-ba-mark .sv-wi{display:contents}
 .sv-ba-mark svg{width:1.5rem;height:1.5rem}
@@ -326,23 +326,23 @@ export const SERVICES_CSS = `
   .sv-ba-line svg{width:.8rem;height:.8rem}
   .sv-ba-mark{width:2.6rem;height:2.6rem}
   .sv-wbody{padding:.7rem .35rem 0}
-  .sv-w .sv-ct{display:block;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:2.5em}
+  .sv-w .sv-ct{display:block;font-size:var(--fs-body,1rem);line-height:1.25;letter-spacing:-.01em;min-height:2.5em}
   .sv-w .sv-ct .sv-icon,.sv-w .sv-cp{display:none}
 
   .sv-bsec{padding-top:2.4rem;padding-bottom:2.6rem}
   .sv-bsec .pg-shead{gap:.5rem;margin-bottom:1.1rem;padding-top:1rem}
-  .sv-bsec .pg-h2,.sv-fsec .pg-h2{font-size:1.45rem;line-height:1.18}
+  .sv-bsec .pg-h2,.sv-fsec .pg-h2{font-size:var(--fs-h3);line-height:1.18}
   .sv-bsec .pg-lede,.sv-fsec .pg-lede{display:none}
   .sv-b{display:flex;flex-direction:row;align-items:center;gap:.7rem;padding:.75rem .8rem}
   .sv-b .sv-icon{flex:none;width:2.4rem;height:2.4rem;border-radius:12px}
   .sv-b .sv-icon svg{width:1.2rem;height:1.2rem}
-  .sv-b .sv-ct{margin:0;font-size:.92rem;line-height:1.25;letter-spacing:-.01em;min-height:0}
+  .sv-b .sv-ct{margin:0;font-size:var(--fs-body,1rem);line-height:1.25;letter-spacing:-.01em;min-height:0}
   .sv-b .sv-cp{display:none}
 
   .sv-fsec{padding-top:2.4rem;padding-bottom:2.6rem}
   .sv-fgrid{gap:1.1rem}
   .sv-q summary{padding:.85rem 1rem}
-  .sv-q h3{font-size:.92rem}
-  .sv-q p{padding:0 1rem .95rem;font-size:.9rem}
+  .sv-q h3{font-size:var(--fs-body,1rem)}
+  .sv-q p{padding:0 1rem .95rem;font-size:var(--fs-body,1rem)}
 }
 `;

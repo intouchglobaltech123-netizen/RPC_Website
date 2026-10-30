@@ -91,7 +91,7 @@ export function ProjectsShowcase() {
         <div className="gutter relative z-10 flex w-[36vw] shrink-0 flex-col justify-between bg-night py-28">
           <SectionMarker index="02" label="Selected projects" />
           <div>
-            <p className="text-sm font-semibold tabular-nums text-rpc mb-5">
+            <p className="text-body font-semibold tabular-nums text-rpc mb-5">
               {String(active + 1).padStart(2, "0")} <span className="opacity-50 text-paper/60">/ {String(projects.length).padStart(2, "0")}</span>
             </p>
             <div className="relative min-h-[6.5rem] md:min-h-[8rem] lg:min-h-[9.5rem] flex flex-col justify-start">
@@ -120,13 +120,13 @@ export function ProjectsShowcase() {
                 {([["Location", p.location], ["Type", p.type], ["Area", p.area], ["Year", p.year], ["Status", p.status]] as const).map(([k, v]) => (
                   <div key={k} className="border-t border-white/15 pt-3">
                     <dt className="eyebrow mb-1.5 text-paper/45">{k}</dt>
-                    <dd className="text-sm">{v}</dd>
+                    <dd className="text-body">{v}</dd>
                   </div>
                 ))}
                 {p.waterproofing && (
                   <div className="border-t border-white/15 pt-3">
                     <dt className="eyebrow mb-1.5 text-[#8fc6e8]">Waterproofing</dt>
-                    <dd className="text-sm leading-snug">{p.waterproofing}</dd>
+                    <dd className="text-body leading-snug">{p.waterproofing}</dd>
                   </div>
                 )}
               </motion.dl>
@@ -183,7 +183,7 @@ export function ProjectsShowcase() {
               <h3 className="display mt-2 text-5xl md:text-6xl">{pr.name}</h3>
               <p className="eyebrow mt-3 text-paper/60">{pr.location} · {pr.year} · {pr.status}</p>
               {pr.waterproofing && (
-                <p className="mt-3 text-[13px] leading-relaxed text-paper/75">
+                <p className="mt-3 text-body leading-relaxed text-paper/75">
                   <span className="eyebrow mr-2 text-[#8fc6e8]">Waterproofing</span>
                   {pr.waterproofing}
                 </p>

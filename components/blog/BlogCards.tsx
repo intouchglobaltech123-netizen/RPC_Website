@@ -21,16 +21,16 @@ export function PostCard({ post }: { post: BlogPost }) {
           sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 46vw"
           className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
         />
-        <span className="absolute left-2 top-2 rounded-full bg-paper/90 px-2 py-0.5 text-[10px] font-medium text-ink md:left-3 md:top-3 md:px-2.5 md:py-1 md:text-[11px]">
+        <span className="absolute left-2 top-2 rounded-full bg-paper/90 px-2 py-0.5 text-body font-medium text-ink md:left-3 md:top-3 md:px-2.5 md:py-1 md:text-body">
           {post.category}
         </span>
       </div>
       <div className="flex flex-1 flex-col p-3 md:p-5">
-        <h3 className="line-clamp-3 text-[14px] font-medium leading-snug md:text-lg md:leading-snug" style={{ minHeight: "3.9em" }}>
+        <h3 className="line-clamp-3 text-body font-medium leading-snug md:text-lg md:leading-snug" style={{ minHeight: "3.9em" }}>
           {post.title}
         </h3>
-        <p className="mt-2 hidden text-sm leading-relaxed text-ink-2 md:line-clamp-2">{post.excerpt}</p>
-        <p className="mt-auto flex items-center gap-1.5 pt-3 text-[11px] text-mute md:text-xs">
+        <p className="mt-2 hidden text-body leading-relaxed text-ink-2 md:line-clamp-2">{post.excerpt}</p>
+        <p className="mt-auto flex items-center gap-1.5 pt-3 text-body text-mute md:text-body">
           <span>{formatDate(post.date)}</span>
           <span aria-hidden>·</span>
           <Clock size={11} /> {post.readMinutes} min
@@ -59,17 +59,17 @@ export function BlogIndex() {
           </div>
           <div className="flex flex-col justify-between gap-6 p-5 md:p-10">
             <div>
-              <p className="flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-paper/60">
+              <p className="flex items-center gap-2 text-body uppercase tracking-[0.18em] text-paper/60">
                 <span className="h-1.5 w-1.5 rounded-full bg-rpc" /> Featured · {featured.category}
               </p>
               <h2 className="display mt-3 text-3xl leading-[1.05] md:mt-4 md:text-5xl">{featured.title}</h2>
-              <p className="mt-3 text-[14px] leading-relaxed text-paper/70 md:mt-4 md:text-base">{featured.excerpt}</p>
+              <p className="mt-3 text-body leading-relaxed text-paper/70 md:mt-4 md:text-base">{featured.excerpt}</p>
             </div>
-            <div className="flex items-center justify-between gap-4 text-[12px] text-paper/60">
+            <div className="flex items-center justify-between gap-4 text-body text-paper/60">
               <span>
                 {formatDate(featured.date)} · {featured.readMinutes} min read
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper px-4 py-2 text-[12.5px] font-medium text-ink">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-paper px-4 py-2 text-body font-medium text-ink">
                 Read <ArrowUpRight size={13} />
               </span>
             </div>
@@ -85,7 +85,7 @@ export function BlogIndex() {
             type="button"
             onClick={() => setCat(c)}
             aria-pressed={cat === c}
-            className={`whitespace-nowrap rounded-full px-2 py-2 text-[13px] font-medium transition-colors md:px-4 md:py-1.5 ${
+            className={`whitespace-nowrap rounded-full px-2 py-2 text-body font-medium transition-colors md:px-4 md:py-1.5 ${
               cat === c ? "bg-ink text-paper" : "text-ink/70 hover:bg-ink/[0.06] hover:text-ink"
             }`}
           >

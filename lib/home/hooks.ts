@@ -360,31 +360,31 @@ export const HOOKS_CSS =
 /* phones: every hook is one short screen: a heading, a few cards and the button */
 @media (max-width:767px){
   .hk{padding:2.4rem 0 2.2rem}
-  .hk .hm-h2{font-size:1.55rem;line-height:1.15;margin-top:.6rem}
+  .hk .hm-h2{font-size:var(--fs-h3);line-height:1.15;margin-top:.6rem}
   /* products: four tiles, two to a row */
   .hk-shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
   .hk-shelf li:nth-child(n+5){display:none}
   .hk-tile{padding:.45rem .45rem .7rem;border-radius:16px}
   .hk-pic{aspect-ratio:16/10}
   .hk-foot{display:none}
-  .hk-kind{font-size:.82rem}
-  .hk-name{font-size:.95rem}
+  .hk-kind{font-size:var(--fs-body,1rem)}
+  .hk-name{font-size:var(--fs-body,1rem)}
   .hk-prod .hk-after{margin-top:.9rem}
   /* brands: one quiet strip of small logo cards under a line of words */
   .hk-brands{margin-top:1.4rem;padding-top:1.1rem;border-top:1px solid var(--line)}
   .hk-bk{display:none}
   .hm-pbhead{margin-bottom:.8rem}
-  .hk-brands .hm-pbh{font-size:1.05rem;line-height:1.25}
+  .hk-brands .hm-pbh{font-size:var(--fs-body,1rem);line-height:1.25}
   .hk-brands .wp-mtrack{gap:.6rem}
   .hk-brands .wp-btile{width:7.6rem;height:3.9rem;padding:.55rem .9rem;border-radius:12px}
   .hk-brands .wp-btile img{max-height:2.5rem}
-  .hk-brands .wp-bname{font-size:.9rem}
+  .hk-brands .wp-bname{font-size:var(--fs-body,1rem)}
   /* waterproofing: four before and after pictures, two to a row */
   .hk-bas{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
   .hk-ba{padding:.4rem .4rem .7rem;border-radius:16px}
   .hk-bap{aspect-ratio:1/1}
   .hk-bat b,.hk-baf{display:none}
-  .hk-bat em{font-size:.95rem;font-style:normal;font-weight:600;color:var(--ink)}
+  .hk-bat em{font-size:var(--fs-body,1rem);font-style:normal;font-weight:600;color:var(--ink)}
   .hk-bago{display:none}
   .hk-wp .hk-after{margin-top:.9rem}
   /* projects: the heading, the pile of prints (each names itself) and one row with the arrows and the button */
@@ -396,7 +396,7 @@ export const HOOKS_CSS =
   .hk-stack{order:0;grid-column:1 / -1;grid-row:2;aspect-ratio:1.18/1;width:100%;margin:1.3rem 0 .8rem}
   .hk-pol{width:80%;padding:.55rem .55rem 0}
   .hk-pol figcaption{padding:.55rem .15rem .7rem}
-  .hk-pol figcaption b,.hk-pol figcaption span{font-size:.95rem}
+  .hk-pol figcaption b,.hk-pol figcaption span{font-size:var(--fs-body,1rem)}
   .hk-pinfo > .hk-pctl{grid-column:1;grid-row:3;gap:.3rem}
   .hk-pinfo > :nth-child(4){grid-column:2;grid-row:3}
   .hk-pinfo > :nth-child(4) .hm-btn{width:100%;justify-content:center}
@@ -404,13 +404,13 @@ export const HOOKS_CSS =
   .hk-pcount{min-width:2.8rem}
   /* services: the core card, then six small tiles, in one screen */
   .hm-services{padding:2.4rem 0 2rem}
-  .hm-services .hm-h2{font-size:1.55rem;line-height:1.15}
+  .hm-services .hm-h2{font-size:var(--fs-h3);line-height:1.15}
   .hm-services .hm-schk,.hm-services .hm-tl{display:none}
   .hm-services .hm-sfeat{padding:1.1rem}
   .hm-services .hm-sbody{margin:.4rem 0 .9rem}
   .hm-services .hm-sgrid{gap:.6rem}
   .hm-services .hm-tile{min-height:0;padding:.7rem .8rem .8rem;gap:.35rem}
-  .hm-services .hm-tt{font-size:.95rem;line-height:1.25}
+  .hm-services .hm-tt{font-size:var(--fs-body,1rem);line-height:1.25}
   .hm-services .hm-sbtns{margin-top:0}
   .hm-services .hm-sbtns .hm-btn{width:100%;justify-content:center}
 }

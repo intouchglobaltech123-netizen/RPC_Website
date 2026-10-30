@@ -41,7 +41,7 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
               One team, <em>built watertight.</em>
             </h2>
           )}
-          <p className="mt-3 text-[14px] leading-relaxed text-ink-2">Swipe to see what we build — from soil test to handover.</p>
+          <p className="mt-3 text-body leading-relaxed text-ink-2">Swipe to see what we build — from soil test to handover.</p>
           <ul className="-mx-[var(--gutter)] mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-[var(--gutter)] pb-2 [scrollbar-width:none]">
             {services.map((sv) => (
               <li key={sv.id} className="w-[84%] shrink-0 snap-center">
@@ -51,14 +51,14 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
                     <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
                     <p className="absolute bottom-3 left-4 right-4 flex items-end justify-between text-white">
                       <span className="display text-2xl leading-tight">{sv.title}</span>
-                      <span className="font-mono text-[11px] opacity-80">{sv.id}</span>
+                      <span className="font-mono text-body opacity-80">{sv.id}</span>
                     </p>
                   </div>
                   <div className="flex flex-1 flex-col p-4">
-                    <p className="text-[13.5px] leading-relaxed text-ink-2">{sv.body}</p>
+                    <p className="text-body leading-relaxed text-ink-2">{sv.body}</p>
                     <ul className="mt-3 space-y-1.5">
                       {sv.deliverables.slice(0, 3).map((d) => (
-                        <li key={d} className="flex items-start gap-2 text-[13px] text-ink">
+                        <li key={d} className="flex items-start gap-2 text-body text-ink">
                           <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-rpc text-white">
                             <Check size={10} strokeWidth={3} />
                           </span>
@@ -67,10 +67,10 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
                       ))}
                     </ul>
                     <div className="mt-auto flex items-center justify-between gap-3 border-t border-ink/10 pt-3" style={{ marginTop: "auto", paddingTop: 12 }}>
-                      <span className="text-[12px] text-ink-2">{sv.timeline}</span>
+                      <span className="text-body text-ink-2">{sv.timeline}</span>
                       <Link
                         href={`/contact?service=${encodeURIComponent(sv.title)}#enquiry`}
-                        className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1.5 text-[12.5px] font-medium text-paper"
+                        className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-ink px-3.5 py-1.5 text-body font-medium text-paper"
                       >
                         Enquire <ArrowUpRight size={13} />
                       </Link>
@@ -110,14 +110,14 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
                     <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                     <div className="absolute inset-x-5 bottom-4 flex items-end justify-between text-white">
                       <p className="display text-2xl md:text-3xl">{s.title}</p>
-                      <span className="font-mono text-xs opacity-80">{s.id} / {String(services.length).padStart(2, "0")}</span>
+                      <span className="font-mono text-body opacity-80">{s.id} / {String(services.length).padStart(2, "0")}</span>
                     </div>
                   </div>
                   <div className="flex flex-1 flex-col p-5 md:p-6">
-                    <p className="text-[14.5px] leading-relaxed text-ink-2">{s.body}</p>
+                    <p className="text-body leading-relaxed text-ink-2">{s.body}</p>
                     <ul className="mt-4 grid gap-x-5 gap-y-2 sm:grid-cols-2">
                       {s.deliverables.slice(0, 4).map((d) => (
-                        <li key={d} className="flex items-start gap-2 text-[13.5px] leading-snug text-ink">
+                        <li key={d} className="flex items-start gap-2 text-body leading-snug text-ink">
                           <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full bg-rpc text-white">
                             <Check size={10} strokeWidth={3} />
                           </span>
@@ -126,19 +126,19 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
                       ))}
                     </ul>
                     <div className="mt-auto flex items-center justify-between gap-4 border-t border-ink/10 pt-4">
-                      <dl className="flex gap-6 text-[13px]">
+                      <dl className="flex gap-6 text-body">
                         <div>
-                          <dt className="text-[10px] uppercase tracking-[0.16em] text-mute">Scale</dt>
+                          <dt className="text-body uppercase tracking-[0.16em] text-mute">Scale</dt>
                           <dd className="mt-1 font-medium">{s.scale}</dd>
                         </div>
                         <div>
-                          <dt className="text-[10px] uppercase tracking-[0.16em] text-mute">Programme</dt>
+                          <dt className="text-body uppercase tracking-[0.16em] text-mute">Programme</dt>
                           <dd className="mt-1 font-medium">{s.timeline}</dd>
                         </div>
                       </dl>
                       <Link
                         href={`/contact?service=${encodeURIComponent(s.title)}#enquiry`}
-                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-paper transition-colors hover:bg-rpc"
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-ink px-4 py-2 text-body font-medium text-paper transition-colors hover:bg-rpc"
                       >
                         Enquire <ArrowUpRight size={14} />
                       </Link>
@@ -164,12 +164,12 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
                       className={`group relative flex w-full items-center gap-5 rounded-xl px-4 py-3 text-left transition-colors duration-500 md:gap-7 ${open ? "bg-white/60" : "hover:bg-white/30"}`}
                     >
                       <span aria-hidden className={`absolute inset-y-3 left-0 w-[3px] rounded-full bg-rpc transition-transform duration-500 ${open ? "scale-y-100" : "scale-y-0"}`} />
-                      <span className={`w-7 shrink-0 font-mono text-xs transition-colors ${open ? "text-rpc" : "text-mute"}`}>{sv.id}</span>
+                      <span className={`w-7 shrink-0 font-mono text-body transition-colors ${open ? "text-rpc" : "text-mute"}`}>{sv.id}</span>
                       <span className="min-w-0 flex-1">
                         <span className={`display block text-[1.9rem] leading-[1.05] transition-all duration-500 md:text-[clamp(1.7rem,2.3vw,2.5rem)] ${open ? "italic text-ink" : "text-ink/60 group-hover:text-ink"}`}>
                           {sv.title}
                         </span>
-                        <span className={`mt-1 hidden truncate text-[13px] text-ink-2 transition-opacity duration-500 md:block ${open ? "opacity-100" : "opacity-0"}`}>
+                        <span className={`mt-1 hidden truncate text-body text-ink-2 transition-opacity duration-500 md:block ${open ? "opacity-100" : "opacity-0"}`}>
                           {sv.scale} · {sv.timeline}
                         </span>
                       </span>
@@ -186,7 +186,7 @@ export function Services({ index = "04", heading = true }: { index?: string; hea
               })}
             </ul>
             <div className="mt-5 flex items-center justify-between gap-4">
-              <p className="hidden text-sm text-ink-2 md:block">Design, engineering and construction under one contract.</p>
+              <p className="hidden text-body text-ink-2 md:block">Design, engineering and construction under one contract.</p>
               <ArrowLink href="/services" variant="solid">All services</ArrowLink>
             </div>
           </div>

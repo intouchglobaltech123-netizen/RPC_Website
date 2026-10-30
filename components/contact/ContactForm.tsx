@@ -19,14 +19,14 @@ type Status = "idle" | "sending" | "sent" | "error";
 
 /* form building blocks — defined outside the form so inputs keep focus between renders */
 const Step = ({ n, title }: { n: string; title: string }) => (
-  <p className="mb-3 flex items-center gap-2.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink">
-    <span className="grid h-6 w-6 place-items-center rounded-full bg-rpc text-[11px] text-white">{n}</span>
+  <p className="mb-3 flex items-center gap-2.5 text-body font-semibold uppercase tracking-[0.14em] text-ink">
+    <span className="grid h-6 w-6 place-items-center rounded-full bg-rpc text-body text-white">{n}</span>
     {title}
   </p>
 );
 const Field = ({ label, icon, children }: { label: string; icon: ReactNode; children: ReactNode }) => (
   <label className="block">
-    <span className="mb-1.5 block text-[12.5px] font-medium text-ink-2">{label}</span>
+    <span className="mb-1.5 block text-body font-medium text-ink-2">{label}</span>
     <span className="relative block">
       <span aria-hidden className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-mute">{icon}</span>
       {children}
@@ -107,11 +107,11 @@ export function ContactForm() {
           <CheckCircle2 size={24} />
         </span>
         <p className="display mt-5 text-4xl">Thank you{name ? `, ${name}` : ""}.</p>
-        <p className="mt-3 max-w-md text-[15px] leading-relaxed text-ink-2">
+        <p className="mt-3 max-w-md text-body leading-relaxed text-ink-2">
           Your enquiry has reached our office. An RPC engineer will call you within one working day. For anything urgent, call{" "}
           <a className="font-medium text-ink underline underline-offset-4" href={`tel:${contact.phone.replace(/[^0-9+]/g, "")}`}>{contact.phone}</a>.
         </p>
-        <button type="button" onClick={() => setStatus("idle")} className="mt-6 self-start text-sm font-medium text-ink underline underline-offset-4">
+        <button type="button" onClick={() => setStatus("idle")} className="mt-6 self-start text-body font-medium text-ink underline underline-offset-4">
           Send another enquiry
         </button>
       </div>
@@ -119,7 +119,7 @@ export function ContactForm() {
   }
 
   const input =
-    "h-12 w-full rounded-xl border border-ink/12 bg-white/80 pl-11 pr-3.5 text-[15px] text-ink outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]";
+    "h-12 w-full rounded-xl border border-ink/12 bg-white/80 pl-11 pr-3.5 text-body text-ink outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]";
   return (
     <form ref={form} onSubmit={onSubmit} className="flex flex-col gap-7">
       {/* spam trap */}
@@ -167,18 +167,18 @@ export function ContactForm() {
           </Field>
         </div>
         <label className="mt-3.5 block">
-          <span className="mb-1.5 block text-[12.5px] font-medium text-ink-2">About your project</span>
+          <span className="mb-1.5 block text-body font-medium text-ink-2">About your project</span>
           <textarea
             name="message"
             rows={3}
-            className="w-full resize-none rounded-xl border border-ink/12 bg-white/80 px-3.5 py-3 text-[15px] outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]"
+            className="w-full resize-none rounded-xl border border-ink/12 bg-white/80 px-3.5 py-3 text-body outline-none transition-[border-color,box-shadow] placeholder:text-mute/60 focus:border-rpc focus:bg-white focus:shadow-[0_0_0_4px_rgba(39,85,158,0.12)]"
             placeholder="Plot size, number of floors, approval status, when you would like to start…"
           />
         </label>
       </div>
 
       {status === "error" && (
-        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">
+        <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-body text-red-800">
           We couldn’t send that just now. Please try again, send it on WhatsApp, or call {contact.phone}.
         </p>
       )}
@@ -187,7 +187,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-[14px] font-semibold text-paper transition-colors hover:bg-rpc disabled:opacity-60"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-body font-semibold text-paper transition-colors hover:bg-rpc disabled:opacity-60"
         >
           {status === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
           {status === "sending" ? "Sending…" : "Send enquiry"}
@@ -195,12 +195,12 @@ export function ContactForm() {
         <button
           type="button"
           onClick={openWhatsApp}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#25D366]/50 bg-[#25D366]/10 px-6 text-[14px] font-semibold text-[#128C4B] transition-colors hover:bg-[#25D366] hover:text-white"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-[#25D366]/50 bg-[#25D366]/10 px-6 text-body font-semibold text-[#128C4B] transition-colors hover:bg-[#25D366] hover:text-white"
         >
           <MessageCircle size={16} /> Send on WhatsApp
         </button>
       </div>
-      <p className="-mt-3 flex items-center gap-1.5 text-[11.5px] text-mute">
+      <p className="-mt-3 flex items-center gap-1.5 text-body text-mute">
         <Lock size={12} /> We reply within one working day. Your details are only used to answer this enquiry.
       </p>
     </form>

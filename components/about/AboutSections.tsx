@@ -18,7 +18,7 @@ export function CompanyStory({ index = "02" }: { index?: string }) {
               From one site in Erode to <em>projects across Tamil Nadu.</em>
             </h2>
           </Reveal>
-          <div className="mt-5 space-y-4 text-[15px] leading-relaxed text-ink-2 md:mt-8 md:space-y-5 md:text-[17px]">
+          <div className="mt-5 space-y-4 text-body leading-relaxed text-ink-2 md:mt-8 md:space-y-5 md:text-[17px]">
             {company.story.map((p) => (
               <Reveal key={p}><p>{p}</p></Reveal>
             ))}
@@ -52,14 +52,14 @@ export function VisionMission({ index = "03" }: { index?: string }) {
 
         <div className="mt-8 grid gap-5 md:gap-8 lg:grid-cols-2">
           <Reveal className="flex flex-col justify-between rounded-2xl bg-night p-6 text-paper md:p-10">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.18em] text-paper/85">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-body font-medium uppercase tracking-[0.18em] text-paper/85">
               <Eye size={14} /> Our vision
             </span>
             <p className="display mt-6 text-2xl leading-[1.2] md:text-[clamp(1.7rem,2.4vw,2.4rem)]">{company.vision}</p>
           </Reveal>
 
           <Reveal delay={0.08} className="flex flex-col justify-between rounded-2xl border border-ink/10 bg-white/70 p-6 md:p-10">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-rpc/10 px-3.5 py-1.5 text-[12px] font-medium uppercase tracking-[0.18em] text-rpc">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-rpc/10 px-3.5 py-1.5 text-body font-medium uppercase tracking-[0.18em] text-rpc">
               <Target size={14} /> Our mission
             </span>
             <p className="display mt-6 text-2xl leading-[1.2] text-ink md:text-[clamp(1.7rem,2.4vw,2.4rem)]">{company.mission}</p>
@@ -99,7 +99,7 @@ export function FounderMessage({ index = "04" }: { index?: string }) {
           <div className="mt-3 space-y-4 md:mt-4 md:space-y-6">
             {founder.message.map((m, i) => (
               <Reveal key={m} delay={i * 0.06}>
-                <p className={i === 0 ? "display text-2xl leading-[1.15] md:text-[2.7rem]" : "max-w-2xl text-[15px] leading-relaxed text-ink-2 md:text-lg"}>{m}</p>
+                <p className={i === 0 ? "display text-2xl leading-[1.15] md:text-[2.7rem]" : "max-w-2xl text-body leading-relaxed text-ink-2 md:text-lg"}>{m}</p>
               </Reveal>
             ))}
           </div>
@@ -107,7 +107,7 @@ export function FounderMessage({ index = "04" }: { index?: string }) {
             <LogoMark className="h-12 w-12" />
             <div>
               <p className="font-medium">{founder.name}</p>
-              <p className="text-sm text-mute">
+              <p className="text-body text-mute">
                 {founder.role} · {founder.qualifications}
               </p>
             </div>
@@ -132,7 +132,7 @@ export function Values({ index = "05" }: { index?: string }) {
               What every client <em>can count on.</em>
             </h2>
           </div>
-          <p className="text-[14px] leading-relaxed text-ink-2 md:text-lg lg:col-span-5">Six principles that decide how we plan, build and hand over — on every site, at every size.</p>
+          <p className="text-body leading-relaxed text-ink-2 md:text-lg lg:col-span-5">Six principles that decide how we plan, build and hand over — on every site, at every size.</p>
         </div>
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-ink/10 bg-ink/10 md:rounded-sm lg:grid-cols-3">
           {principles.map((p, i) => {
@@ -143,10 +143,10 @@ export function Values({ index = "05" }: { index?: string }) {
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-paper transition-colors duration-500 group-hover:bg-rpc md:h-12 md:w-12">
                     <Icon size={18} strokeWidth={1.6} />
                   </span>
-                  <span className="font-mono text-xs text-mute">0{i + 1}</span>
+                  <span className="font-mono text-body text-mute">0{i + 1}</span>
                 </div>
                 <dt className="display mt-4 text-xl md:mt-8 md:text-3xl">{p.title}</dt>
-                <dd className="mt-1.5 text-[12.5px] leading-snug text-ink-2 md:mt-3 md:text-[15px] md:leading-relaxed">{p.body}</dd>
+                <dd className="mt-1.5 text-body leading-snug text-ink-2 md:mt-3 md:text-body md:leading-relaxed">{p.body}</dd>
               </div>
             );
           })}

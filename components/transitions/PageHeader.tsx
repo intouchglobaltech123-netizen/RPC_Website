@@ -44,7 +44,7 @@ export function PageHeader({
             <div className="mt-5">
               <RevealLines as="h1" className="display text-4xl sm:text-5xl lg:text-[clamp(2.5rem,3.8vw,4.2rem)] leading-[1.12] tracking-[-0.02em] font-semibold" lines={lines} />
             </div>
-            {intro && <div className="mt-5 max-w-lg text-[15px] leading-relaxed text-ink-2 md:text-base">{intro}</div>}
+            {intro && <div className="mt-5 max-w-lg text-body leading-relaxed text-ink-2 md:text-base">{intro}</div>}
             {aside && <div className="mt-6">{aside}</div>}
           </div>
           <div className="relative lg:col-span-6">
@@ -86,11 +86,11 @@ export function PageHeader({
           <div className="mt-5">
             <RevealLines as="h1" className="display text-4xl sm:text-5xl lg:text-[clamp(2.5rem,4.2vw,4.5rem)] leading-[1.12] tracking-[-0.02em] font-semibold text-paper" lines={lines} />
           </div>
-          {intro && <div className="mt-5 max-w-xl text-[15px] leading-relaxed text-paper/75 md:text-base">{intro}</div>}
+          {intro && <div className="mt-5 max-w-xl text-body leading-relaxed text-paper/75 md:text-base">{intro}</div>}
           {facts && (
             <ul className="mt-7 flex flex-wrap justify-center gap-2">
               {facts.map(([k, v]) => (
-                <li key={k} className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2 text-[13px] backdrop-blur-sm">
+                <li key={k} className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-2 text-body backdrop-blur-sm">
                   <span className="font-medium text-paper">{v}</span> <span className="text-paper/55">{k}</span>
                 </li>
               ))}
@@ -118,7 +118,7 @@ export function PageHeader({
           <span className={`font-semibold tabular-nums ${plain ? "text-rpc" : "text-white"}`}>{index}</span>
           <span className="h-px w-8 bg-current opacity-35" />
           <span className={plain ? "text-ink" : "text-paper/90"}>{label}</span>
-          <span className="ml-auto hidden text-sm font-normal opacity-70 sm:inline">RPC Constructions · Erode, Tamil Nadu</span>
+          <span className="ml-auto hidden text-body font-normal opacity-70 sm:inline">RPC Constructions · Erode, Tamil Nadu</span>
         </p>
 
         <div className="mt-4 grid gap-4 md:mt-6 md:gap-6 lg:grid-cols-12 lg:items-end lg:gap-12">
@@ -126,7 +126,7 @@ export function PageHeader({
             <RevealLines as="h1" className="display text-4xl sm:text-5xl lg:text-[clamp(2.5rem,3.8vw,4.2rem)] leading-[1.12] tracking-[-0.02em] font-semibold" lines={lines} />
           </div>
           <div className="lg:col-span-5">
-            {intro && <div className={`max-w-lg text-[14px] leading-relaxed md:text-base ${plain ? "text-ink-2" : "text-paper/80"}`}>{intro}</div>}
+            {intro && <div className={`max-w-lg text-body leading-relaxed md:text-base ${plain ? "text-ink-2" : "text-paper/80"}`}>{intro}</div>}
             {aside && <div className={`mt-5 hidden md:block ${plain ? "" : "[&_.btn-solid]:bg-paper [&_.btn-solid]:text-ink [&_.btn-solid:hover]:bg-white"}`}>{aside}</div>}
           </div>
         </div>
@@ -136,7 +136,7 @@ export function PageHeader({
             {facts.map(([k, v]) => (
               <div key={k} className={`flex items-baseline gap-3 md:border-l md:pl-5 md:first:border-l-0 md:first:pl-0 ${plain ? "md:border-ink/10" : "md:border-white/15"}`}>
                 <dd className="display text-2xl leading-none md:text-3xl">{v}</dd>
-                <dt className={`text-[10.5px] uppercase tracking-[0.18em] ${plain ? "text-mute" : "text-paper/55"}`}>{k}</dt>
+                <dt className={`text-body uppercase tracking-[0.18em] ${plain ? "text-mute" : "text-paper/55"}`}>{k}</dt>
               </div>
             ))}
           </dl>

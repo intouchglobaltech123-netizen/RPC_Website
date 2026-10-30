@@ -173,7 +173,7 @@ export const LANDING_CSS = `
 .ld-fig{margin:0;min-width:0}
 .ld-draw{display:block;width:100%;height:auto;max-height:min(30rem,56svh)}
 .ld-mk circle{fill:var(--navy)}
-.ld-mk text{fill:#f5f0e6;font-family:var(--font-inter-tight),system-ui,sans-serif;font-size:16px;font-weight:600}
+.ld-mk text{fill:#f5f0e6;font-family:var(--font-inter-tight),system-ui,sans-serif;font-size:var(--fs-body,1rem);font-weight:600}
 .ld-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem 1.6rem;margin:min(1.2rem,2svh) 0 0;padding:0;list-style:none}
 .ld-key li{display:flex;gap:.7rem;font-size:var(--fs-body);line-height:1.4}
 .ld-key b{display:block;font-weight:600}

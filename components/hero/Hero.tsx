@@ -134,7 +134,7 @@ function MobileHero() {
         />
         <div aria-hidden className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/55 to-transparent" />
         <div aria-hidden className="absolute inset-x-0 bottom-0 h-40" style={{ background: "linear-gradient(to top, var(--color-night), transparent)" }} />
-        <p className="absolute bottom-5 left-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] backdrop-blur-md">
+        <p className="absolute bottom-5 left-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1.5 text-body uppercase tracking-[0.16em] backdrop-blur-md">
           <span className="font-mono text-paper/60">{st.id}</span>
           <span>{st.title}</span>
         </p>
@@ -144,15 +144,15 @@ function MobileHero() {
         <h1 className="display mt-3 leading-[0.9]" style={{ fontSize: "15vw" }}>
           RPC <em className="text-paper/90">Constructions</em>
         </h1>
-        <p className="mt-4 text-[15px] leading-relaxed text-paper/80">
+        <p className="mt-4 text-body leading-relaxed text-paper/80">
           We unite architectural ambition with structural engineering mastery — crafting enduring spaces designed to stand for generations.
         </p>
         <div className="mt-6 grid grid-cols-2 gap-2.5">
-          <Link href="/about" className="inline-flex h-12 items-center justify-between rounded-full bg-paper pl-5 pr-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-ink">
+          <Link href="/about" className="inline-flex h-12 items-center justify-between rounded-full bg-paper pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.08em] text-ink">
             About Us
             <span className="grid h-9 w-9 place-items-center rounded-full bg-ink/10"><ArrowUpRight size={14} /></span>
           </Link>
-          <Link href="/projects" className="inline-flex h-12 items-center justify-between rounded-full border border-white/40 bg-white/5 pl-5 pr-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-paper">
+          <Link href="/projects" className="inline-flex h-12 items-center justify-between rounded-full border border-white/40 bg-white/5 pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.08em] text-paper">
             Projects
             <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><ArrowUpRight size={14} /></span>
           </Link>
@@ -289,7 +289,7 @@ function FilmHero({ ready, low }: { ready: boolean; low: boolean }) {
               style={{ animation: "wheel 1.8s cubic-bezier(0.65,0,0.35,1) infinite" }}
             />
           </span>
-          <span className="eyebrow !text-[10px] drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">Scroll to build</span>
+          <span className="eyebrow !text-body drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">Scroll to build</span>
         </div>
 
         {/* ── Chapter captions ───────────────────────────────── */}
@@ -324,7 +324,7 @@ function FilmHero({ ready, low }: { ready: boolean; low: boolean }) {
               <span className="block">RPC</span>
               <em className="block pl-[0.06em]">Constructions</em>
             </h2>
-            <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-paper/80 md:text-base">
+            <p className="mt-6 max-w-sm text-body leading-relaxed text-paper/80 md:text-base">
               We unite architectural ambition with structural engineering mastery — crafting enduring spaces designed to stand for generations.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">

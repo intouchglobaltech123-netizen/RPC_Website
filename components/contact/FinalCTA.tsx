@@ -129,8 +129,8 @@ export function FinalCTA() {
                       <Icon size={15} strokeWidth={1.6} />
                     </span>
                     <span className="min-w-0 text-center leading-tight sm:flex-1 sm:text-left">
-                      <span className="block text-[10px] uppercase tracking-[0.12em] text-paper/80 sm:tracking-[0.2em] sm:text-paper/50">{label}</span>
-                      <span className="hidden truncate text-[13px] text-paper sm:block">{value}</span>
+                      <span className="block text-body uppercase tracking-[0.12em] text-paper/80 sm:tracking-[0.2em] sm:text-paper/50">{label}</span>
+                      <span className="hidden truncate text-body text-paper sm:block">{value}</span>
                     </span>
                     <ArrowUpRight size={14} className="hidden shrink-0 text-paper/50 sm:block lg:hidden xl:block transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-paper" />
                   </a>

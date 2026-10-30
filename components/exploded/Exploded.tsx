@@ -144,7 +144,7 @@ export function Exploded({ index = "03" }: { index?: string } = {}) {
                 <br />
                 <em className="text-rpc">All waterproofed.</em>
               </h2>
-              <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-paper/65 md:mt-4 md:text-[14px]">
+              <p className="mt-3 max-w-sm text-body leading-relaxed text-paper/65 md:mt-4 md:text-body">
                 <span className="md:hidden">Each layer sealed against water — terrace to footings.</span>
                 <span className="hidden md:inline">Scroll through a finished RPC building — each layer sealed against water, down to the footings.</span>
               </p>
@@ -157,10 +157,10 @@ export function Exploded({ index = "03" }: { index?: string } = {}) {
                   className="group relative flex items-center gap-2 rounded-full border border-white/10 px-2.5 py-1 text-paper/40 md:px-3.5 md:py-1.5 lg:gap-4 lg:rounded-sm lg:border-0 lg:px-3 transition-all duration-500 data-[active]:bg-white/[0.07] data-[active]:text-paper data-[done]:text-paper/70"
                 >
                   <span className="absolute inset-y-2 left-0 hidden w-0.5 scale-y-0 lg:block bg-rpc transition-transform duration-500 group-data-[active]:scale-y-100" />
-                  <span className="font-sans font-semibold tabular-nums text-[11px] text-rpc">0{i + 1}</span>
+                  <span className="font-sans font-semibold tabular-nums text-body text-rpc">0{i + 1}</span>
                   <span className="flex flex-col">
-                    <span className="text-[13px] font-medium md:text-[14px]">{a.label}</span>
-                    <span className="hidden text-[11px] text-paper/50 group-data-[active]:text-paper/70 lg:inline">{a.note}</span>
+                    <span className="text-body font-medium md:text-body">{a.label}</span>
+                    <span className="hidden text-body text-paper/50 group-data-[active]:text-paper/70 lg:inline">{a.note}</span>
                   </span>
                 </li>
               ))}
@@ -184,14 +184,14 @@ export function Exploded({ index = "03" }: { index?: string } = {}) {
                     <div aria-hidden className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
                     {/* how it is waterproofed — read straight off the picture */}
                     <div className="absolute inset-x-4 bottom-4 md:inset-x-7 md:bottom-7">
-                      <p className="eyebrow !text-[9.5px] text-[#8fc6e8] md:!text-[11px]">
+                      <p className="eyebrow !text-body text-[#8fc6e8] md:!text-body">
                         {String(i + 1).padStart(2, "0")} · {p.label}
                       </p>
                       <p className="display mt-1 text-2xl leading-[1.02] text-white md:mt-2 md:text-[2.6vw]">{p.technique}</p>
                       <ol className="mt-2.5 flex flex-wrap gap-1.5 md:mt-4 md:gap-2">
                         {p.steps.map((step, k) => (
-                          <li key={step} className="flex items-center gap-1.5 rounded-full bg-white/12 py-1 pl-1 pr-2.5 text-[10.5px] leading-tight text-white/90 backdrop-blur-md md:gap-2 md:py-1.5 md:pl-1.5 md:pr-3.5 md:text-[13px]">
-                            <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#8fc6e8] font-mono text-[9px] text-ink md:h-5 md:w-5 md:text-[10px]">{k + 1}</span>
+                          <li key={step} className="flex items-center gap-1.5 rounded-full bg-white/12 py-1 pl-1 pr-2.5 text-body leading-tight text-white/90 backdrop-blur-md md:gap-2 md:py-1.5 md:pl-1.5 md:pr-3.5 md:text-body">
+                            <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-[#8fc6e8] font-mono text-body text-ink md:h-5 md:w-5 md:text-body">{k + 1}</span>
                             {step}
                           </li>
                         ))}
@@ -201,7 +201,7 @@ export function Exploded({ index = "03" }: { index?: string } = {}) {
                 ))}
               </div>
               <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-black/45 to-transparent" />
-              <span className="eyebrow absolute left-4 top-4 z-20 !text-[9px] md:left-5 md:top-5 md:!text-[10.5px] rounded-full bg-black/40 px-3 py-1.5 text-paper/85 backdrop-blur-md">
+              <span className="eyebrow absolute left-4 top-4 z-20 !text-body md:left-5 md:top-5 md:!text-body rounded-full bg-black/40 px-3 py-1.5 text-paper/85 backdrop-blur-md">
                 <span data-caption className="tabular-nums text-[#8fc6e8]">01 / 06</span>
                 <span className="mx-2 opacity-40">·</span>
                 Waterproofed section

@@ -277,7 +277,7 @@ export function StackHero() {
         <div data-hero-scrollfade className="gutter absolute inset-x-0 bottom-8 flex flex-col items-start justify-between gap-6 md:bottom-12 md:flex-row md:items-end">
           <div data-hero-ui className="max-w-sm">
             <p className="eyebrow mb-3 opacity-85">{brand.descriptor}</p>
-            <p className="text-[15px] leading-relaxed text-paper/90">Every floor planned, engineered and set in place — from foundation to roof.</p>
+            <p className="text-body leading-relaxed text-paper/90">Every floor planned, engineered and set in place — from foundation to roof.</p>
           </div>
           <div data-hero-ui className="flex flex-wrap items-center gap-3">
             <ArrowLink href="/contact" variant="light">Start a project</ArrowLink>
@@ -290,7 +290,7 @@ export function StackHero() {
           <h2 className="display text-[12vw] leading-[0.9] md:text-[5.6vw]">
             Built floor<br /><em>by floor.</em>
           </h2>
-          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-paper/90">
+          <p className="mt-6 max-w-md text-body leading-relaxed text-paper/90">
             [ Short statement about RPC — the kind of buildings you deliver and how. ]
           </p>
           <div className="mt-8 flex flex-wrap gap-3">

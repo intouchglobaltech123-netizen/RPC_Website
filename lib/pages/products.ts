@@ -280,7 +280,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .h2-sel{max-width:100%;margin:0;padding:.1rem 1.6rem .1rem 0;border:0;border-radius:6px;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2312223b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .1rem center/14px;font-family:var(--display);font-size:var(--fs-body);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink);cursor:pointer;appearance:none;-webkit-appearance:none}
 .h2-head[data-s=a] .h2-sel{text-align:right;text-align-last:right}
 .h2-sel:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:16px;color:#12223b}
+.h2-sel option,.h2-sel optgroup{font-family:var(--sans);font-size:var(--fs-body,1rem);color:#12223b}
 .h2-head:hover{box-shadow:inset 0 0 0 1.5px var(--navy),inset 0 4px 0 var(--c)}
 .h2-pk{margin:1.1rem 0 0;font-size:var(--fs-body);color:var(--mute)}
 .h2-verdict{max-width:46rem;margin:1.1rem auto .4rem;font-size:var(--fs-body);line-height:1.55;text-align:center;color:var(--ink2)}
@@ -423,11 +423,11 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pf-lists[data-view="grid"] .pf-row,.pf-lists[data-view="grid"] .pf-row:has(.pf-d[open]){--h:18.2rem}
   .pf-lists[data-view="grid"] .pf-sum{grid-template-rows:7.2rem auto auto minmax(0,1fr);padding:.6rem .6rem 3.4rem;gap:.3rem}
   .pf-lists[data-view="grid"] .pf-ico{height:7.2rem;max-height:7.2rem}
-  .pf-lists[data-view="grid"] .pf-fam{margin-top:.1rem;font-size:.8rem;font-weight:600;letter-spacing:.02em}
-  .pf-lists[data-view="grid"] .pf-name{min-height:2.7em;font-size:.95rem;line-height:1.35}
+  .pf-lists[data-view="grid"] .pf-fam{margin-top:.1rem;font-size:var(--fs-body,1rem);font-weight:600;letter-spacing:.02em}
+  .pf-lists[data-view="grid"] .pf-name{min-height:2.7em;font-size:var(--fs-body,1rem);line-height:1.35}
   .pf-lists[data-view="grid"] .pf-cat,.pf-lists[data-view="grid"] .pf-use{display:none}
   .pf-lists[data-view="grid"] .pf-packs span:nth-child(n+2){display:none}
-  .pf-lists[data-view="grid"] .pf-packs span{height:1.6rem;font-size:.85rem}
+  .pf-lists[data-view="grid"] .pf-packs span{height:1.6rem;font-size:var(--fs-body,1rem)}
 }
 
 /* a brand's logo with its name beside it, the squarer logos (Sika, CCI) drawn larger */
@@ -437,7 +437,7 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 .pf-bhl img{height:2.1rem;max-width:9rem}
 .pf-bhl img[src$="/sika.png"],.pf-bhl img[src$="/cci.svg"]{height:2.6rem}
 .pf-bhn{font-family:var(--display);font-size:var(--fs-sub);font-weight:600}
-.pf-bn{display:block;margin-top:.1rem;font-size:.78rem;font-weight:600;line-height:1.1;color:var(--ink2);text-align:center}
+.pf-bn{display:block;margin-top:.1rem;font-size:var(--fs-body,1rem);font-weight:600;line-height:1.1;color:var(--ink2);text-align:center}
 .pf-bt{flex-direction:column;gap:.05rem;height:auto;min-height:6.4rem;padding:1.5rem .7rem .55rem}
 .pf-bt .pf-blogo{flex:1 1 auto;height:auto;min-height:2.8rem}
 .pf-bt .pf-blogo img{max-height:2.8rem}
@@ -450,39 +450,39 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 @media (max-width:767px){
   .pf-chips{gap:1rem}
   .pf-chiprow{display:block;overflow:visible;margin-inline:0;padding:0}
-  .pf-fh{display:flex;margin:0 0 .5rem;padding:0;border:0;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-  .pf-picked{font-size:.78rem;letter-spacing:0;text-transform:none}
+  .pf-fh{display:flex;margin:0 0 .5rem;padding:0;border:0;font-size:var(--fs-body,1rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .pf-picked{font-size:var(--fs-body,1rem);letter-spacing:0;text-transform:none}
   .pf-cs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;overflow:visible;margin:0;padding:0}
   .pf-chip .pf-ck{display:none}
-  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{width:100%;height:auto;min-height:2.6rem;padding:.35rem .8rem;border-radius:14px;font-size:.92rem;line-height:1.2;white-space:normal}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{width:100%;height:auto;min-height:2.6rem;padding:.35rem .8rem;border-radius:14px;font-size:var(--fs-body,1rem);line-height:1.2;white-space:normal}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{margin-left:auto}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all{grid-column:1 / -1}
   .pf-chiprow--brands .pf-cs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
   .pf-chiprow--brands .pf-chip{width:100%;border-radius:12px}
   .pf-chiprow--brands .pf-chip--all{height:auto;min-height:2.8rem;justify-content:center;padding:0 .6rem;grid-column:1 / -1}
   .pf-chiprow--brands .pf-bt{width:100%;padding:1.4rem .4rem .5rem}
-  .pf-chiprow--brands .pf-bt > span{top:.35rem;right:.5rem;transform:none;font-size:.78rem}
+  .pf-chiprow--brands .pf-bt > span{top:.35rem;right:.5rem;transform:none;font-size:var(--fs-body,1rem)}
   .pf-bt--none{display:none}
 }
 
 /* phones, compact: small wrapping pills for categories, one tight row of brand cards, so the filters take little height */
 @media (max-width:767px){
   .pf-chips{gap:.7rem}
-  .pf-fh{margin:0 0 .35rem;font-size:.72rem}
+  .pf-fh{margin:0 0 .35rem;font-size:var(--fs-body,1rem)}
   .pf-cs{display:flex;flex-wrap:wrap;gap:.25rem}
-  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{width:auto;min-height:0;height:1.85rem;padding:0 .55rem;gap:.3rem;border-radius:999px;font-size:.76rem;line-height:1;white-space:nowrap}
-  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{margin-left:0;font-size:.68rem;opacity:.65}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{width:auto;min-height:0;height:1.85rem;padding:0 .55rem;gap:.3rem;border-radius:999px;font-size:var(--fs-body,1rem);line-height:1;white-space:nowrap}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{margin-left:0;font-size:var(--fs-body,1rem);opacity:.65}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all{grid-column:auto}
   .pf-chiprow--brands .pf-cs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem}
   .pf-chiprow--brands .pf-chip{border-radius:10px}
-  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;min-height:1.85rem;height:1.85rem;font-size:.76rem}
-  .pf-chiprow--brands .pf-chip--all span{font-size:.72rem}
+  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;min-height:1.85rem;height:1.85rem;font-size:var(--fs-body,1rem)}
+  .pf-chiprow--brands .pf-chip--all span{font-size:var(--fs-body,1rem)}
   .pf-chiprow--brands .pf-bt{min-height:4.1rem;padding:.9rem .2rem .3rem;gap:0}
-  .pf-chiprow--brands .pf-bt > span{top:.2rem;right:.3rem;font-size:.64rem}
+  .pf-chiprow--brands .pf-bt > span{top:.2rem;right:.3rem;font-size:var(--fs-body,1rem)}
   .pf-chiprow--brands .pf-bt .pf-blogo{min-height:1.7rem}
   .pf-chiprow--brands .pf-bt .pf-blogo img{max-height:1.7rem}
   .pf-chiprow--brands .pf-bt .pf-blogo img[src$="/sika.png"],.pf-chiprow--brands .pf-bt .pf-blogo img[src$="/cci.svg"]{max-height:2.3rem}
-  .pf-chiprow--brands .pf-bn{margin-top:0;font-size:.64rem}
+  .pf-chiprow--brands .pf-bn{margin-top:0;font-size:var(--fs-body,1rem)}
 }
 
 /* phones, products banner: room for the button under the two lines, a button that fits its words */
@@ -491,33 +491,33 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pr-headgrid{gap:.95rem}
   .pg-head.pr-head .pr-headgrid .pg-h1{max-width:32rem}
   .pr-headside .pg-actions{justify-content:flex-start}
-  .pr-headside .pg-actions .pg-btn{flex:0 0 auto;width:auto;min-height:2.6rem;padding:0 1.15rem;font-size:.92rem;border-radius:999px}
+  .pr-headside .pg-actions .pg-btn{flex:0 0 auto;width:auto;min-height:2.6rem;padding:0 1.15rem;font-size:var(--fs-body,1rem);border-radius:999px}
 }
 
 /* phones, finish: the two filters sit in one soft panel, white pills and tiles, the picked ones ringed in navy */
 @media (max-width:767px){
   .pf-chips{gap:1.05rem;padding:1.05rem .85rem 1.1rem;border-radius:20px;background:rgba(255,255,255,.5);box-shadow:inset 0 0 0 1px var(--line)}
-  .pf-fh{margin-bottom:.6rem;font-size:.7rem;letter-spacing:.14em}
+  .pf-fh{margin-bottom:.6rem;font-size:var(--fs-body,1rem);letter-spacing:.14em}
   .pf-picked{letter-spacing:0}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip,.pf-chiprow--brands .pf-chip--all{background:#fff;box-shadow:inset 0 0 0 1px rgba(18,34,59,.14);transition:box-shadow .2s,background-color .2s}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip:not(.pf-chip--all)[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy);font-weight:600;color:var(--navy)}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all[aria-pressed="true"],.pf-chiprow--brands .pf-chip--all[aria-pressed="true"]{background:var(--navy);box-shadow:none;color:#fff}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-chip--all[aria-pressed="true"] span,.pf-chiprow--brands .pf-chip--all[aria-pressed="true"] span{opacity:.75;color:#fff}
   .pf-chiprow--brands{padding-top:1rem;border-top:1px solid var(--line)}
-  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;justify-self:start;width:auto;height:1.85rem;min-height:0;padding:0 .8rem;gap:.35rem;border-radius:999px;font-size:.76rem}
+  .pf-chiprow--brands .pf-chip--all{grid-column:1 / -1;justify-self:start;width:auto;height:1.85rem;min-height:0;padding:0 .8rem;gap:.35rem;border-radius:999px;font-size:var(--fs-body,1rem)}
   .pf-chiprow--brands .pf-cs{gap:.4rem}
   .pf-chiprow--brands .pf-bt{border-radius:14px;box-shadow:inset 0 0 0 1px rgba(18,34,59,.12)}
   .pf-chiprow--brands .pf-bt[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 1.5px var(--navy)}
   .pf-chiprow--brands .pf-bt .pf-blogo{width:100%;padding-inline:.1rem}
   .pf-chiprow--brands .pf-bt .pf-blogo img{max-width:100%;width:auto;object-fit:contain}
-  .pf-chiprow--brands .pf-bn{font-size:.66rem;font-weight:600;color:var(--ink2)}
+  .pf-chiprow--brands .pf-bn{font-size:var(--fs-body,1rem);font-weight:600;color:var(--ink2)}
   .pf-chiprow--brands .pf-bt[aria-pressed="true"] .pf-bn{color:var(--navy)}
 }
 
 @media (max-width:380px){
   .pf-chips{padding-inline:.65rem}
-  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{padding:0 .5rem;gap:.25rem;font-size:.72rem}
-  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{font-size:.64rem}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip{padding:0 .5rem;gap:.25rem;font-size:var(--fs-body,1rem)}
+  .pf-chiprow:not(.pf-chiprow--brands) .pf-chip span{font-size:var(--fs-body,1rem)}
   .pf-chiprow:not(.pf-chiprow--brands) .pf-cs{gap:.22rem}
 }
 
@@ -525,15 +525,15 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
 @media (max-width:599px){
   .fo-k{display:none}
   .fo-panel{padding:.9rem .8rem 1rem}
-  .bc-k{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .bc-k{font-size:var(--fs-body,1rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
   .cmp-wrap{margin-top:.9rem;background:none;box-shadow:none;border-radius:0}
   .cmp-t thead tr{column-gap:.5rem}
   .cmp-t thead th{padding:.7rem .7rem .8rem;border-bottom:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
-  .cmp-pick > span{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+  .cmp-pick > span{font-size:var(--fs-body,1rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
   .cmp-t tbody tr{column-gap:0;margin-top:.5rem;overflow:hidden;border:0;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line)}
   .cmp-t tbody tr[data-row=brand]{display:none}
-  .cmp-t tbody th{padding:.7rem .85rem .15rem;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-  .cmp-t tbody td{padding:.2rem .85rem .8rem;font-size:.95rem;line-height:1.4}
+  .cmp-t tbody th{padding:.7rem .85rem .15rem;font-size:var(--fs-body,1rem);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+  .cmp-t tbody td{padding:.2rem .85rem .8rem;font-size:var(--fs-body,1rem);line-height:1.4}
   .cmp-t tbody td[data-s=b]{border-left:1px solid var(--line)}
   .cmp-t tbody td span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
   .cmp-t tfoot td{padding:.7rem 0 0}
@@ -546,18 +546,18 @@ export const PRODUCTS_CSS = FINDER_CSS + FANCY_SELECT_CSS + BRANDS_MARQUEE_CSS +
   .pv-thumbs{gap:.45rem}
   .pv-thumb-box{height:3.4rem}
   .pv-info{padding-right:0}
-  .pv-title{font-size:1.5rem;line-height:1.2}
-  .pv-subtitle{margin:.3rem 0 .6rem;font-size:.95rem;color:var(--accent)}
+  .pv-title{font-size:var(--fs-h3);line-height:1.2}
+  .pv-subtitle{margin:.3rem 0 .6rem;font-size:var(--fs-body,1rem);color:var(--accent)}
   .pv-summary{display:none}
   .pv-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-bottom:.9rem}
   .pv-feat{flex-direction:row;justify-content:flex-start;text-align:left;gap:.55rem;padding:.6rem .7rem;border-radius:12px;background:#fff}
-  .pv-feat-title{font-size:.82rem}
+  .pv-feat-title{font-size:var(--fs-body,1rem)}
   .pv-purchase-row{flex-direction:column;align-items:stretch;gap:.8rem;margin-top:0;padding:.9rem;border-radius:16px;background:#f1f5fb}
   .pv-pack-chip{height:2.3rem;border-radius:999px}
   .pv-enquire-btn{width:100%;justify-content:center;height:3rem;border-radius:12px;background:var(--color-rpc,#2756a0)}
   .pv-tabs-bar{gap:.2rem;padding:0 .5rem;overflow-x:auto;scrollbar-width:none}
   .pv-tabs-bar::-webkit-scrollbar{display:none}
-  .pv-tab{flex:none;height:3rem;padding:0 .85rem;font-size:.9rem}
+  .pv-tab{flex:none;height:3rem;padding:0 .85rem;font-size:var(--fs-body,1rem)}
   .pv-tab svg{display:none}
   .pv-content{padding:1rem .9rem 2.4rem}
   .pv-overview-grid{gap:1rem}

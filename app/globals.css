@@ -21,8 +21,8 @@
   --color-bronze: #8a6a4c;
 
   /* three sizes only: a title, a subtitle and the paragraph size */
-  --text-title: clamp(1.9rem, 1.3rem + 1.9vw, 3rem);
-  --text-sub: clamp(1.2rem, 1.08rem + 0.4vw, 1.5rem);
+  --text-title: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+  --text-sub: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
   --text-body: 1rem;
 
   /* one family for the whole site: Inter Tight, semibold for headings, tight tracking */
@@ -428,3 +428,9 @@
 
 @media (min-width: 768px) { :root { --gutter: 48px; } }
 @media (min-width: 1100px) { :root { --gutter: 100px; } }
+
+/* very narrow phones: long words wrap rather than run off the screen */
+@media (max-width: 359px) {
+  main h2, main h3 { overflow-wrap: anywhere; hyphens: auto; }
+  main button, main button span, main a[class*="btn"], .ct-sbtn, .ct-sbtn span { white-space: normal !important; text-align: center; }
+}

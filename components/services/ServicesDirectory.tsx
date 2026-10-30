@@ -16,9 +16,9 @@ export function ServicesDirectory() {
             <li key={s.id} className="shrink-0">
               <a
                 href={`#${serviceSlug(s.title)}`}
-                className="block rounded-full px-3.5 py-1.5 text-[13px] font-medium text-ink/70 transition-colors hover:bg-ink hover:text-paper"
+                className="block rounded-full px-3.5 py-1.5 text-body font-medium text-ink/70 transition-colors hover:bg-ink hover:text-paper"
               >
-                <span className="mr-1.5 font-mono text-[10px] opacity-50">{s.id}</span>{s.title.replace(" Construction", "")}
+                <span className="mr-1.5 font-mono text-body opacity-50">{s.id}</span>{s.title.replace(" Construction", "")}
               </a>
             </li>
           ))}
@@ -32,12 +32,12 @@ export function ServicesDirectory() {
             <Link href={`/contact?service=${encodeURIComponent(s.title)}#enquiry`} className="flex h-full flex-col overflow-hidden rounded-xl bg-paper-2 ring-1 ring-ink/10">
               <div className="relative aspect-square bg-stone">
                 <Image src={s.image} alt={`${s.title} by RPC Constructions`} fill sizes="46vw" className="object-cover" />
-                <span className="absolute left-2 top-2 rounded-full bg-paper/90 px-2 py-0.5 font-mono text-[10px] text-ink">{s.id}</span>
+                <span className="absolute left-2 top-2 rounded-full bg-paper/90 px-2 py-0.5 font-mono text-body text-ink">{s.id}</span>
               </div>
               <div className="flex flex-1 flex-col p-3">
-                <p className="line-clamp-2 text-[14px] font-medium leading-snug" style={{ minHeight: "2.6em" }}>{s.title}</p>
-                <p className="mt-1 truncate text-[11.5px] leading-snug text-mute">{s.timeline}</p>
-                <span className="mt-auto inline-flex items-center gap-1 pt-2.5 text-[12px] font-medium text-rpc">
+                <p className="line-clamp-2 text-body font-medium leading-snug" style={{ minHeight: "2.6em" }}>{s.title}</p>
+                <p className="mt-1 truncate text-body leading-snug text-mute">{s.timeline}</p>
+                <span className="mt-auto inline-flex items-center gap-1 pt-2.5 text-body font-medium text-rpc">
                   Enquire <ArrowUpRight size={12} />
                 </span>
               </div>
@@ -67,7 +67,7 @@ export function ServicesDirectory() {
                   <p className="eyebrow mb-4 mt-9 text-mute">Scope of work</p>
                   <ul className="grid gap-3 sm:grid-cols-2">
                     {s.deliverables.map((d) => (
-                      <li key={d} className="flex items-start gap-3 text-[15px]">
+                      <li key={d} className="flex items-start gap-3 text-body">
                         <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-rpc text-white">
                           <Check size={11} strokeWidth={3} />
                         </span>
@@ -82,14 +82,14 @@ export function ServicesDirectory() {
                       <Maximize2 size={16} className="mt-0.5 text-mute" />
                       <div>
                         <dt className="eyebrow text-mute">Typical scale</dt>
-                        <dd className="mt-1 text-sm font-medium">{s.scale}</dd>
+                        <dd className="mt-1 text-body font-medium">{s.scale}</dd>
                       </div>
                     </div>
                     <div className="flex items-start gap-2.5">
                       <Clock size={16} className="mt-0.5 text-mute" />
                       <div>
                         <dt className="eyebrow text-mute">Programme</dt>
-                        <dd className="mt-1 text-sm font-medium">{s.timeline}</dd>
+                        <dd className="mt-1 text-body font-medium">{s.timeline}</dd>
                       </div>
                     </div>
                   </dl>

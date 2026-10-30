@@ -54,7 +54,7 @@ export function routesMarkup(dest: string, regions: readonly string[]) {
 
 export const ROUTES_CSS = `
 /* how to reach the office: towns and starting places on the left, Google's road route on the right */
-.ab-go{--fs-s:calc(var(--fs-body) * .88);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.3fr);gap:0;margin-top:clamp(1rem,2.2vh,1.6rem);overflow:hidden;border-radius:18px;background:var(--card,#f5f0e6);box-shadow:inset 0 0 0 1px var(--line)}
+.ab-go{--fs-s:var(--fs-body);display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.3fr);gap:0;margin-top:clamp(1rem,2.2vh,1.6rem);overflow:hidden;border-radius:18px;background:var(--card,#f5f0e6);box-shadow:inset 0 0 0 1px var(--line)}
 .ab-go-side{display:flex;flex-direction:column;gap:.9rem;padding:clamp(1.1rem,2vw,1.5rem)}
 .ab-go-k{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .ab-go-h{margin:0;font-size:var(--fs-body);font-weight:600;line-height:1.25;letter-spacing:-.01em;color:var(--ink)}

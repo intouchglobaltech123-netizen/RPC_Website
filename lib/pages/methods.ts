@@ -184,13 +184,13 @@ const METHODS_MOBILE_CSS = `
   .wpx-hint,.wpx-help{display:none}
   .wpx-map{padding:1.4rem 0 2.2rem}
   .wpx-top{margin-bottom:.9rem;padding-top:1.2rem}
-  .wpx-h{font-size:1.4rem}
+  .wpx-h{font-size:var(--fs-h3)}
   .wpx-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;overflow:visible;margin-inline:0;padding:0}
-  .wpx-tab{flex:none;justify-content:flex-start;gap:.5rem;height:2.5rem;padding:0 .5rem 0 .4rem;font-size:.95rem;min-width:0}
-  .wpx-tab span{width:1.5rem;height:1.5rem;flex:none;font-size:.8rem}
+  .wpx-tab{flex:none;justify-content:flex-start;gap:.5rem;height:2.5rem;padding:0 .5rem 0 .4rem;font-size:var(--fs-body,1rem);min-width:0}
+  .wpx-tab span{width:1.5rem;height:1.5rem;flex:none;font-size:var(--fs-body,1rem)}
   .wpx-panel .wpx-ma{display:none}
   .wpx-panel .wpx-ms .wpx-mrow{padding:.8rem 0}
-  .wpx-panel .wpx-mn{font-size:1rem}
+  .wpx-panel .wpx-mn{font-size:var(--fs-body,1rem)}
   .wpx-phead{padding:.8rem 1.1rem}
   .wpx-panel .wpx-ms{margin:0 1.1rem}
   .wpx-panel .wpx-acts{padding:.8rem 1.1rem}
@@ -199,18 +199,18 @@ const METHODS_MOBILE_CSS = `
   .wpx-pop{inset:auto 0 0 0;width:auto;max-width:none;height:auto;max-height:86svh;margin:0;border-radius:22px 22px 0 0;box-shadow:0 0 0 100vmax rgba(4,12,30,.5),0 -20px 60px -24px rgba(4,12,30,.5);animation:wpx-sheet .3s cubic-bezier(.2,.8,.2,1)}
   .wpx-poph{position:relative;align-items:flex-start;padding:1.3rem 1rem .9rem 1.2rem;border-radius:22px 22px 0 0}
   .wpx-poph::before{content:"";position:absolute;top:.5rem;left:50%;width:2.4rem;height:4px;margin-left:-1.2rem;border-radius:3px;background:rgba(255,255,255,.3)}
-  .wpx-popn{margin-top:.25rem;font-size:1.2rem;line-height:1.2}
+  .wpx-popn{margin-top:.25rem;font-size:var(--fs-h3);line-height:1.2}
   .wpx-popx{width:2.4rem;height:2.4rem}
   .wpx-popb{padding:1rem 1.2rem 1.1rem}
   .wpx-poptop{grid-template-columns:5.6rem minmax(0,1fr);gap:.9rem}
   .wpx-popart{max-width:none;padding:.3rem;border-radius:12px}
-  .wpx-dh{font-size:.95rem;line-height:1.55}
-  .wpx-duse{margin-top:.6rem;font-size:.9rem}
+  .wpx-dh{font-size:var(--fs-body,1rem);line-height:1.55}
+  .wpx-duse{margin-top:.6rem;font-size:var(--fs-body,1rem)}
   .wpx-dnotes{gap:.5rem;margin-top:1rem}
   .wpx-dnotes .wpx-dn{padding:.75rem .85rem;border-radius:12px}
   .wpx-dprod{margin-top:0;padding-top:1rem}
   .wpx-dp{gap:.4rem}
-  .wpx-dp a,.wpx-dp span{min-height:2.4rem;padding:.3rem .85rem;border-radius:999px;font-size:.92rem}
+  .wpx-dp a,.wpx-dp span{min-height:2.4rem;padding:.3rem .85rem;border-radius:999px;font-size:var(--fs-body,1rem)}
   .wpx-popf{gap:.7rem;padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom,0px))}
   .wpx-popbk{flex:none;height:2.7rem;padding:0 1rem;border-radius:999px;background:rgba(18,34,59,.07)}
   .wpx-popf .pg-btn{flex:1;justify-content:center;width:auto;height:2.7rem;border-radius:999px}
@@ -219,10 +219,10 @@ const METHODS_MOBILE_CSS = `
   .rt-sec{padding-top:2.4rem}
   .rt{gap:.9rem}
   .rt-head{gap:.5rem}
-  .rt-head .pg-h2{font-size:1.5rem;line-height:1.15;margin-top:.4rem}
+  .rt-head .pg-h2{font-size:var(--fs-h3);line-height:1.15;margin-top:.4rem}
   .rt-head .pg-lede{display:none}
   .rt-step{order:2;display:flex;align-items:baseline;justify-content:space-between;margin:.1rem 0 -.4rem}
-  .rt-step b{font-size:1rem;font-weight:600;color:var(--ink)}
+  .rt-step b{font-size:var(--fs-body,1rem);font-weight:600;color:var(--ink)}
   .rt-step span{display:none}
   .rt-stage{display:contents}
   .rt-scene{order:1;width:100%;min-height:0;height:auto;aspect-ratio:16/9;border-radius:16px;box-shadow:inset 0 0 0 1px var(--line),0 18px 36px -28px rgba(18,34,59,.5)}
@@ -230,29 +230,29 @@ const METHODS_MOBILE_CSS = `
   .rt-group,.rt-opts,.rt-group--coat .rt-opts{display:contents}
   .rt-gh{display:none}
   .rt-group--none .rt-chip{grid-column:1 / -1}
-  .rt-chip{width:100%;height:auto;min-height:2.6rem;gap:.5rem;padding:.35rem .8rem .35rem .7rem;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:.92rem;line-height:1.2;white-space:normal;text-align:left}
+  .rt-chip{width:100%;height:auto;min-height:2.6rem;gap:.5rem;padding:.35rem .8rem .35rem .7rem;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:var(--fs-body,1rem);line-height:1.2;white-space:normal;text-align:left}
   .rt-chip .rt-r{box-shadow:inset 0 0 0 2px var(--k)}
   .rt-chip[aria-pressed=true]{box-shadow:none}
   .rt-info{order:4;padding:1rem 1.1rem 1.1rem;border-radius:16px}
-  .rt-name{font-size:1.2rem}
+  .rt-name{font-size:var(--fs-h3)}
 
   /* the rain test, kept to one screen: a shorter header, three methods to a row, and one slim card for the words */
   .rt-sec{padding-top:1.7rem;padding-bottom:calc(2.2rem + 32px) !important}
   .rt{gap:.7rem}
   .rt-head{gap:.2rem}
-  .rt-head .pg-h2{margin-top:.15rem;font-size:1.3rem}
+  .rt-head .pg-h2{margin-top:.15rem;font-size:var(--fs-h3)}
   .rt-step{margin:0 0 -.3rem}
-  .rt-step b{font-size:.85rem;color:var(--mute)}
+  .rt-step b{font-size:var(--fs-body,1rem);color:var(--mute)}
   .rt-pick{grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem}
-  .rt-chip{min-height:2.45rem;gap:.35rem;padding:.3rem .5rem;border-radius:12px;font-size:.76rem;line-height:1.15}
+  .rt-chip{min-height:2.45rem;gap:.35rem;padding:.3rem .5rem;border-radius:12px;font-size:var(--fs-body,1rem);line-height:1.15}
   .rt-chip .rt-r{flex:none;width:.85rem;height:.85rem}
-  .rt-group--none .rt-chip{min-height:2.2rem;font-size:.84rem}
+  .rt-group--none .rt-chip{min-height:2.2rem;font-size:var(--fs-body,1rem)}
   .rt-info{position:relative;gap:.25rem;padding:.8rem .95rem .85rem;border-radius:14px}
   .rt-kind{display:none}
-  .rt-name{padding-right:6.4rem;font-size:1.05rem}
-  .rt-where{font-size:.86rem;line-height:1.45}
+  .rt-name{padding-right:6.4rem;font-size:var(--fs-body,1rem)}
+  .rt-where{font-size:var(--fs-body,1rem);line-height:1.45}
   .rt-mind{display:none !important}
-  .rt-again{position:absolute;top:.6rem;right:.7rem;margin:0;padding:.35rem .7rem;font-size:.8rem}
+  .rt-again{position:absolute;top:.6rem;right:.7rem;margin:0;padding:.35rem .7rem;font-size:var(--fs-body,1rem)}
 }
 @keyframes wpx-sheet{from{transform:translateY(40px);opacity:0}}
 `;

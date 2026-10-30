@@ -83,8 +83,8 @@ export function Manifesto() {
               />
             ))}
             <div aria-hidden className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
-            <p className="absolute bottom-3 left-3 text-sm font-medium text-white">
-              <span className="mr-2 font-mono text-[11px] text-white/70">{services[slide]!.id}</span>
+            <p className="absolute bottom-3 left-3 text-body font-medium text-white">
+              <span className="mr-2 font-mono text-body text-white/70">{services[slide]!.id}</span>
               {services[slide]!.title}
             </p>
           </div>
@@ -97,7 +97,7 @@ export function Manifesto() {
 
         {/* Bottom Details Row — spanning full section width */}
         <div className="grid gap-6 border-t border-ink/10 pt-6 md:grid-cols-12 md:items-end md:gap-10 md:pt-8">
-          <p className="text-[15px] sm:text-base leading-relaxed text-ink-2 md:col-span-7 lg:col-span-6 max-w-xl">
+          <p className="text-body sm:text-base leading-relaxed text-ink-2 md:col-span-7 lg:col-span-6 max-w-xl">
             RPC Constructions builds homes, commercial and industrial buildings across Tamil Nadu — each one waterproofed in six stages, from the soil under the raft to the roof above.
           </p>
           <div className="md:col-span-5 lg:col-span-6 flex md:justify-end">

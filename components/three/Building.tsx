@@ -211,7 +211,7 @@ export function Building({ config, materials, quality, showLabels = false }: Pro
                 style={{ opacity: 0 }}
               >
                 <span className="anatomy-line" />
-                <span className="font-mono text-[10px] tracking-[0.2em] uppercase whitespace-nowrap">
+                <span className="font-mono text-body tracking-[0.2em] uppercase whitespace-nowrap">
                   {String(anatomy.findIndex((a) => a.key === layer) + 1).padStart(2, "0")} — {anatomy.find((a) => a.key === layer)?.label}
                 </span>
               </div>

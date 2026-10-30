@@ -210,8 +210,8 @@ function DesktopFilm() {
           <h2 className="display mt-5 max-w-[14ch] text-4xl sm:text-5xl lg:text-[clamp(2.5rem,4.2vw,4.5rem)] leading-[1.12] tracking-[-0.02em] font-semibold">
             {waterproofIntro.headline}
           </h2>
-          <p className="mt-6 max-w-md text-[15px] leading-relaxed text-paper/75">{waterproofIntro.body}</p>
-          <p className="wp-cue mt-8 flex items-center gap-2 text-[12px] uppercase tracking-[0.16em] text-paper/60">
+          <p className="mt-6 max-w-md text-body leading-relaxed text-paper/75">{waterproofIntro.body}</p>
+          <p className="wp-cue mt-8 flex items-center gap-2 text-body uppercase tracking-[0.16em] text-paper/60">
             <span className="h-px w-8 bg-paper/40" /> Scroll to reveal
           </p>
         </div>
@@ -230,11 +230,11 @@ function DesktopFilm() {
               </h3>
             </div>
             <div className="max-w-sm rounded-2xl border border-white/15 bg-black/45 p-5 backdrop-blur-md">
-              <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8fb4ec]">
+              <p className="flex items-center gap-2 text-body font-semibold uppercase tracking-[0.16em] text-[#8fb4ec]">
                 <Droplets size={14} /> Waterproofing used
               </p>
               <p className="mt-2 text-xl font-medium leading-snug text-white">{s.system}</p>
-              <ul className="mt-3 space-y-1.5 text-[13.5px] leading-snug text-paper/75">
+              <ul className="mt-3 space-y-1.5 text-body leading-snug text-paper/75">
                 {s.points.map((p) => (
                   <li key={p} className="flex gap-2">
                     <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#8fb4ec]" />
@@ -252,10 +252,10 @@ function DesktopFilm() {
           <h3 className="display mt-4 max-w-[12ch] leading-[0.95]" style={{ fontSize: "clamp(2.8rem, 5.4vw, 6.4rem)" }}>
             {waterproofOutro.headline}
           </h3>
-          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-paper/75">{waterproofOutro.body}</p>
+          <p className="mt-5 max-w-md text-body leading-relaxed text-paper/75">{waterproofOutro.body}</p>
           <Link
             href="/contact#enquiry"
-            className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-paper px-6 text-[14px] font-semibold text-ink transition-colors hover:bg-white"
+            className="mt-7 inline-flex h-12 items-center gap-2 rounded-full bg-paper px-6 text-body font-semibold text-ink transition-colors hover:bg-white"
           >
             Plan a watertight build <ArrowUpRight size={16} />
           </Link>
@@ -268,9 +268,9 @@ function DesktopFilm() {
               <li
                 key={s.key}
                 data-wp-rail
-                className="rounded-full border border-white/15 bg-black/30 px-3 py-1.5 text-[12px] text-paper/50 backdrop-blur-md transition-colors duration-500 data-[active]:border-white/60 data-[active]:bg-white data-[active]:text-ink data-[done]:text-paper/85"
+                className="rounded-full border border-white/15 bg-black/30 px-3 py-1.5 text-body text-paper/50 backdrop-blur-md transition-colors duration-500 data-[active]:border-white/60 data-[active]:bg-white data-[active]:text-ink data-[done]:text-paper/85"
               >
-                <span className="mr-1.5 font-mono text-[10px] opacity-60">0{i + 1}</span>
+                <span className="mr-1.5 font-mono text-body opacity-60">0{i + 1}</span>
                 {s.area}
               </li>
             ))}
@@ -339,7 +339,7 @@ function MobileFilm() {
     <section id="waterproofing" aria-label="Waterproofing — the protection you never see" className="relative z-10 bg-night px-4 pb-12 pt-14 text-paper">
       <SectionMarker index="04" label={waterproofIntro.eyebrow} className="text-paper/70" />
       <h2 className="display mt-4 text-[2.6rem] leading-[0.95]">{waterproofIntro.headline}</h2>
-      <p className="mt-3 text-[14px] leading-relaxed text-paper/70">Below ground, water never stops pushing. Here is what we put there to stop it.</p>
+      <p className="mt-3 text-body leading-relaxed text-paper/70">Below ground, water never stops pushing. Here is what we put there to stop it.</p>
 
       <div ref={box} className="relative mt-6 overflow-hidden rounded-2xl border border-white/10 bg-ink" style={{ aspectRatio: "16 / 9" }}>
         <video
@@ -355,13 +355,13 @@ function MobileFilm() {
           <button
             type="button"
             onClick={replay}
-            className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-[12px] font-medium text-white backdrop-blur-md"
+            className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-body font-medium text-white backdrop-blur-md"
           >
             <RotateCcw size={13} /> Replay
           </button>
         )}
         {stop < 0 && !ended && (
-          <span className="pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-[11px] text-white/85 backdrop-blur-md">
+          <span className="pointer-events-none absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-1.5 text-body text-white/85 backdrop-blur-md">
             <Play size={11} /> Inside an RPC building
           </span>
         )}
@@ -371,17 +371,17 @@ function MobileFilm() {
       <div className="mt-4 min-h-[9.5rem] rounded-2xl border border-white/12 bg-white/[0.04] p-4">
         {s ? (
           <div key={s.key} style={{ animation: "fadeIn .5s ease" }}>
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-paper/55">
+            <p className="font-mono text-body uppercase tracking-[0.14em] text-paper/55">
               0{stop + 1} / 0{CLIPS} · {s.area}
             </p>
             <p className="display mt-1.5 text-[1.55rem] leading-tight">{s.headline}</p>
-            <p className="mt-2 flex items-center gap-1.5 text-[13px] font-medium text-[#8fb4ec]">
+            <p className="mt-2 flex items-center gap-1.5 text-body font-medium text-[#8fb4ec]">
               <Droplets size={13} /> {s.system}
             </p>
-            <p className="mt-1 text-[12.5px] leading-snug text-paper/65">{s.points.join(" · ")}</p>
+            <p className="mt-1 text-body leading-snug text-paper/65">{s.points.join(" · ")}</p>
           </div>
         ) : (
-          <p className="text-[13.5px] leading-relaxed text-paper/65">
+          <p className="text-body leading-relaxed text-paper/65">
             The camera goes underground — into the sump, along the basement wall and out to the pool — peeling back the finish at each stop to show the waterproofing underneath.
           </p>
         )}

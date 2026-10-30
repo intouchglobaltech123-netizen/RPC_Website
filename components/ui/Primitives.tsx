@@ -48,7 +48,7 @@ export function Meta({ label, value, className }: { label: string; value: ReactN
   return (
     <div className={cn("border-t border-current/15 pt-3", className)}>
       <dt className="eyebrow mb-1.5 opacity-50">{label}</dt>
-      <dd className="text-sm">{value}</dd>
+      <dd className="text-body">{value}</dd>
     </div>
   );
 }

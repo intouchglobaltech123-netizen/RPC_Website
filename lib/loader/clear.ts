@@ -166,7 +166,7 @@ export const CLEAR_CSS = `
 .cl-top{transform:rotateX(90deg) translateZ(calc(var(--cs) / 2))}
 .cl-bottom{transform:rotateX(-90deg) translateZ(calc(var(--cs) / 2))}
 .cl-cc{position:relative;display:inline-grid;place-items:center}
-.cl-cc span{position:absolute;font-size:.46em;left:22%;top:50%;transform:translateY(-52%)}
+.cl-cc span{position:absolute;font-size:var(--fs-body,1rem);left:22%;top:50%;transform:translateY(-52%)}
 
 /* the logo itself: the hexagon of the picture (85.0% wide of it, its middle 1.1% above the picture's) is as wide as the cube seen at the logo's angle;
    its letters and lines are see-through, so a cream hexagon sits behind them, as the top bar's tile does */

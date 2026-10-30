@@ -76,11 +76,11 @@ function markReady() {
 
 const Buttons = () => (
   <>
-    <Link href="/about" className="inline-flex h-12 items-center justify-between gap-4 rounded-full bg-paper pl-5 pr-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-ink">
+    <Link href="/about" className="inline-flex h-12 items-center justify-between gap-4 rounded-full bg-paper pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.08em] text-ink">
       About Us
       <span className="grid h-9 w-9 place-items-center rounded-full bg-ink/10"><ArrowUpRight size={14} /></span>
     </Link>
-    <Link href="/projects" className="inline-flex h-12 items-center justify-between gap-4 rounded-full border border-white/40 bg-black/40 pl-5 pr-1.5 text-[12px] font-medium uppercase tracking-[0.08em] text-paper backdrop-blur-md hover:bg-black/60">
+    <Link href="/projects" className="inline-flex h-12 items-center justify-between gap-4 rounded-full border border-white/40 bg-black/40 pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.08em] text-paper backdrop-blur-md hover:bg-black/60">
       Our projects
       <span className="grid h-9 w-9 place-items-center rounded-full bg-white/10"><ArrowUpRight size={14} /></span>
     </Link>
@@ -88,7 +88,7 @@ const Buttons = () => (
 );
 
 const StageChip = ({ s, big = false }: { s: (typeof STAGES)[number]; big?: boolean }) => (
-  <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 border border-white/15 bg-black/45 py-1.5 pl-3 pr-4 uppercase text-paper backdrop-blur-md ${big ? "rounded-full text-[12.5px] tracking-[0.16em]" : "rounded-2xl text-[11px] tracking-[0.14em]"}`}>
+  <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 border border-white/15 bg-black/45 py-1.5 pl-3 pr-4 uppercase text-paper backdrop-blur-md ${big ? "rounded-full text-body tracking-[0.16em]" : "rounded-2xl text-body tracking-[0.14em]"}`}>
     <span className="font-mono text-paper/60">{s.id}</span>
     <span>{s.label}</span>
     <span className="inline-flex items-center gap-1.5 normal-case tracking-normal text-[#8fb4ec]">
@@ -262,7 +262,7 @@ function ScrollHero() {
           <h1 className="display mt-4 leading-[0.86]" style={{ fontSize: "clamp(3.6rem, 7vw, 8.5rem)" }}>
             RPC <em>Constructions</em>
           </h1>
-          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-paper/80">
+          <p className="mt-5 max-w-md text-body leading-relaxed text-paper/80">
             We build to last — and we seal every building where water tries to get in, from the roof to the pool.
           </p>
           <div className="mt-7 flex flex-wrap gap-3"><Buttons /></div>
@@ -279,7 +279,7 @@ function ScrollHero() {
           <span aria-hidden className="relative block h-10 w-6 rounded-full border-2" style={{ borderColor: "rgba(255,255,255,0.85)" }}>
             <span className="absolute left-1/2 top-2 block h-2 w-1 -translate-x-1/2 rounded-full bg-current" style={{ animation: "wheel 1.8s cubic-bezier(0.65,0,0.35,1) infinite" }} />
           </span>
-          <span className="eyebrow !text-[10px] drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">Scroll</span>
+          <span className="eyebrow !text-body drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">Scroll</span>
         </div>
       </div>
     </section>
@@ -354,12 +354,12 @@ function PhoneHero() {
         <video ref={video} className="absolute inset-0 h-full w-full object-cover" src="/film/hero-wp-720.mp4" poster="/film/hero-wp-poster.jpg" autoPlay muted playsInline preload="auto" aria-hidden />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/55 to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-40" style={{ background: "linear-gradient(to top, var(--color-night), transparent)" }} />
-        <p key={b.tag} className="absolute bottom-4 left-4 inline-flex items-center gap-2.5 rounded-full bg-black/60 px-3.5 py-2 text-[12px] font-medium uppercase tracking-[0.12em] backdrop-blur-md" style={{ animation: "fadeIn .5s ease" }}>
+        <p key={b.tag} className="absolute bottom-4 left-4 inline-flex items-center gap-2.5 rounded-full bg-black/60 px-3.5 py-2 text-body font-medium uppercase tracking-[0.12em] backdrop-blur-md" style={{ animation: "fadeIn .5s ease" }}>
           <span className="font-mono text-paper/55">{b.tag}</span>
           {b.chip}
         </p>
         {ended && (
-          <button type="button" onClick={replay} className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3.5 py-2 text-[12px] font-medium text-white backdrop-blur-md">
+          <button type="button" onClick={replay} className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-3.5 py-2 text-body font-medium text-white backdrop-blur-md">
             <RotateCcw size={13} /> Replay
           </button>
         )}
@@ -368,7 +368,7 @@ function PhoneHero() {
       {/* copy — follows the film */}
       <div className="gutter pb-10 pt-2">
         <div key={b.tag} style={{ animation: "fadeIn .5s ease", minHeight: "11.5rem" }}>
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper/55">{b.eyebrow}</p>
+          <p className="font-mono text-body uppercase tracking-[0.18em] text-paper/55">{b.eyebrow}</p>
           {last ? (
             <h1 className="display mt-3 leading-[0.92]" style={{ fontSize: "clamp(2.5rem, 11.5vw, 3.6rem)" }}>
               RPC <em className="text-paper/90">Constructions</em>
@@ -376,18 +376,18 @@ function PhoneHero() {
           ) : (
             <p className="display mt-3 leading-[0.95] text-paper/90" style={{ fontSize: "clamp(2.2rem, 10vw, 3.2rem)" }}>{b.title}</p>
           )}
-          <p className="mt-4 text-[13px] font-medium uppercase tracking-[0.1em]" style={{ color: "#7fa6dd" }}>{b.system}</p>
-          <p className="mt-1.5 text-[15px] leading-snug text-paper/60">{b.layers}</p>
+          <p className="mt-4 text-body font-medium uppercase tracking-[0.1em]" style={{ color: "#7fa6dd" }}>{b.system}</p>
+          <p className="mt-1.5 text-body leading-snug text-paper/60">{b.layers}</p>
         </div>
         {/* hidden heading for search engines / screen readers while a stage is showing */}
         {!last && <h1 className="sr-only">RPC Constructions — building and waterproofing contractors, Erode</h1>}
 
         <div className="mt-6 grid grid-cols-2 gap-2.5">
-          <Link href="/contact#enquiry" className="inline-flex h-14 items-center justify-between rounded-full bg-paper pl-5 pr-1.5 text-[13px] font-medium uppercase tracking-[0.06em] text-ink">
+          <Link href="/contact#enquiry" className="inline-flex h-14 items-center justify-between rounded-full bg-paper pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.06em] text-ink">
             Free inspection
             <span className="grid h-11 w-11 place-items-center rounded-full bg-ink/10"><ArrowUpRight size={16} /></span>
           </Link>
-          <a href={tel} className="inline-flex h-14 items-center justify-between rounded-full border border-white/25 bg-white/[0.04] pl-5 pr-1.5 text-[13px] font-medium uppercase tracking-[0.06em] text-paper">
+          <a href={tel} className="inline-flex h-14 items-center justify-between rounded-full border border-white/25 bg-white/[0.04] pl-5 pr-1.5 text-body font-medium uppercase tracking-[0.06em] text-paper">
             Call us
             <span className="grid h-11 w-11 place-items-center rounded-full bg-white/10"><Phone size={16} /></span>
           </a>

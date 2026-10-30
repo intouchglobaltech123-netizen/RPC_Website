@@ -284,7 +284,7 @@ export function Nav() {
                         style={{ fontFamily: "var(--font-display)" }}
                         onClick={() => setOpen(false)}
                       >
-                        <span className="w-6 text-[.8rem] font-semibold tabular-nums text-white/35">{String(i + 1).padStart(2, "0")}</span>
+                        <span className="w-6 text-body font-semibold tabular-nums text-white/35">{String(i + 1).padStart(2, "0")}</span>
                         <span className={`flex-1 ${on ? "text-water-2" : ""}`}>{n.label}</span>
                         <span className={`grid h-8 w-8 place-items-center rounded-full ${on ? "bg-water-2 text-night" : "bg-white/[0.08] text-white/70"}`}>
                           <ArrowUpRight size={15} aria-hidden />
@@ -308,7 +308,7 @@ export function Nav() {
                 <a href={tel} className="flex h-10 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><Phone size={15} className="text-water-2" />Call us</a>
                 <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="flex h-10 items-center justify-center gap-2 rounded-[12px] bg-white/[0.08] font-semibold text-white"><MessageCircle size={15} className="text-water-2" />WhatsApp</a>
               </div>
-              <p className="mt-2 flex items-center justify-center gap-2 text-[.85rem] text-white/60 [@media(max-height:700px)]:hidden"><Clock size={14} className="text-water-2" />{contact.hours}</p>
+              <p className="mt-2 flex items-center justify-center gap-2 text-body text-white/60 [@media(max-height:700px)]:hidden"><Clock size={14} className="text-water-2" />{contact.hours}</p>
             </motion.div>
           </motion.div>
         )}

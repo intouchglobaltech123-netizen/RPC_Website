@@ -134,7 +134,7 @@ export const SEAM_CSS = `
 .cx-pv{display:flex;flex-direction:column;gap:.1rem;min-width:0}
 .cx-kick{color:#9fb6c6}
 .cx-nm{font-size:var(--fs-sub);line-height:1.25;font-weight:500;letter-spacing:-.005em;overflow-wrap:anywhere}
-.cx-sel{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;appearance:none;border:0}
+.cx-sel{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:var(--fs-body,1rem);appearance:none;border:0}
 .cx-chev{flex:none;width:1.1rem;height:1.1rem;margin-bottom:.3rem;color:#9fb6c6;pointer-events:none}
 .cx-sub{grid-area:sub;margin-top:.45rem;color:#9fb6c6;line-height:1.45}
 .cx-head--b .cx-sub{text-align:right}

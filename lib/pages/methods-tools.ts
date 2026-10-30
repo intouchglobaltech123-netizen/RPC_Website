@@ -372,7 +372,7 @@ export const METHODS_TOOLS_CSS = `
 .wpx-pick:has(select:focus-visible){outline:2px solid #fff;outline-offset:2px}
 .wpx-pickname{min-width:0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .wpx-pick svg{flex:none;width:15px;height:15px}
-.wpx-pick select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;font-size:16px;color:#121314;background:#fff;cursor:pointer;appearance:none}
+.wpx-pick select{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;font-size:var(--fs-body,1rem);color:#121314;background:#fff;cursor:pointer;appearance:none}
 .wpx-swap{display:inline-flex;align-items:center;gap:.5rem;height:3.1rem;padding:0 1rem 0 .85rem;border:0;border-radius:6px;background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);font:inherit;font-size:var(--fs-body);font-weight:600;color:#f5f0e6;cursor:pointer;transition:background-color .2s}
 .wpx-swap svg{width:20px;height:20px;transition:transform .3s}
 .wpx-swap:hover{background:rgba(255,255,255,.1)}

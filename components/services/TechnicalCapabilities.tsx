@@ -31,7 +31,7 @@ export function TechnicalCapabilities({ index = "04" }: { index?: string }) {
                   <Icon size={18} strokeWidth={1.6} />
                 </span>
                 <h3 className="display mt-4 text-lg leading-[1.15] md:mt-8 md:text-2xl">{c.title}</h3>
-                <p className="mt-3 hidden text-sm leading-relaxed text-paper/65 md:block">{c.description}</p>
+                <p className="mt-3 hidden text-body leading-relaxed text-paper/65 md:block">{c.description}</p>
               </Reveal>
             );
           })}
@@ -40,17 +40,17 @@ export function TechnicalCapabilities({ index = "04" }: { index?: string }) {
         <div className="mt-20 hidden border-t border-white/12 pt-14 md:block">
           <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <h3 className="display text-4xl md:text-5xl">Three ways to work with us.</h3>
-            <p className="max-w-md text-sm text-paper/60">Choose the arrangement that suits your project — the same team and standards apply to all three.</p>
+            <p className="max-w-md text-body text-paper/60">Choose the arrangement that suits your project — the same team and standards apply to all three.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {engagementModels.map((m, i) => (
               <Reveal key={m.model} delay={i * 0.08} className="flex flex-col justify-between rounded-lg bg-paper p-8 text-ink">
                 <div>
-                  <span className="font-sans font-semibold text-sm tabular-nums text-rpc">0{i + 1}</span>
+                  <span className="font-sans font-semibold text-body tabular-nums text-rpc">0{i + 1}</span>
                   <h4 className="display mt-4 text-2xl md:text-3xl font-semibold tracking-[-0.015em]">{m.model}</h4>
-                  <p className="mt-4 text-[15px] leading-relaxed text-ink-2">{m.description}</p>
+                  <p className="mt-4 text-body leading-relaxed text-ink-2">{m.description}</p>
                 </div>
-                <p className="mt-8 border-t border-ink/10 pt-4 text-sm font-medium">{m.benefit}</p>
+                <p className="mt-8 border-t border-ink/10 pt-4 text-body font-medium">{m.benefit}</p>
               </Reveal>
             ))}
           </div>

@@ -344,10 +344,10 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
   .bl-feat a:hover,.bl-grid--rows .bl-card a:hover{box-shadow:0 0 0 1.5px var(--navy),0 10px 24px -20px rgba(18,34,59,.45)}
   .bl-feat .bl-cover,.bl-grid--rows .bl-cover{width:100%;height:6.6rem;min-height:0;aspect-ratio:auto !important;border-radius:12px}
   .bl-featcopy,.bl-grid--rows .bl-cardcopy{display:flex;flex-direction:column;justify-content:center;gap:0;min-width:0;padding:.15rem .35rem .15rem 0}
-  .bl-feat .bl-cat,.bl-grid--rows .bl-cat{font-size:.82rem}
+  .bl-feat .bl-cat,.bl-grid--rows .bl-cat{font-size:var(--fs-body,1rem)}
   .bl-feat .bl-new,.bl-feat .bl-ex,.bl-feat .pg-btn,.bl-feat .bl-when > span:first-child{display:none}
-  .bl-featt,.bl-grid--rows .bl-title{margin:.3rem 0 0;font-size:1rem;line-height:1.28;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
-  .bl-feat .bl-when,.bl-grid--rows .bl-when{margin:.5rem 0 0;padding:0;gap:.1rem .7rem;font-size:.8rem}
+  .bl-featt,.bl-grid--rows .bl-title{margin:.3rem 0 0;font-size:var(--fs-body,1rem);line-height:1.28;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+  .bl-feat .bl-when,.bl-grid--rows .bl-when{margin:.5rem 0 0;padding:0;gap:.1rem .7rem;font-size:var(--fs-body,1rem)}
   .bl-feat + .bl-morehead{display:none}
   .bl-feat ~ .bl-grid{margin-top:.8rem}
   .bl-grid--rows{gap:.8rem}

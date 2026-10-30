@@ -207,7 +207,7 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
 .pjs-foot{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-top:auto;padding-top:.8rem}
 .pjs-foot .pg-btn{height:2.6rem;padding:0 1rem}
 .pjs-step{display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-body);font-variant-numeric:tabular-nums;color:var(--mute)}
-.pjs-step button{display:grid;place-items:center;width:2.2rem;height:2.2rem;border:0;border-radius:50%;background:rgba(18,34,59,.06);font:inherit;font-size:1.2rem;line-height:1;color:var(--ink);cursor:pointer;transition:background-color .2s}
+.pjs-step button{display:grid;place-items:center;width:2.2rem;height:2.2rem;border:0;border-radius:50%;background:rgba(18,34,59,.06);font:inherit;font-size:var(--fs-h3);line-height:1;color:var(--ink);cursor:pointer;transition:background-color .2s}
 .pjs-step button:hover{background:rgba(18,34,59,.12)}
 .pjs-step button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){.pjs-n::after,.pjs-zoom{animation:none}}
@@ -297,9 +297,9 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
   .pj-list .pj-pic{margin:0;border-radius:0;aspect-ratio:4/3}
   .pj-list .pj-top{position:absolute;top:.5rem;left:.5rem;right:auto}
   .pj-list .pj-type,.pj-list .pj-lead,.pj-list .pj-wp{display:none}
-  .pj-list .pj-stat{height:1.5rem;padding:0 .55rem;gap:.35rem;background:rgba(255,255,255,.95);font-size:.72rem;box-shadow:0 2px 8px -2px rgba(18,34,59,.35)}
-  .pj-list .pj-name{margin:.7rem .75rem 0;font-size:.95rem;line-height:1.22;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.44em}
-  .pj-list .pj-loc{margin:.35rem .75rem 0;font-size:.78rem;line-height:1.3}
+  .pj-list .pj-stat{height:1.5rem;padding:0 .55rem;gap:.35rem;background:rgba(255,255,255,.95);font-size:var(--fs-body,1rem);box-shadow:0 2px 8px -2px rgba(18,34,59,.35)}
+  .pj-list .pj-name{margin:.7rem .75rem 0;font-size:var(--fs-body,1rem);line-height:1.22;letter-spacing:-.01em;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-height:2.44em}
+  .pj-list .pj-loc{margin:.35rem .75rem 0;font-size:var(--fs-body,1rem);line-height:1.3}
   .pj-list .pj-loc svg{width:.8rem;height:.8rem}
 }
 `;

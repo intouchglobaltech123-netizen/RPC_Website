@@ -298,13 +298,13 @@ export const ROOTED_ABOUT_CSS = `
   .hm .hm-about{min-height:0;padding:2.6rem 0 2.4rem}
   .hm-agrid{display:block;max-height:none}
   .hm-acopy{display:block}
-  .hm-statement{max-width:none;margin:.7rem 0 0;font-size:1.7rem;line-height:1.12}
-  .hm-lead{margin:.7rem 0 0;font-size:1rem;line-height:1.5}
+  .hm-statement{max-width:none;margin:.7rem 0 0;font-size:var(--fs-h3);line-height:1.12}
+  .hm-lead{margin:.7rem 0 0;font-size:var(--fs-body,1rem);line-height:1.5}
   .hm-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin:1.3rem 0 1.4rem}
   .hm-values li{display:flex;flex-direction:column;gap:.2rem;height:auto;padding:.85rem .9rem .9rem;border:0;border-radius:14px;background:#fff;box-shadow:0 0 0 1px var(--line)}
-  .hm-values .hm-vno{display:block;grid-row:auto;padding:0;font-size:.8rem;letter-spacing:.04em}
-  .hm-values h3{font-size:1rem;line-height:1.25}
-  .hm-values p{display:-webkit-box;margin:0;font-size:.9rem;line-height:1.4}
+  .hm-values .hm-vno{display:block;grid-row:auto;padding:0;font-size:var(--fs-body,1rem);letter-spacing:.04em}
+  .hm-values h3{font-size:var(--fs-body,1rem);line-height:1.25}
+  .hm-values p{display:-webkit-box;margin:0;font-size:var(--fs-body,1rem);line-height:1.4}
   .hm-acopy .hm-btn{width:100%;justify-content:center}
   .hm-afig{display:none}
 }
@@ -406,7 +406,7 @@ export const HOME_PRODUCTS_CSS = BRANDS_MARQUEE_CSS + `
 .hm-pbrands{margin-top:clamp(2rem,4vh,3rem);padding-top:clamp(1.5rem,3vh,2.2rem);border-top:1px solid rgba(18,34,59,.1)}
 .hm-pbhead{margin-bottom:1.2rem}
 .hm-pbhead .hm-mark{margin-bottom:.9rem}
-.hm-pbh{margin:0;font-family:var(--font-heading,var(--font-inter-tight,var(--display))),sans-serif;font-weight:600;font-size:clamp(1.5rem,2.4vw,2.2rem);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+.hm-pbh{margin:0;font-family:var(--font-heading,var(--font-inter-tight,var(--display))),sans-serif;font-weight:600;font-size:var(--fs-h2);line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
 .hl{display:flex;flex-direction:column;gap:clamp(1rem,2.4vh,1.6rem)}
 .hl-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 /* the jobs: a quiet row of pills */

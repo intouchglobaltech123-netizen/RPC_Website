@@ -307,7 +307,7 @@ export const KIT_CSS = `
 @media (max-width:767px){
   .pg-head,.pjs-head{--head-h:13.5rem;--head-pb:1.3rem}
   /* the opening, the same everywhere: a short line and the page's name as the heading, then two lines of words */
-  .pg-head .pg-mark,.pjs-head .pg-mark{display:flex;align-items:center;gap:.65rem;margin:0 0 .55rem;font-family:var(--display);font-size:1.55rem;font-weight:650;line-height:1.1;letter-spacing:-.02em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.3)}
+  .pg-head .pg-mark,.pjs-head .pg-mark{display:flex;align-items:center;gap:.65rem;margin:0 0 .55rem;font-family:var(--display);font-size:var(--fs-h3);font-weight:650;line-height:1.1;letter-spacing:-.02em;color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.3)}
   .pg-head .pg-mark::before,.pjs-head .pg-mark::before{content:"";flex:none;width:1.8rem;height:2px;border-radius:2px;background:#9fbbe6}
   .pg-head .pg-mark .pg-idx,.pg-head .pg-mark .pg-rule,.pjs-head .pg-mark .pg-idx,.pjs-head .pg-mark .pg-rule{display:none}
   .pg-head .pg-h1,.pg-head h1,.pjs-head .pj-h1{display:block;max-width:40rem;margin:0;font-family:var(--sans);font-weight:500;letter-spacing:-.01em;color:rgba(245,240,230,.96);text-shadow:0 1px 14px rgba(0,0,0,.45);text-wrap:balance}
@@ -322,17 +322,17 @@ export const KIT_CSS = `
   .pg-ctabox{padding:1.2rem 1rem 1.1rem;background:linear-gradient(160deg,#102a5c 0%,var(--navy) 60%);box-shadow:inset 0 3px 0 #2f9ab3,0 20px 40px -28px rgba(18,34,59,.6)}
   .pg-ctan{background:rgba(255,255,255,.14)}
   .pg-ctahead{gap:.9rem}
-  .pg-ctah{font-size:1.35rem;line-height:1.15;max-width:none}
-  .pg-ctaacts{flex-wrap:nowrap;gap:.5rem}
-  .pg-ctaacts .pg-btn{flex:1 1 auto;justify-content:center;height:2.7rem;padding:0 .7rem;font-size:.9rem;white-space:nowrap}
+  .pg-ctah{font-size:var(--fs-h3);line-height:1.15;max-width:none}
+  .pg-ctaacts{flex-wrap:wrap;gap:.5rem}
+  .pg-ctaacts .pg-btn{flex:1 1 auto;justify-content:center;height:2.7rem;padding:0 .7rem;font-size:var(--fs-body,1rem);white-space:nowrap}
   .pg-ctaacts .pg-btn--line{flex:0 0 auto}
   .pg-ctaacts .pg-btn .pg-ar{display:none}
   .pg-ctasteps{grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin-top:1rem;padding-top:.9rem}
   .pg-ctasteps li{flex-direction:column;gap:.35rem}
   .pg-ctasd{display:none}
-  .pg-ctast{font-size:.88rem;line-height:1.25}
-  .pg-ctaline{grid-template-columns:minmax(0,1fr);gap:.15rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.2);font-size:.88rem}
+  .pg-ctast{font-size:var(--fs-body,1rem);line-height:1.25}
+  .pg-ctaline{grid-template-columns:minmax(0,1fr);gap:.15rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.2);font-size:var(--fs-body,1rem)}
   .pg-ctaline a[href^="mailto"]{display:none}
-  .pg-ctaline .pg-ctatel{font-size:1.05rem}
+  .pg-ctaline .pg-ctatel{font-size:var(--fs-body,1rem)}
 }
 `;

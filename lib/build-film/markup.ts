@@ -118,7 +118,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 .mh-kicker{display:flex;align-items:center;gap:.75rem;margin:0 0 1.15rem;font-family:var(--font-inter-tight),system-ui,sans-serif;font-size:var(--fs-body,1rem);font-weight:500;line-height:1.4;color:rgba(226,236,240,.86);text-shadow:0 1px 14px rgba(0,0,0,.5)}
 .mh-kicker::before{content:"";flex:none;width:2rem;height:2px;border-radius:2px;background:var(--mh-blue)}
 .mh-title{display:block;margin:0;max-width:12ch;font-family:var(--font-inter-tight),"Segoe UI",system-ui,sans-serif;font-size:clamp(2.6rem,4.6vw,4.3rem);font-weight:650;line-height:1;letter-spacing:-.024em;color:#fff;text-wrap:balance;text-shadow:0 2px 34px rgba(0,0,0,.42)}
-.mh-lede{max-width:30rem;margin:1.35rem 0 0;font-size:calc(var(--fs-body,1rem)*1.08);line-height:1.6;color:rgba(238,243,246,.9);text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.5)}
+.mh-lede{max-width:30rem;margin:1.35rem 0 0;font-size:var(--fs-body,1rem);line-height:1.6;color:rgba(238,243,246,.9);text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.5)}
 .mh-points{display:flex;flex-direction:column;gap:.55rem;margin:1.3rem 0 0;padding:0;list-style:none;font-size:var(--fs-body,1rem);font-weight:500;color:rgba(236,242,245,.92)}
 .mh-points li{display:inline-flex;align-items:center;gap:.5rem;text-shadow:0 1px 12px rgba(0,0,0,.5)}
 .mh-points svg{flex:none;width:18px;height:18px;padding:3px;border-radius:50%;background:rgba(159,211,234,.18);color:var(--mh-blue);box-sizing:border-box}
@@ -156,16 +156,16 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 .mh-flag b{font-weight:600}
 .mh-flag .mh-of{font-weight:500;color:rgba(226,236,240,.6)}
 .mh-uses{display:flex;flex-direction:column;gap:.15rem;margin:.95rem 0 0}
-.mh-uses-k{font-size:calc(var(--fs-body,1rem)*.88);font-weight:500;color:var(--mh-blue)}
-.mh-prod{font-family:var(--font-inter-tight),"Segoe UI",system-ui,sans-serif;font-size:clamp(1.55rem,2.3vw,2.2rem);font-weight:650;line-height:1.1;letter-spacing:-.022em;color:#fff;text-wrap:balance;text-shadow:0 2px 26px rgba(0,0,0,.45)}
-.mh-does{margin:.55rem 0 0;max-width:32rem;font-size:calc(var(--fs-body,1rem)*1.06);line-height:1.5;color:rgba(240,245,247,.94);text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.55)}
+.mh-uses-k{font-size:var(--fs-body,1rem);font-weight:500;color:var(--mh-blue)}
+.mh-prod{font-family:var(--font-inter-tight),"Segoe UI",system-ui,sans-serif;font-size:var(--fs-h2);font-weight:650;line-height:1.1;letter-spacing:-.022em;color:#fff;text-wrap:balance;text-shadow:0 2px 26px rgba(0,0,0,.45)}
+.mh-does{margin:.55rem 0 0;max-width:32rem;font-size:var(--fs-body,1rem);line-height:1.5;color:rgba(240,245,247,.94);text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.55)}
 .mh-why{margin:.45rem 0 0;max-width:32rem;font-size:var(--fs-body,1rem);line-height:1.5;color:rgba(222,232,237,.74);text-wrap:pretty;text-shadow:0 1px 14px rgba(0,0,0,.55)}
 .mh-more{display:none}
 
 /* the stages, in order, as one thin timeline: each line fills as the film goes through it */
 .mh-chapters{margin:1.6rem 0 0}
 .mh-chapters ol{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin:0;padding:0;list-style:none}
-.mh-ch{display:flex;flex-direction:column-reverse;gap:.45rem;width:100%;padding:.35rem 0 0;border:0;background:none;color:rgba(230,238,242,.66);text-shadow:0 1px 10px rgba(0,0,0,.6);font:inherit;font-size:calc(var(--fs-body,1rem)*.88);font-weight:500;line-height:1.2;text-align:left;cursor:pointer;transition:color .3s}
+.mh-ch{display:flex;flex-direction:column-reverse;gap:.45rem;width:100%;padding:.35rem 0 0;border:0;background:none;color:rgba(230,238,242,.66);text-shadow:0 1px 10px rgba(0,0,0,.6);font:inherit;font-size:var(--fs-body,1rem);font-weight:500;line-height:1.2;text-align:left;cursor:pointer;transition:color .3s}
 .mh-ch span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mh-ch:hover,.mh-ch[aria-current="true"]{color:#fff}
 .mh-ch i{display:block;height:2px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden}
@@ -174,7 +174,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 .mh-hint{position:absolute;left:50%;bottom:clamp(.9rem,3.2vh,1.75rem);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.7rem;margin:0;color:#fff;white-space:nowrap;line-height:1.1;transform:translateX(-50%);transition:opacity .35s ease,visibility 0s linear 0s}
 .mh-hint .mh-mouse{display:block;width:1.55rem;height:2.4rem;overflow:visible;filter:drop-shadow(0 1px 8px rgba(0,0,0,.45))}
 .mh-hint .mh-wheel{animation:mh-wheel 1.7s ease-in-out infinite}
-.mh-hint span{font-size:calc(var(--fs-body,1rem)*.95);font-weight:500;letter-spacing:.01em;color:rgba(255,255,255,.9);text-shadow:0 1px 10px rgba(0,0,0,.55)}
+.mh-hint span{font-size:var(--fs-body,1rem);font-weight:500;letter-spacing:.01em;color:rgba(255,255,255,.9);text-shadow:0 1px 10px rgba(0,0,0,.55)}
 .mh-hint.is-off{opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s}
 .mh-js:not(.is-live) .mh-hint{opacity:0}
 @keyframes mh-wheel{0%{transform:translateY(0);opacity:1}60%{transform:translateY(7px);opacity:0}100%{transform:translateY(0);opacity:0}}
@@ -195,7 +195,7 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
 /* short laptop screens */
 @media (max-height:780px) and (min-width:900px) and (min-aspect-ratio:7/5){
   .mh-uses{margin-top:.7rem}
-  .mh-prod{font-size:clamp(1.4rem,2vw,1.85rem)}
+  .mh-prod{font-size:var(--fs-h3)}
   .mh-chapters{margin-top:1.1rem}
 }
 @media (max-width:1180px) and (min-width:900px){.mh-foot{width:min(34rem,62vw)}}
@@ -217,16 +217,16 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
   .mh-foot{width:100%;max-width:36rem;margin-inline:auto}
   .mh-now .mh-state{display:none}
   .mh-uses{margin-top:0}
-  .mh-prod{font-size:clamp(1.35rem,5.8vw,1.7rem);text-shadow:none}
+  .mh-prod{font-size:var(--fs-h3);text-shadow:none}
   .mh-does,.mh-why{text-shadow:none}
   .mh-more{display:inline-flex;align-items:center;gap:.4rem;margin-top:.6rem;color:rgba(230,238,242,.78);font-size:var(--fs-body,1rem);font-weight:500;text-decoration:none}
   .mh-more svg{width:14px;height:14px}
   .mh-chapters{margin-top:1.1rem}
   .mh-chapters ol{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:.9rem}
-  .mh-ch{font-size:calc(var(--fs-body,1rem)*.82)}
+  .mh-ch{font-size:var(--fs-body,1rem)}
   /* the film has played: the hook takes the words' place under the film */
   .mh-hook{position:static;display:block;width:100%;max-width:36rem;margin-inline:auto;padding:0;pointer-events:auto}
-  .mh-title{max-width:none;font-size:clamp(1.9rem,8.4vw,2.5rem)}
+  .mh-title{max-width:none;font-size:var(--fs-h2)}
   .mh-btn{height:3rem;padding:0 1.25rem}
   .mh-kicker{margin-bottom:.8rem}
   .mh-lede{margin-top:.9rem}
@@ -255,29 +255,29 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-stage::before{z-index:1;height:calc(var(--nav-h,60px) + 3.2rem);background:linear-gradient(to bottom,#0a1823 0,#0a1823 calc(100% - 1.8rem),rgba(10,24,35,0))}
     /* the chip names the stage; the numbers 1 to 6 are the buttons at the bottom */
     .mh-chip .mh-flag{display:none}
-    .mh-chip{padding:.3rem .8rem;font-size:.88rem}
+    .mh-chip{padding:.3rem .8rem;font-size:var(--fs-body,1rem)}
     /* the words: the same as on the website, written straight on the film (no card) */
     .mh-chip{display:none}
     .mh-now{display:block;padding:0 0 0 .95rem;border-radius:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
     .mh-now::before{display:block}
-    .mh-now .mh-state{display:flex;font-size:.95rem}
+    .mh-now .mh-state{display:flex;font-size:var(--fs-body,1rem)}
     .mh-now .mh-state>:not(.mh-place){display:none}
     .mh-uses{display:flex;flex-direction:column;gap:.1rem;margin:.6rem 0 0}
-    .mh-uses-k{display:block;align-self:auto;padding:0;border-radius:0;background:none;font-size:.85rem;font-weight:500;letter-spacing:0;text-transform:none;color:var(--mh-blue)}
-    .mh-prod{font-size:clamp(1.4rem,6.2vw,1.65rem);text-shadow:0 2px 18px rgba(0,0,0,.5)}
-    .mh-does{display:block;margin:.5rem 0 0;font-size:.95rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
-    .mh-why{display:block;margin:.4rem 0 0;font-size:.85rem;line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
-    .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:.88rem}
+    .mh-uses-k{display:block;align-self:auto;padding:0;border-radius:0;background:none;font-size:var(--fs-body,1rem);font-weight:500;letter-spacing:0;text-transform:none;color:var(--mh-blue)}
+    .mh-prod{font-size:var(--fs-h3);text-shadow:0 2px 18px rgba(0,0,0,.5)}
+    .mh-does{display:block;margin:.5rem 0 0;font-size:var(--fs-body,1rem);line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+    .mh-why{display:block;margin:.4rem 0 0;font-size:var(--fs-body,1rem);line-height:1.45;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+    .mh-more{margin-top:.55rem;padding:0;border:0;background:none;color:var(--mh-blue);font-size:var(--fs-body,1rem)}
     /* the closing words: just the line and the two buttons */
     .mh-kicker,.mh-lede,.mh-points{display:none}
     /* the closing words sit above the round chat button at the bottom right */
     .mh-js.is-ended .mh-body{padding-bottom:8rem}
     .mh-ctas{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:.6rem;margin-top:1.3rem}
-    .mh-ctas .mh-btn{justify-content:center;height:3.1rem;padding:0 .6rem;gap:.45rem;font-size:.84rem;font-weight:600;letter-spacing:.005em;box-shadow:0 10px 24px -12px rgba(0,0,0,.65)}
+    .mh-ctas .mh-btn{justify-content:center;height:3.1rem;padding:0 .6rem;gap:.45rem;font-size:var(--fs-body,1rem);font-weight:600;letter-spacing:.005em;box-shadow:0 10px 24px -12px rgba(0,0,0,.65)}
     .mh-ctas .mh-btn--solid{background:#fff}
     .mh-ctas .mh-btn--line{border-color:rgba(238,243,245,.55);background:rgba(8,20,30,.45)}
     .mh-ctas .mh-btn svg{width:17px;height:17px;flex:none}
-    @media (max-width:350px){.mh-ctas .mh-btn{font-size:.74rem;padding:0 .4rem}.mh-ctas .mh-btn svg{display:none}}
+    @media (max-width:350px){.mh-ctas .mh-btn{font-size:var(--fs-body,1rem);padding:0 .4rem}.mh-ctas .mh-btn svg{display:none}}
     /* kept short: the stage, the product, one line on what it does; no 1 to 6 buttons */
     .mh-uses-k,.mh-why,.mh-more{display:none}
     .mh-chapters{display:none}
@@ -287,14 +287,14 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-chapters ol{display:flex;gap:.4rem;counter-reset:ch}
     .mh-chapters li{display:flex;flex:none;counter-increment:ch}
     .mh-chapters li:has(.mh-ch[aria-current="true"]){flex:1 1 auto;min-width:0}
-    .mh-ch{position:relative;overflow:hidden;flex:1 1 auto;width:auto;flex-direction:row;align-items:center;justify-content:center;gap:.35rem;height:2.1rem;min-width:2.1rem;padding:0 .45rem;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,24,35,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);font-size:.82rem;font-weight:650;text-shadow:none}
+    .mh-ch{position:relative;overflow:hidden;flex:1 1 auto;width:auto;flex-direction:row;align-items:center;justify-content:center;gap:.35rem;height:2.1rem;min-width:2.1rem;padding:0 .45rem;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(10,24,35,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:rgba(255,255,255,.8);font-size:var(--fs-body,1rem);font-weight:650;text-shadow:none}
     .mh-ch::before{content:counter(ch);position:relative;z-index:1;font-variant-numeric:tabular-nums}
-    .mh-ch span{display:none;position:relative;z-index:1;font-size:.8rem;font-weight:600}
+    .mh-ch span{display:none;position:relative;z-index:1;font-size:var(--fs-body,1rem);font-weight:600}
     .mh-ch[aria-current="true"]{border-color:rgba(159,211,234,.75);background:rgba(159,211,234,.12);color:#fff}
     .mh-ch[aria-current="true"] span{display:block}
     .mh-ch i{position:absolute;inset:0;height:auto;border-radius:0;background:none}
     .mh-ch b{background:rgba(159,211,234,.26)}
-    @media (max-width:370px){.mh-chapters ol{gap:.3rem}.mh-ch{min-width:1.95rem;padding:0 .35rem}.mh-ch span{font-size:.76rem}}
+    @media (max-width:370px){.mh-chapters ol{gap:.3rem}.mh-ch{min-width:1.95rem;padding:0 .35rem}.mh-ch span{font-size:var(--fs-body,1rem)}}
   }
 }
 @keyframes mh-hook-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}

@@ -23,7 +23,7 @@ export function ContactFAQ() {
               aria-expanded={isOpen}
               className="group flex w-full items-center gap-5 py-5 text-left"
             >
-              <span className={`font-mono text-xs transition-colors ${isOpen ? "text-rpc" : "text-mute"}`}>0{i + 1}</span>
+              <span className={`font-mono text-body transition-colors ${isOpen ? "text-rpc" : "text-mute"}`}>0{i + 1}</span>
               <span className={`flex-1 text-[16px] font-medium transition-colors md:text-[17px] ${isOpen ? "text-ink" : "text-ink/75 group-hover:text-ink"}`}>
                 {faq.question}
               </span>
@@ -44,7 +44,7 @@ export function ContactFAQ() {
                   transition={{ duration: 0.45, ease }}
                   className="overflow-hidden"
                 >
-                  <p className="max-w-2xl pb-6 pl-10 text-[14.5px] leading-relaxed text-ink-2">{faq.answer}</p>
+                  <p className="max-w-2xl pb-6 pl-10 text-body leading-relaxed text-ink-2">{faq.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

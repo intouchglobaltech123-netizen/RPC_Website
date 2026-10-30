@@ -69,7 +69,7 @@ export function Process({ index = "03" }: { index?: string } = {}) {
               </div>
             </div>
             <h3 key={step.title} className="display mt-6 text-6xl">{step.title}</h3>
-            <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-ink-2">{step.body}</p>
+            <p className="mt-5 max-w-sm text-body leading-relaxed text-ink-2">{step.body}</p>
           </div>
           <ol className="flex gap-4">
             <li className="relative w-px bg-ink/15">
@@ -108,10 +108,10 @@ export function Process({ index = "03" }: { index?: string } = {}) {
                 <Image src={p.image} alt={`${p.title} stage`} fill sizes="(min-width: 768px) 30vw, 46vw" className="object-cover" />
               </div>
               <div className="mt-2.5 flex items-baseline gap-2 md:mt-5 md:gap-4">
-                <span className="font-mono text-[11px] text-mute md:display md:text-5xl md:text-ink">{p.id}</span>
+                <span className="font-mono text-body text-mute md:display md:text-5xl md:text-ink">{p.id}</span>
                 <h3 className="display text-xl md:text-4xl">{p.title}</h3>
               </div>
-              <p className="mt-1.5 text-[12.5px] leading-snug text-ink-2 md:mt-3 md:text-[15px] md:leading-relaxed">{p.body}</p>
+              <p className="mt-1.5 text-body leading-snug text-ink-2 md:mt-3 md:text-body md:leading-relaxed">{p.body}</p>
             </li>
           ))}
         </ol>

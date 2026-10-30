@@ -20,11 +20,11 @@ export function Accreditations({ index = "05" }: { index?: string }) {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {accreditations.map((acc, i) => (
             <Reveal key={acc.code} delay={i * 0.06} className="border border-ink/15 p-6 bg-paper-2">
-              <span className="inline-block px-3 py-1 font-mono text-xs font-semibold bg-ink text-paper rounded-xs">
+              <span className="inline-block px-3 py-1 font-mono text-body font-semibold bg-ink text-paper rounded-xs">
                 {acc.code}
               </span>
               <h3 className="display mt-4 text-xl">{acc.title}</h3>
-              <p className="mt-3 text-xs leading-relaxed text-ink-2">{acc.detail}</p>
+              <p className="mt-3 text-body leading-relaxed text-ink-2">{acc.detail}</p>
             </Reveal>
           ))}
         </div>

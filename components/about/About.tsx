@@ -40,7 +40,7 @@ export function About({ index = "05", link = true }: { index?: string; link?: bo
               <dl className="mt-6 grid max-w-xl grid-cols-3 gap-6 border-t border-ink/15 pt-5">
                 {stats.slice(0, 3).map((st) => (
                   <div key={st.label}>
-                    <dt className="text-xs font-semibold uppercase tracking-wider text-mute">{st.label}</dt>
+                    <dt className="text-body font-semibold uppercase tracking-wider text-mute">{st.label}</dt>
                     <dd className="display mt-1.5 text-3xl md:text-4xl">
                       {st.value}
                       <span className="text-rpc">{st.suffix}</span>
@@ -83,7 +83,7 @@ export function About({ index = "05", link = true }: { index?: string; link?: bo
                 <span aria-hidden className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-ink text-paper transition-colors duration-500 group-hover:bg-rpc">
                   <Icon size={16} strokeWidth={1.6} />
                 </span>
-                <dt className="text-sm font-medium leading-tight">{p.title}</dt>
+                <dt className="text-body font-medium leading-tight">{p.title}</dt>
               </div>
             );
           })}

@@ -156,7 +156,7 @@ export const LEVEL_CSS = `
 .ll.is-open .ll-half--bottom{transform:translateY(101%)}
 /* surveyor's grid, faint, gathered round the word */
 .ll-grid{position:absolute;inset:0;opacity:.07;background-image:linear-gradient(to right,#eeeae3 1px,transparent 1px),linear-gradient(to bottom,#eeeae3 1px,transparent 1px);background-size:clamp(44px,6vw,96px) clamp(44px,6vw,96px);-webkit-mask-image:radial-gradient(ellipse at center,#000 25%,transparent 72%);mask-image:radial-gradient(ellipse at center,#000 25%,transparent 72%)}
-.ll-top,.ll-bottom{position:absolute;left:var(--gutter,24px);right:var(--gutter,24px);display:flex;justify-content:space-between;gap:1rem;font-family:var(--font-mono),ui-monospace,monospace;font-size:10.5px;line-height:1.4;letter-spacing:.22em;text-transform:uppercase}
+.ll-top,.ll-bottom{position:absolute;left:var(--gutter,24px);right:var(--gutter,24px);display:flex;justify-content:space-between;gap:1rem;font-family:var(--font-mono),ui-monospace,monospace;font-size:var(--fs-body,1rem);line-height:1.4;letter-spacing:.22em;text-transform:uppercase}
 .ll-top{top:calc(var(--gutter,24px) + 6px);color:rgba(238,234,227,.7)}
 .ll-top span+span{color:rgba(238,234,227,.42)}
 .ll-bottom{bottom:calc(var(--gutter,24px) + env(safe-area-inset-bottom));align-items:flex-end}
@@ -179,7 +179,7 @@ export const LEVEL_CSS = `
 /* the laser level: a line across the screen at the top of the pour */
 .ll-laser{position:absolute;left:0;right:0;top:0;height:1px;display:flex;align-items:center;gap:14px;padding:0 var(--gutter,24px);transform:translateY(-200px);transition:opacity .5s ease;will-change:transform}
 .ll-laser i{flex:1;height:1px;background:var(--laser);box-shadow:0 0 10px 1px rgba(109,155,255,.65),0 0 2px rgba(255,255,255,.6)}
-.ll-elev,.ll-pct{flex:none;font-family:var(--font-mono),ui-monospace,monospace;font-size:11px;line-height:1;letter-spacing:.12em;font-variant-numeric:tabular-nums;color:var(--laser);transform:translateY(-12px)}
+.ll-elev,.ll-pct{flex:none;font-family:var(--font-mono),ui-monospace,monospace;font-size:var(--fs-body,1rem);line-height:1;letter-spacing:.12em;font-variant-numeric:tabular-nums;color:var(--laser);transform:translateY(-12px)}
 .ll-elev b{margin-right:.5em;font-weight:400}
 .ll-pct{min-width:4ch;text-align:right;color:#eeeae3}
 .ll.is-sealed .ll-laser{opacity:0}

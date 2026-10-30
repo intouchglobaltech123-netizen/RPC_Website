@@ -91,7 +91,7 @@ export const COMPARE_CSS = `
   .bc-btn{min-height:3rem;padding:.35rem .5rem}
   .bc-face{width:3.2rem;height:2.4rem;padding:.2rem .3rem}
   .bc-cur{gap:.4rem}
-  .bc-cur b{font-size:.95rem}
+  .bc-cur b{font-size:var(--fs-body,1rem)}
   .bc-btn{gap:.3rem}
   /* the open list spans the whole pair, each brand a logo with its name and count under it */
   .bc-picks{position:relative}
@@ -101,8 +101,8 @@ export const COMPARE_CSS = `
   .bc-list li .bc-face{grid-row:1 / span 2;width:4.4rem;height:2.6rem;padding:.2rem .3rem}
   .bc-list li .bc-face img{max-height:2rem}
   .bc-list li .bc-face img[src$="/sika.png"],.bc-list li .bc-face img[src$="/cci.svg"]{max-height:2.3rem}
-  .bc-list li b{grid-column:2;align-self:end;font-size:.98rem;line-height:1.2}
-  .bc-list li .bc-meta{grid-column:2;grid-row:2;align-self:start;margin:0;font-size:.78rem;line-height:1.3}
+  .bc-list li b{grid-column:2;align-self:end;font-size:var(--fs-body,1rem);line-height:1.2}
+  .bc-list li .bc-meta{grid-column:2;grid-row:2;align-self:start;margin:0;font-size:var(--fs-body,1rem);line-height:1.3}
   .bc-list li.bc-none--first{margin-top:.3rem;padding-top:.6rem}
 }
 `;

@@ -247,7 +247,7 @@ export const CONTACT_CSS = ROUTES_CSS + `
 }
 
 /* ---- enhanced: the four ways as even tiles, what happens next, the form under a dark band ---- */
-.ct-alt{margin:.9rem 0 0;font-size:.95rem;line-height:1.6;color:rgba(18,34,59,.7)}
+.ct-alt{margin:.9rem 0 0;font-size:var(--fs-body,1rem);line-height:1.6;color:rgba(18,34,59,.7)}
 .ct-alt a{color:#12223b;font-weight:500;text-decoration:none;white-space:nowrap}
 .ct-alt a:hover{text-decoration:underline}
 .ct-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:clamp(1.3rem,3vh,2rem) 0 0;padding:0;list-style:none}
@@ -354,44 +354,44 @@ export const CONTACT_CSS = ROUTES_CSS + `
   .ct-page{min-height:100svh;padding:calc(var(--nav-room) + 1.1rem) 0 5.5rem}
   .ct-page .ct-grid{gap:1.4rem}
   .ct-page .ct-info .pg-mark,.ct-page .ct-lede{display:none}
-  .ct-page .ct-h1{font-size:1.75rem;line-height:1.15}
+  .ct-page .ct-h1{font-size:var(--fs-h3);line-height:1.15}
   .ct-page .ct-tiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto;gap:.6rem;margin-top:1rem}
   .ct-page .ct-tiles > li:nth-child(n+3){display:none}
   .ct-page .ct-tile{display:flex;flex-direction:column;align-items:flex-start;min-height:0;height:100%;padding:.9rem .9rem 1rem;border-radius:16px}
   .ct-page .ct-tile .ct-ico{grid-row:auto;width:2.4rem;height:2.4rem;border-radius:12px}
-  .ct-page .ct-tk{margin-top:.7rem;font-size:.95rem}
-  .ct-page .ct-tv{margin-top:.1rem;font-size:.82rem;font-weight:500;line-height:1.35;color:var(--mute)}
+  .ct-page .ct-tk{margin-top:.7rem;font-size:var(--fs-body,1rem)}
+  .ct-page .ct-tv{margin-top:.1rem;font-size:var(--fs-body,1rem);font-weight:500;line-height:1.35;color:var(--mute)}
   .ct-page .ct-tile--call .ct-tv{color:var(--ink);font-weight:600}
   .ct-page .ct-tile .ct-open,.ct-page .ct-tgo{display:none}
   .ct-page .ct-card{border-radius:18px}
   .ct-page .ct-cardtop{padding:.95rem 1.1rem}
   .ct-page .ct-cardtop p{display:none}
-  .ct-page .ct-cardh{font-size:1.1rem}
+  .ct-page .ct-cardh{font-size:var(--fs-body,1rem)}
   .ct-page .ct-card .ct-form{gap:.8rem;padding:1rem 1.1rem 1.15rem}
   .ct-page .ct-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem .6rem}
   .ct-page .ct-f{grid-column:span 1}
   .ct-page .ct-row > .ct-f:nth-child(n+3){grid-column:1/-1}
   .ct-page .ct-field{gap:.25rem}
-  .ct-page .ct-field > span{font-size:.8rem}
-  .ct-page .ct-field input,.ct-page .ct-field select{height:2.6rem;padding:0 .75rem;font-size:.95rem}
+  .ct-page .ct-field > span{font-size:var(--fs-body,1rem)}
+  .ct-page .ct-field input,.ct-page .ct-field select{height:2.6rem;padding:0 .75rem;font-size:var(--fs-body,1rem)}
   .ct-page .ct-field select{padding-right:2rem}
-  .ct-page .ct-field textarea,.ct-page .ct-field textarea[rows]{height:3.6rem;min-height:3.6rem;padding:.6rem .75rem;font-size:.95rem}
+  .ct-page .ct-field textarea,.ct-page .ct-field textarea[rows]{height:3.6rem;min-height:3.6rem;padding:.6rem .75rem;font-size:var(--fs-body,1rem)}
   .ct-page .ct-send{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
-  .ct-page .ct-sbtn{height:2.8rem;padding:0 .4rem;gap:.4rem;font-size:.88rem}
+  .ct-page .ct-sbtn{height:2.8rem;padding:0 .4rem;gap:.4rem;font-size:var(--fs-body,1rem)}
   .ct-page .ct-sbtn .pg-ar{display:none}
   /* directions stay: pick a town, then where you set out from, and the route opens in Google Maps */
   .ct-reach{display:block;padding:1.6rem 0 calc(2.2rem + 32px)}
   .ct-reach .ab-go{display:block;border-radius:20px}
   .ct-reach .ab-go-side{gap:.85rem;padding:1.1rem 1rem 1.1rem}
-  .ct-reach .ab-go-h{font-size:1.15rem;font-weight:650;letter-spacing:-.015em}
+  .ct-reach .ab-go-h{font-size:var(--fs-body,1rem);font-weight:650;letter-spacing:-.015em}
   .ct-reach .ab-go-towns{gap:.35rem}
-  .ct-reach .ab-go-town{height:2.1rem;padding:0 .85rem;font-size:.84rem}
+  .ct-reach .ab-go-town{height:2.1rem;padding:0 .85rem;font-size:var(--fs-body,1rem)}
   .ct-reach .ab-go-from{grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem}
   .ct-reach .ab-go-route{align-items:center;gap:.5rem;padding:.55rem .65rem;border-radius:12px}
   .ct-reach .ab-go-route svg{margin-top:0}
-  .ct-reach .ab-go-route b{font-size:.84rem;line-height:1.2}
+  .ct-reach .ab-go-route b{font-size:var(--fs-body,1rem);line-height:1.2}
   .ct-reach .ab-go-route small{display:none}
-  .ct-reach .ab-go-open{align-self:stretch;justify-content:center;gap:.45rem;margin-top:.1rem;height:2.75rem;border-radius:999px;background:var(--navy);font-size:.92rem;color:#fff}
+  .ct-reach .ab-go-open{align-self:stretch;justify-content:center;gap:.45rem;margin-top:.1rem;height:2.75rem;border-radius:999px;background:var(--navy);font-size:var(--fs-body,1rem);color:#fff}
   .ct-reach .ab-go-open:hover{text-decoration:none}
   .ct-reach .ab-go-map{min-height:13rem;margin:0 .6rem .6rem;border-radius:14px;overflow:hidden}
 }

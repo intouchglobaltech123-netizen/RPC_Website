@@ -76,7 +76,7 @@ export function BlueprintReality() {
         ))}
         {STEPS.slice(1).map((s, i) => (
           <div key={s.key} data-scan aria-hidden className="absolute inset-y-0 z-20 w-px bg-white/80" style={{ left: 0, visibility: "hidden" }}>
-            <span className="eyebrow absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap !text-[9.5px] text-white">
+            <span className="eyebrow absolute left-3 top-1/2 -translate-y-1/2 whitespace-nowrap !text-body text-white">
               Section {String.fromCharCode(65 + i)}—{String.fromCharCode(65 + i)}
             </span>
           </div>
@@ -90,10 +90,10 @@ export function BlueprintReality() {
           </g>
         </svg>
         <div data-annot className="pointer-events-none absolute bottom-[4%] right-[2.5%] z-10 hidden w-[25%] grid-cols-2 text-white/80 md:grid">
-          <div className="eyebrow h-[6vh] p-2 !text-[9px]">RPC Constructions</div>
-          <div className="eyebrow h-[6vh] p-2 !text-[9px]">Dwg. A-201</div>
-          <div className="eyebrow p-2 !text-[9px]">Elevation / Plan</div>
-          <div className="eyebrow p-2 !text-[9px]">Scale 1:200</div>
+          <div className="eyebrow h-[6vh] p-2 !text-body">RPC Constructions</div>
+          <div className="eyebrow h-[6vh] p-2 !text-body">Dwg. A-201</div>
+          <div className="eyebrow p-2 !text-body">Elevation / Plan</div>
+          <div className="eyebrow p-2 !text-body">Scale 1:200</div>
         </div>
 
         <div className="pointer-events-none absolute inset-0 z-30 bg-gradient-to-r from-black/45 via-black/5 to-transparent" />
