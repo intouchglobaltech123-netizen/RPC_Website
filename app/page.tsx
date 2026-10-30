@@ -42,7 +42,6 @@ const BEST_SELLERS: readonly [string, readonly string[]][] = [
   ["PCE admixture", ["fosroc-auramix-400", "fosroc-auramix-350", "fosroc-auramix-300", "fosroc-auramix-300-plus", "fosroc-auramix-200-20", "fosroc-auramix-200-41"]],
   ["Accelerator", ["fosroc-conplast-nc"]],
   ["Mortar plasticiser", ["fosroc-cebex-112"]],
-  ["Block admixture", ["fosroc-conplast-sd110"]],
   ["Waterproofing", ["fosroc-conplast-crystalline"]],
 ];
 

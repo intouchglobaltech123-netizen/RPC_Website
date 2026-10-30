@@ -250,7 +250,7 @@ export const HOOKS_CSS =
 .hk-head--end .hk-side{align-items:flex-end;justify-self:end}
 
 /* 02 products: a shelf, one tile per kind: the kind on the picture, the product's name, and how many more in its range */
-.hk-shelf{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(.6rem,1.2vw,1rem);margin:0;padding:0;list-style:none}
+.hk-shelf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(.6rem,1.2vw,1rem);margin:0;padding:0;list-style:none}
 .hk-tile{display:flex;flex-direction:column;height:100%;padding:.55rem .55rem .9rem;border-radius:20px;background:#fff;box-shadow:0 0 0 1px var(--line),0 18px 36px -30px rgba(18,34,59,.45);color:inherit;text-decoration:none;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
 .hk-tile:hover{transform:translateY(-4px);box-shadow:0 0 0 1.5px var(--navy),0 28px 44px -28px rgba(18,34,59,.55)}
 .hk-tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
