@@ -450,3 +450,6 @@
     .bl-bar { margin-left: 0 !important; }
   }
 }
+
+/* no numbers on the About page cards */
+main .ab-vmno, main .ab-vcbig { display: none !important; }
