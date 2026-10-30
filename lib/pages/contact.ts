@@ -95,7 +95,8 @@ export function contactPageMarkup(d: ContactPageData) {
         <li><a class="ct-tile ct-tile--wa" href="${esc(c.whatsapp)}" target="_blank" rel="noopener noreferrer">${icon("whatsapp", " ct-ico--wa")}<span class="ct-tk">WhatsApp</span><span class="ct-tv">Chat with an engineer</span><span class="ct-tn">Send a photo of the leak</span>${go}</a></li>
         <li><a class="ct-tile" href="mailto:${esc(c.email)}">${icon("email")}<span class="ct-tk">Email</span><span class="ct-tv ct-tv--mail">${esc(c.email)}</span><span class="ct-tn">Drawings and documents</span>${go}</a></li>
         <li><a class="ct-tile" href="${esc(mapsLink(c.mapQuery))}" target="_blank" rel="noopener noreferrer">${icon("visit")}<span class="ct-tk">Office</span><span class="ct-tv">${esc(street)}</span><span class="ct-tn">${esc(hoursText)}</span>${go}</a></li>
-      </ul>`;
+      </ul>
+      <p class="ct-alt" data-rv>More numbers: ${c.morePhones.map((n) => `<a href="${tel(n)}">${esc(n)}</a>`).join(" · ")}</p>`;
   return `<section class="pg-dark ct-page" aria-labelledby="ct-title">
   <div class="pg-wrap ct-grid">
     <div class="ct-info">
@@ -246,6 +247,9 @@ export const CONTACT_CSS = ROUTES_CSS + `
 }
 
 /* ---- enhanced: the four ways as even tiles, what happens next, the form under a dark band ---- */
+.ct-alt{margin:.9rem 0 0;font-size:.95rem;line-height:1.6;color:rgba(18,34,59,.7)}
+.ct-alt a{color:#12223b;font-weight:500;text-decoration:none;white-space:nowrap}
+.ct-alt a:hover{text-decoration:underline}
 .ct-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:clamp(1.3rem,3vh,2rem) 0 0;padding:0;list-style:none}
 .ct-tile{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:1.1rem 1.15rem;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px rgba(39,86,160,.14),0 18px 36px -30px rgba(18,34,59,.45);color:var(--ink);text-decoration:none;transition:transform .25s,box-shadow .25s}
 .ct-tile:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1.5px var(--navy),0 24px 44px -30px rgba(18,34,59,.55)}

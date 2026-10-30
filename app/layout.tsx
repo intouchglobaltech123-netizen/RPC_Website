@@ -112,10 +112,10 @@ const organizationLd = {
   priceRange: "₹₹",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "142 Perundurai Road",
+    streetAddress: "No. 26, 2nd Street, Kurikaran Palayam, Bharathi Palayam",
     addressLocality: "Erode",
     addressRegion: "Tamil Nadu",
-    postalCode: "638011",
+    postalCode: "638002",
     addressCountry: "IN",
   },
   geo: { "@type": "GeoCoordinates", latitude: contact.geo.lat, longitude: contact.geo.lng },

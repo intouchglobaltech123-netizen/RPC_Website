@@ -10,7 +10,7 @@ const HOME: HomeData = {
   projects,
   services,
   points: [
-    { title: "Erode waterproofing contractors", body: "Head office on Perundurai Road." },
+    { title: "Erode waterproofing contractors", body: "Head office at Kurikaran Palayam, Erode." },
     { title: "Coimbatore, Krishnagiri, Chennai", body: "Waterproofing and leak repair in four cities." },
     { title: "Terrace, bathroom, sump, basement", body: "Homes, offices and factories kept leak-free." },
     { title: "Free site inspection", body: "One team from the first visit to handover." },

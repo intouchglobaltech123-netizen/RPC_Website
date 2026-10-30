@@ -29,18 +29,20 @@ export const nav = [
 
 export const contact = {
   email: "contact@rpcconstructions.com",
-  phone: "+91 94428 95907",
-  address: "142 Perundurai Road, Erode, Tamil Nadu 638011, India",
+  phone: "+91 99423 54602",
+  /** the other numbers on the visiting card */
+  morePhones: ["+91 83003 55703", "+91 96291 16811", "+91 90428 54602"],
+  address: "No. 26, Bharathi Palayam, 2nd Street, Kurikaran Palayam, N.R. Mahal Backside, Erode, Tamil Nadu 638002, India",
   hours: "Mon – Sat · 08:30 – 18:30 IST",
   /** PLACEHOLDER — replace "#" with the real profile URLs before launch */
   socials: [
     { label: "LinkedIn", href: "#" },
     { label: "Instagram", href: "#" },
     { label: "Facebook", href: "#" },
-    { label: "WhatsApp", href: "https://wa.me/919442895907" },
+    { label: "WhatsApp", href: "https://wa.me/919942354602" },
   ],
-  whatsapp: "https://wa.me/919442895907",
-  mapQuery: "142 Perundurai Road, Erode, Tamil Nadu 638011",
+  whatsapp: "https://wa.me/919942354602",
+  mapQuery: "No. 26, Bharathi Palayam, 2nd Street, Kurikaran Palayam, N.R. Mahal Backside, Erode, Tamil Nadu 638002",
   geo: { lat: 11.341, lng: 77.7172 },
   regions: ["Erode", "Coimbatore", "Krishnagiri", "Chennai"],
 } as const;
@@ -470,9 +472,9 @@ export const engagementModels = [
 ] as const;
 
 export const departments = [
-  { name: "New projects & tenders", email: "projects@rpcconstructions.com", phone: "+91 94428 95907" },
-  { name: "Vendors & suppliers", email: "purchase@rpcconstructions.com", phone: "+91 94428 95907" },
-  { name: "Careers", email: "careers@rpcconstructions.com", phone: "+91 94428 95907" },
+  { name: "New projects & tenders", email: "projects@rpcconstructions.com", phone: "+91 99423 54602" },
+  { name: "Vendors & suppliers", email: "purchase@rpcconstructions.com", phone: "+91 99423 54602" },
+  { name: "Careers", email: "careers@rpcconstructions.com", phone: "+91 99423 54602" },
 ] as const;
 
 export const faqs = [

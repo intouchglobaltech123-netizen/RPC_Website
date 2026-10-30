@@ -109,7 +109,7 @@ export function Footer() {
                 </li>
                 <li className="hidden md:block">
                   <a href={maps} target="_blank" rel="noopener noreferrer" className={`-my-2 flex w-fit items-center gap-2 rounded py-2 transition-colors hover:text-white ${focus}`}>
-                    <MapPin size={15} aria-hidden className="shrink-0 text-water-2" /> 142 Perundurai Road, Erode
+                    <MapPin size={15} aria-hidden className="shrink-0 text-water-2" /> No. 26, Bharathi Palayam, Erode
                   </a>
                 </li>
                 <li className="hidden items-center gap-2 md:flex">

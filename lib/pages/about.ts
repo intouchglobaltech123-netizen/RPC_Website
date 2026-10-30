@@ -51,7 +51,7 @@ export function aboutMarkup(d: AboutData) {
       <div class="ab-headcopy">
         ${mark("01", "About RPC Constructions")}
         <h1 class="pg-h1" data-rv="words">${words("Waterproofing and construction in Erode since&nbsp;2012.")}</h1>
-        <p class="pg-intro" data-rv>We keep buildings dry. RPC Constructions repairs leaks in buildings already standing and builds new homes, offices and factories with their waterproofing designed in, from our office on Perundurai Road, Erode.</p>
+        <p class="pg-intro" data-rv>We keep buildings dry. RPC Constructions repairs leaks in buildings already standing and builds new homes, offices and factories with their waterproofing designed in, from our office in Kurikaran Palayam, Erode.</p>
       </div>
     </div>
   </div>

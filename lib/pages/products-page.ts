@@ -461,7 +461,7 @@ function mountViewer(root: HTMLElement, on: On, env?: PageEnv) {
       if (enqBtn && currentProduct) {
         const activePack = pv.querySelector(".pv-pack-chip.is-active")?.textContent?.trim() || currentProduct.packs?.[0]?.size || "";
         const text = `Hi RPC Constructions, I am interested in ${currentProduct.fullName || currentProduct.name} (${activePack}). Please share pricing and availability.`;
-        const waUrl = `https://wa.me/919442895907?text=${encodeURIComponent(text)}`;
+        const waUrl = `https://wa.me/919942354602?text=${encodeURIComponent(text)}`;
         window.open(waUrl, "_blank", "noopener,noreferrer");
         return;
       }

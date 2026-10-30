@@ -245,7 +245,7 @@ export function aboutMap() {
     ${towns.map((t) => `<circle class="hm-abtown" cx="${t.p[0]}" cy="${t.p[1]}" r="6"/>`).join("")}
     <circle class="hm-abpulse" cx="${hq[0]}" cy="${hq[1]}" r="18"/><circle class="hm-abhq" cx="${hq[0]}" cy="${hq[1]}" r="9"/>
   </svg>
-  <span class="hm-ablab hm-ablab--hq" style="${pc(hq[0], hq[1])}"><b>Erode</b><span>Head office, Perundurai Road</span></span>
+  <span class="hm-ablab hm-ablab--hq" style="${pc(hq[0], hq[1])}"><b>Erode</b><span>Head office, Kurikaran Palayam</span></span>
   ${towns.map((t) => `<span class="hm-ablab hm-ablab--${t.side}" style="${pc(t.p[0], t.p[1])}">${esc(t.name)}</span>`).join("")}
   ${far.map((f) => `<span class="hm-ablab hm-ablab--far" style="${pc(f.p[0], f.p[1])}">${esc(f.name)}</span>`).join("")}
   <figcaption class="hm-sr">Where we work: Erode, our head office, with Coimbatore, Krishnagiri and Chennai.</figcaption>
@@ -377,7 +377,7 @@ export function contactMarkup(d: HomeData, _o: HomeOptions) {
         </div>
       </div>
       <figure class="hm-cfig" data-rv>
-        <div class="hm-cph">${frame("Photo: our office on Perundurai Road")}</div>
+        <div class="hm-cph">${frame("Photo: our office in Erode")}</div>
       </figure>
     </div>
   </div>

@@ -9,7 +9,7 @@ import { arrow, esc } from "./kit";
 /**
  * How to reach the office: pick a town, then one of four places people
  * usually set out from there (its bus stand, its railway station and so on),
- * and Google Maps shows the road route to our Perundurai Road office. The
+ * and Google Maps shows the road route to our Erode office. The
  * starting places are public landmarks; the routes and times are Google's.
  */
 const ROUTES: readonly { town: string; from: readonly (readonly [label: string, place: string])[] }[] = [

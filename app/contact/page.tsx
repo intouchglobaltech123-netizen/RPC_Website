@@ -8,7 +8,7 @@ import { ldJson, pageMeta, siteUrl } from "@/lib/site";
 export const metadata: Metadata = pageMeta({
   title: "Contact Us – Waterproofing in Erode & Coimbatore",
   description:
-    "Call +91 94428 95907, WhatsApp or visit 142 Perundurai Road, Erode, to book a free waterproofing or leak inspection anywhere around Erode and Coimbatore.",
+    "Call +91 99423 54602, WhatsApp or visit our office in Kurikaran Palayam, Erode, to book a free waterproofing or leak inspection anywhere around Erode and Coimbatore.",
   path: "/contact",
 });
 
