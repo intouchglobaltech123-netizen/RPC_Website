@@ -233,10 +233,11 @@ export function mountMethods(root: HTMLElement, env: PageEnv = {}): () => void {
       closePops();
       pop.hidden = false;
       popFrom = open;
-      // keep it to the box: if it would need to scroll, leave out the picture, then the "used for" line, then tighten the gaps
+      // keep it to the box: if it would need to scroll, leave out the "used for" line, then tighten the gaps, and only then the picture
       const body = pop.querySelector<HTMLElement>(".wpx-popb");
       pop.classList.remove("is-t1", "is-t2", "is-t3");
-      for (const step of ["is-t1", "is-t2", "is-t3"]) {
+      // (only in the desktop box, which is a fixed size; on phones and tablets the box scrolls and keeps the picture)
+      for (const step of window.matchMedia("(min-width:1280px)").matches ? ["is-t2", "is-t3", "is-t1"] : []) {
         if (!body || body.scrollHeight <= body.clientHeight + 1) break;
         pop.classList.add(step);
       }

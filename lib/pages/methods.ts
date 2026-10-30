@@ -202,8 +202,8 @@ const METHODS_MOBILE_CSS = `
   .wpx-popn{margin-top:.25rem;font-size:var(--fs-h3);line-height:1.2}
   .wpx-popx{width:2.4rem;height:2.4rem}
   .wpx-popb{padding:1rem 1.2rem 1.1rem}
-  .wpx-poptop{grid-template-columns:5.6rem minmax(0,1fr);gap:.9rem}
-  .wpx-popart{max-width:none;padding:.3rem;border-radius:12px}
+  .wpx-poptop{grid-template-columns:minmax(0,1fr);gap:1rem}
+  .wpx-popart{max-width:none;padding:.7rem .8rem .5rem;border-radius:16px}
   .wpx-dh{font-size:var(--fs-body,1rem);line-height:1.55}
   .wpx-duse{margin-top:.6rem;font-size:var(--fs-body,1rem)}
   .wpx-dnotes{gap:.5rem;margin-top:1rem}
@@ -230,6 +230,7 @@ const METHODS_MOBILE_CSS = `
   .rt-group,.rt-opts,.rt-group--coat .rt-opts{display:contents}
   .rt-gh{display:none}
   .rt-group--none .rt-chip{grid-column:1 / -1}
+  .rt-pick .rt-chip{white-space:normal}
   .rt-chip{width:100%;height:auto;min-height:2.6rem;gap:.5rem;padding:.35rem .8rem .35rem .7rem;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);font-size:var(--fs-body,1rem);line-height:1.2;white-space:normal;text-align:left}
   .rt-chip .rt-r{box-shadow:inset 0 0 0 2px var(--k)}
   .rt-chip[aria-pressed=true]{box-shadow:none}
