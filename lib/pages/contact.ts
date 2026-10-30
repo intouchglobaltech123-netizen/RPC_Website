@@ -16,7 +16,7 @@ export interface ContactPageData {
 
 export const CONTACT_TRAIL = [
   { name: "Home", href: "/" },
-  { name: "Contact", href: "/contact" },
+  { name: "Contact us", href: "/contact" },
 ] as const;
 
 /** the project types as their buttons show them (the enquiry still carries the full service name) */
@@ -100,7 +100,7 @@ export function contactPageMarkup(d: ContactPageData) {
   return `<section class="pg-dark ct-page" aria-labelledby="ct-title">
   <div class="pg-wrap ct-grid">
     <div class="ct-info">
-      ${mark("01", "Contact")}
+      ${mark("01", "Contact us")}
       <h1 class="ct-h1" id="ct-title" data-rv="words">${words("Let’s keep your building dry.")}</h1>
       <p class="ct-lede" data-rv>Call, WhatsApp or write to us. An engineer replies within one working day.</p>
       ${tiles}

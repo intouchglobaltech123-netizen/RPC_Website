@@ -368,7 +368,7 @@ export function contactMarkup(d: HomeData, _o: HomeOptions) {
   <div class="hm-wrap">
     <div class="hm-cgrid">
       <div class="hm-ccopy">
-        ${mark(_o.n ?? "05", "Contact")}
+        ${mark(_o.n ?? "05", "Contact us")}
         <h2 class="hm-ch" id="contact-title" data-rv>Talk to an engineer.</h2>
         <p class="hm-clede" data-rv>A damp wall, a leaking terrace or a new building to plan?</p>
         <div class="hm-cbtns" data-rv>

@@ -214,7 +214,7 @@ export function Nav() {
               aria-current={isActive("/contact") ? "page" : undefined}
               className={`rn-cta group pointer-events-auto bg-night text-body font-semibold text-white transition-colors duration-300 hover:bg-rpc ${focus}`}
             >
-              Contact
+              Contact us
               <span className="rn-ctai bg-card text-night transition-transform duration-300 group-hover:rotate-45">
                 <ArrowUpRight size={16} strokeWidth={1.8} />
               </span>
@@ -232,7 +232,7 @@ export function Nav() {
               aria-current={isActive("/contact") ? "page" : undefined}
               className={`rn-cta rn-cta--sm group bg-card text-body font-semibold text-night transition-colors duration-300 hover:bg-paper ${focus}`}
             >
-              Contact
+              Contact us
               <span className="rn-ctai bg-night text-white transition-transform duration-300 group-hover:rotate-45">
                 <ArrowUpRight size={14} strokeWidth={1.8} />
               </span>
@@ -272,7 +272,7 @@ export function Nav() {
               <Wordmark size="sm" />
             </Link>
             <nav aria-label="Mobile" className="flex flex-1 flex-col justify-center py-2">
-              {[...links, { label: "Contact", href: "/contact" }].map((n, i) => {
+              {[...links, { label: "Contact us", href: "/contact" }].map((n, i) => {
                 const on = isActive(n.href);
                 return (
                   <div key={n.href} className="overflow-hidden border-b border-white/10">

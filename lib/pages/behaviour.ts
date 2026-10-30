@@ -211,24 +211,45 @@ function blog(root: HTMLElement): Off {
   const more = root.querySelector<HTMLElement>(".bl-morehead h2");
   if (!bar || !items.length) return () => {};
   const offs: Off[] = [];
+  // the list shows the latest article and three more; "Read more articles" opens the rest (a search or a method shows every match)
+  const btn = root.querySelector<HTMLButtonElement>("[data-bl-more]");
+  const extras = new Set(Array.from(root.querySelectorAll<HTMLElement>(".bl-grid--rows > li")).slice(3));
+  let open = false;
   const apply = () => {
     const m = s.value("method");
+    const narrowed = m !== "all" || !!s.typed();
     let n = 0;
+    let held = 0;
     for (const it of items) {
       const on = (m === "all" || (it.dataset.methods ?? "").split(" ").includes(m)) && s.matches(it.dataset.text ?? "");
-      it.hidden = !on;
+      const folded = on && !narrowed && !open && extras.has(it);
+      it.hidden = !on || folded;
+      if (folded) held++;
       if (on) n++;
     }
+    if (btn) {
+      btn.parentElement!.hidden = held === 0;
+      btn.setAttribute("aria-expanded", String(open));
+    }
     if (empty) empty.hidden = n > 0;
-    const narrowed = m !== "all" || !!s.typed();
     if (more) more.textContent = narrowed ? "Articles found" : "More articles";
     if (status) {
       const bits = [m !== "all" ? `about ${s.label("method").toLowerCase()}` : "", s.typed() ? `matching “${s.typed()}”` : ""].filter(Boolean);
-      status.textContent = bits.length ? `Showing ${n} ${n === 1 ? "article" : "articles"} ${bits.join(", ")}` : `Showing all ${n} articles`;
+      status.textContent = bits.length ? `Showing ${n} ${n === 1 ? "article" : "articles"} ${bits.join(", ")}` : held ? `Showing ${n - held} of ${n} articles` : `Showing all ${n} articles`;
     }
   };
   const s = mountSearch(bar, offs, apply);
   offs.push(listen(root, "click", (e) => (e.target as HTMLElement).closest("[data-reset]") && s.reset()));
+  if (btn) {
+    offs.push(
+      listen(btn, "click", () => {
+        open = true;
+        apply();
+        const first = Array.from(extras).find((x) => !x.hidden);
+        first?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+      }),
+    );
+  }
   apply();
   return () => offs.forEach((f) => f());
 }

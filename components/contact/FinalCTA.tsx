@@ -94,7 +94,7 @@ export function FinalCTA() {
           <div className="flex items-center gap-3 mb-6 text-paper/80">
             <span className="font-semibold tabular-nums text-white">05</span>
             <span className="h-px w-8 bg-current opacity-35" />
-            <span className="text-paper/85">Contact</span>
+            <span className="text-paper/85">Contact us</span>
           </div>
 
           <h2 className="display text-5xl sm:text-6xl md:text-7xl lg:text-[clamp(3.2rem,5.5vw,5.5rem)] leading-[1.1] tracking-[-0.02em] font-semibold text-paper">

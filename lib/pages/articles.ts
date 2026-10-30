@@ -138,7 +138,12 @@ export function blogIndexMarkup(d: { posts: readonly PostData[]; contact: Contac
     ${
       rest.length
         ? `<div class="bl-morehead"><h2 class="pg-h3">More articles</h2><p class="bl-status" data-topic-status aria-live="polite">Showing all ${d.posts.length} articles</p></div>
-    <ul class="bl-grid bl-grid--rows" data-rv-stagger="80">${rest.map((p) => postCard(p, o, true)).join("")}</ul>`
+    <ul class="bl-grid bl-grid--rows" data-rv-stagger="80">${rest.map((p) => postCard(p, o, true)).join("")}</ul>${
+      rest.length > 3
+        ? `
+    <div class="bl-morebtn"><button type="button" class="pg-btn pg-btn--ink" data-bl-more aria-expanded="false">Read more articles</button></div>`
+        : ""
+    }`
         : `<p class="bl-status" data-topic-status aria-live="polite">Showing all ${d.posts.length} articles</p>`
     }
     <p class="bl-empty" hidden>No articles match your search. <button type="button" data-reset>Show all articles</button></p>
@@ -244,6 +249,8 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 
 /* the rest, as cards */
 .bl-morehead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.6rem 2rem;margin:clamp(2.6rem,7vh,4rem) 0 clamp(1.2rem,3vh,1.6rem);padding-top:1.2rem;border-top:1px solid var(--line)}
+.bl-morebtn{display:flex;justify-content:center;margin-top:clamp(1.4rem,3vh,2rem)}
+.bl-morebtn[hidden]{display:none}
 .bl-status{margin:0;font-size:var(--fs-body);color:var(--mute)}
 .bl-empty{margin:0;padding:3rem 0;text-align:center;font-size:var(--fs-body);color:var(--mute)}
 .bl-empty button{border:0;border-bottom:1px solid currentColor;background:none;padding:0 0 2px;font:600 var(--fs-body) var(--sans);color:var(--ink);cursor:pointer}
