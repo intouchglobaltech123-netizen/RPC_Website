@@ -21,7 +21,7 @@
   --color-bronze: #8a6a4c;
 
   /* three sizes only: a title, a subtitle and the paragraph size */
-  --text-title: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+  --text-title: clamp(1.4rem, 1.15rem + 1vw, 2rem);
   --text-sub: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
   --text-body: 1rem;
 
@@ -41,8 +41,8 @@
     /* side space: 20px on phones, 48px on tablets, 100px on laptops and desktops */
     --gutter: 20px;
     /* the site's type scale: h1, h2, h3 and body, the same on every page */
-    --fs-h1: clamp(2rem, 1.35rem + 2.6vw, 3.5rem);
-    --fs-h2: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+    --fs-h1: clamp(1.75rem, 1.2rem + 1.9vw, 2.6rem);
+    --fs-h2: clamp(1.4rem, 1.15rem + 1vw, 2rem);
     --fs-h3: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
     --fs-title: var(--fs-h2);
     --fs-sub: var(--fs-h3);
@@ -439,4 +439,14 @@
 @layer base {
   main h2.pj-name.pj-name.pj-name.pj-name { font-size: var(--fs-h3) !important; line-height: 1.25 !important; font-weight: 600 !important; letter-spacing: -.01em; }
   main h3.sv-ct.sv-ct.sv-ct.sv-ct { line-height: 1.25 !important; letter-spacing: -.01em; }
+}
+
+/* a page's heading sits on one line on desktops from 1400px wide (narrower screens wrap it) */
+@layer base {
+  @media (min-width: 1400px) {
+    main h1:not(.sr-only):not(.mh-sr):not(.hm-sr) { white-space: nowrap !important; max-width: none !important; }
+    .pr-headgrid, .bl-headgrid { grid-template-columns: minmax(0, 1fr) !important; }
+    .pr-headgrid .pg-h1, .bl-headgrid .pg-h1 { max-width: none !important; }
+    .bl-bar { margin-left: 0 !important; }
+  }
 }

@@ -151,7 +151,7 @@ export function servicesPageMarkup(d: ServicesData, o: PageOptions = {}) {
   <div class="pg-wrap sv-headgrid">
     <div>
       ${mark("01", "Services")}
-      <h1 class="pg-h1">Waterproofing and construction services in ${esc(hq ?? "Erode")}, Coimbatore, Krishnagiri and&nbsp;Chennai.</h1>
+      <h1 class="pg-h1">Services across ${esc(hq ?? "Erode")}, Coimbatore, Krishnagiri and&nbsp;Chennai.</h1>
     </div>
   </div>
 </header>`;
