@@ -132,7 +132,7 @@ export const hook = {
  * or product packs in the film itself: the names are written over it.
  */
 export const film = {
-  wide: "/videos/build/build-apartment-1080.mp4",
+  wide: "/videos/build/build-apartment-720.mp4",
   narrow: "/videos/build/build-apartment-720.mp4",
   poster: "/videos/build/build-apartment-poster.jpg",
   /** the upright film (9:16, same length) for phones (up to 767px wide), and its poster */
