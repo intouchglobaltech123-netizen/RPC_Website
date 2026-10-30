@@ -9,7 +9,7 @@ import { ldJson, pageMeta, siteUrl } from "@/lib/site";
 export const metadata: Metadata = pageMeta({
   title: "About Us – Waterproofing Contractors in Erode since 2012",
   description:
-    "RPC Constructions is a waterproofing and construction company founded in Erode in 2012. Our vision, our mission and our values, and the towns we work in: Erode, Coimbatore, Tiruppur, Salem and Chennai.",
+    "RPC Constructions is a waterproofing and construction company founded in Erode in 2012. Our vision, our mission and our values, and the towns we work in: Erode, Coimbatore, Krishnagiri and Chennai.",
   path: "/about",
 });
 

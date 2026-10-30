@@ -39,7 +39,7 @@ const mono = localFont({
 });
 
 const description =
-  "RPC Constructions is a waterproofing and construction company in Erode, Tamil Nadu: terrace, bathroom, sump and basement waterproofing, leak repair, and homes, offices and factories built to stay dry across Coimbatore, Tiruppur, Salem and Chennai since 2012.";
+  "RPC Constructions is a waterproofing and construction company in Erode, Tamil Nadu: terrace, bathroom, sump and basement waterproofing, leak repair, and homes, offices and factories built to stay dry across Coimbatore, Krishnagiri and Chennai since 2012.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

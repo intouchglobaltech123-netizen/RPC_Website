@@ -218,16 +218,22 @@ function aboutMarkup(d: HomeData, _o: HomeOptions) {
 </section>`;
 }
 
-/** where we work, drawn: Erode, the head office, with the towns around it and Chennai off to the north-east */
+/** where we work, drawn: Erode, the head office, with Coimbatore, and Krishnagiri and Chennai off to the north */
 export function aboutMap() {
   // where we work, on a drawn map of western Tamil Nadu (longitude and latitude, scaled): Erode, the head office, at the centre
   const at = (lon: number, lat: number) => [Math.round((lon - 76.75) * 290), Math.round((12.05 - lat) * 290)] as const;
   const hq = at(77.72, 11.34);
-  const towns = [
-    { name: "Tiruppur", p: at(77.34, 11.11), side: "l" },
-    { name: "Coimbatore", p: at(76.96, 11.02), side: "r" },
-    { name: "Salem", p: at(78.15, 11.66), side: "r" },
+  const towns = [{ name: "Coimbatore", p: at(76.96, 11.02), side: "r" }];
+  // the two places far off the drawing are shown as an arrow out of the edge: Krishnagiri to the north, Chennai to the north-east
+  const far = [
+    { name: "Krishnagiri", p: [356, 24] as const },
+    { name: "Chennai", p: [588, 34] as const },
   ];
+  const head = (p: readonly [number, number]) => {
+    const a = Math.atan2(p[1] - hq[1], p[0] - hq[0]);
+    const b = (d: number) => `${Math.round(p[0] - 16 * Math.cos(a + d))} ${Math.round(p[1] - 16 * Math.sin(a + d))}`;
+    return `M${b(0.45)}L${p[0]} ${p[1]}L${b(-0.45)}`;
+  };
   const pc = (x: number, y: number) => `left:${((x / 600) * 100).toFixed(2)}%;top:${((y / 380) * 100).toFixed(2)}%`;
   const map = `<figure class="hm-abmap" data-rv>
   <svg viewBox="0 0 600 380" aria-hidden="true">
@@ -235,14 +241,14 @@ export function aboutMap() {
     <rect width="600" height="380" fill="url(#hm-abg)"/>
     <circle cx="${hq[0]}" cy="${hq[1]}" r="130" class="hm-abring"/><circle cx="${hq[0]}" cy="${hq[1]}" r="260" class="hm-abring"/>
     ${towns.map((t) => `<path class="hm-abroute" d="M${hq[0]} ${hq[1]}L${t.p[0]} ${t.p[1]}"/>`).join("")}
-    <path class="hm-abroute" d="M${hq[0]} ${hq[1]}L590 34"/><path class="hm-abarrow" d="M574 30l16 4-6 15"/>
+    ${far.map((f) => `<path class="hm-abroute" d="M${hq[0]} ${hq[1]}L${f.p[0]} ${f.p[1]}"/><path class="hm-abarrow" d="${head(f.p)}"/>`).join("")}
     ${towns.map((t) => `<circle class="hm-abtown" cx="${t.p[0]}" cy="${t.p[1]}" r="6"/>`).join("")}
     <circle class="hm-abpulse" cx="${hq[0]}" cy="${hq[1]}" r="18"/><circle class="hm-abhq" cx="${hq[0]}" cy="${hq[1]}" r="9"/>
   </svg>
   <span class="hm-ablab hm-ablab--hq" style="${pc(hq[0], hq[1])}"><b>Erode</b><span>Head office, Perundurai Road</span></span>
   ${towns.map((t) => `<span class="hm-ablab hm-ablab--${t.side}" style="${pc(t.p[0], t.p[1])}">${esc(t.name)}</span>`).join("")}
-  <span class="hm-ablab hm-ablab--far" style="${pc(588, 34)}">Chennai</span>
-  <figcaption class="hm-sr">Where we work: Erode, our head office, with Tiruppur, Coimbatore, Salem and Chennai.</figcaption>
+  ${far.map((f) => `<span class="hm-ablab hm-ablab--far" style="${pc(f.p[0], f.p[1])}">${esc(f.name)}</span>`).join("")}
+  <figcaption class="hm-sr">Where we work: Erode, our head office, with Coimbatore, Krishnagiri and Chennai.</figcaption>
 </figure>`;
   return map;
 }
@@ -260,7 +266,7 @@ export function rootedAboutMarkup(d: HomeData, o: HomeOptions = {}) {
     <div class="hm-acopy">
       ${mark(o.n ?? "03", "About RPC")}
       <h2 class="hm-statement" id="about-title" data-rv>Waterproofing contractors in Erode since&nbsp;2012.</h2>
-      <p class="hm-lead" data-rv>RPC Constructions keeps buildings dry with terrace, bathroom, sump and basement waterproofing, leak repair and construction chemicals, for homes, offices and factories in Erode, Coimbatore, Tiruppur, Salem and Chennai.</p>
+      <p class="hm-lead" data-rv>RPC Constructions keeps buildings dry with terrace, bathroom, sump and basement waterproofing, leak repair and construction chemicals, for homes, offices and factories in Erode, Coimbatore, Krishnagiri and Chennai.</p>
       <ul class="hm-values">${values}</ul>
       <a class="hm-btn hm-btn--ink" href="/about" data-internal data-rv>About RPC Constructions${arrow}</a>
     </div>

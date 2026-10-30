@@ -26,7 +26,7 @@ const wa = `<svg class="ld-wa" viewBox="0 0 24 24" aria-hidden="true"><path fill
 /* ------------------------------------------------------------ shared parts */
 const line = `<p class="ld-line">Waterproofing and construction in Erode, since 2012</p>`;
 const title = (id: string) => `<h1 class="ld-h1" id="${id}">Dry buildings, from the terrace to the&nbsp;sump.</h1>`;
-const lede = `<p class="ld-lede">We trace a leak to where the water gets in, seal each surface with the system that suits it, and build homes, offices and factories with the waterproofing designed in, across Erode, Coimbatore, Tiruppur and&nbsp;Salem.</p>`;
+const lede = `<p class="ld-lede">We trace a leak to where the water gets in, seal each surface with the system that suits it, and build homes, offices and factories with the waterproofing designed in, across Erode, Coimbatore, Krishnagiri and&nbsp;Chennai.</p>`;
 const ctas = (d: LandingData) => `<div class="ld-cta">
   <a class="ld-btn ld-btn--ink" href="/contact#enquiry" data-internal>Book a free inspection${arrow}</a>
   <a class="ld-btn ld-btn--line" href="${esc(d.whatsapp)}" target="_blank" rel="noopener noreferrer">${wa}WhatsApp us</a>

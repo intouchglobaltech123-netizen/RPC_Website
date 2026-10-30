@@ -8,9 +8,9 @@ import { SERVICES_CSS, serviceFaq, servicesPageMarkup } from "@/lib/pages/servic
 import { ldJson, pageMeta, siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({
-  title: "Waterproofing Services in Erode, Coimbatore & Tiruppur",
+  title: "Waterproofing Services in Erode, Coimbatore, Krishnagiri & Chennai",
   description:
-    "Terrace, bathroom, water tank, basement, balcony, external wall, podium and crack waterproofing, leak repair, and homes, offices and factories built to stay dry, in Erode, Coimbatore, Tiruppur, Salem and Chennai. Free site inspection.",
+    "Terrace, bathroom, water tank, basement, balcony, external wall, podium and crack waterproofing, leak repair, and homes, offices and factories built to stay dry, in Erode, Coimbatore, Krishnagiri and Chennai. Free site inspection.",
   path: "/services",
 });
 

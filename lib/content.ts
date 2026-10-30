@@ -42,7 +42,7 @@ export const contact = {
   whatsapp: "https://wa.me/919442895907",
   mapQuery: "142 Perundurai Road, Erode, Tamil Nadu 638011",
   geo: { lat: 11.341, lng: 77.7172 },
-  regions: ["Erode", "Coimbatore", "Tiruppur", "Salem", "Chennai"],
+  regions: ["Erode", "Coimbatore", "Krishnagiri", "Chennai"],
 } as const;
 
 
@@ -235,7 +235,7 @@ export const services: ServiceItem[] = [
     title: "Industrial Construction",
     short: "SIPCOT & private industrial parks",
     line: "Factories and PEB sheds with sealed roofs",
-    body: "Factories, warehouses and processing units around Perundurai, Tiruppur and Coimbatore, with roofs, gutters and floors detailed to keep machinery and stock dry through the monsoon.",
+    body: "Factories, warehouses and processing units around Perundurai, Coimbatore and Krishnagiri, with roofs, gutters and floors detailed to keep machinery and stock dry through the monsoon.",
     image: "/images/projects/sipcot-textile-unit-perundurai.jpg",
     deliverables: [
       "Pre-engineered steel buildings (PEB)",

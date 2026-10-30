@@ -14,9 +14,8 @@ import { arrow, esc } from "./kit";
  */
 const ROUTES: readonly { town: string; from: readonly (readonly [label: string, place: string])[] }[] = [
   { town: "Erode", from: [["From the central bus stand", "Erode Central Bus Terminus, Erode"], ["From the railway station", "Erode Junction Railway Station, Erode"], ["From Perundurai", "Perundurai Bus Stand, Perundurai"], ["From Bhavani", "Bhavani Bus Stand, Bhavani"]] },
-  { town: "Tiruppur", from: [["From the new bus stand", "Tiruppur New Bus Stand, Tiruppur"], ["From the old bus stand", "Tiruppur Old Bus Stand, Tiruppur"], ["From the railway station", "Tiruppur Railway Station, Tiruppur"], ["From Avinashi", "Avinashi Bus Stand, Avinashi"]] },
   { town: "Coimbatore", from: [["From Gandhipuram bus stand", "Gandhipuram Central Bus Stand, Coimbatore"], ["From the railway station", "Coimbatore Junction Railway Station"], ["From the airport", "Coimbatore International Airport"], ["From Ukkadam bus stand", "Ukkadam Bus Stand, Coimbatore"]] },
-  { town: "Salem", from: [["From the new bus stand", "Salem New Bus Stand, Salem"], ["From the old bus stand", "Salem Old Bus Stand, Salem"], ["From the railway station", "Salem Junction Railway Station"], ["From Five Roads", "Five Roads, Salem"]] },
+  { town: "Krishnagiri", from: [["From the new bus stand", "Krishnagiri New Bus Stand, Krishnagiri"], ["From the old bus stand", "Krishnagiri Old Bus Stand, Krishnagiri"], ["From the railway station", "Krishnagiri Railway Station, Krishnagiri"]] },
   { town: "Chennai", from: [["From Koyambedu bus stand", "Chennai Mofussil Bus Terminus, Koyambedu, Chennai"], ["From Kilambakkam bus stand", "Kilambakkam Bus Terminus, Chennai"], ["From Chennai Central station", "Chennai Central Railway Station"], ["From the airport", "Chennai International Airport"]] },
 ];
 
