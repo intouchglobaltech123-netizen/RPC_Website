@@ -73,7 +73,6 @@ export function aboutMarkup(d: AboutData) {
         ${mark("02", "Who we are")}
         <h2 class="pg-h2" id="ab-who-h" data-rv>An engineer‑led waterproofing company that also builds.</h2>
       </div>
-      <div class="ab-whotext">${d.story.map((p, i) => `<p class="${i === 0 ? "ab-lead" : "ab-p"}" data-rv>${esc(p)}</p>`).join("")}</div>
     </div>
     <div class="ab-pts">${d.partners.map(partner).join("")}</div>
   </div>
