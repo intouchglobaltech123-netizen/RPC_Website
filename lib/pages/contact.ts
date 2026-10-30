@@ -100,7 +100,7 @@ export function contactPageMarkup(d: ContactPageData) {
   return `<section class="pg-dark ct-page" aria-labelledby="ct-title">
   <div class="pg-wrap ct-grid">
     <div class="ct-info">
-      ${mark("01", "Contact us")}
+      ${mark("", "Contact us")}
       <h1 class="ct-h1" id="ct-title" data-rv="words">${words("Let’s keep your building dry.")}</h1>
       <p class="ct-lede" data-rv>Call, WhatsApp or write to us. An engineer replies within one working day.</p>
       ${tiles}
