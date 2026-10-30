@@ -254,7 +254,7 @@ export const PROJECTS_CSS = SEARCH_BAR_CSS + `
 .pj-stat[data-s=plan]{background:rgba(39,86,160,.12);color:var(--accent)}
 .pj-st{flex:none;width:7px;height:7px;border-radius:50%;background:currentColor}
 .pj-type{font-size:var(--fs-body);color:var(--mute)}
-.pj-name{margin:1rem 0 0;font-family:var(--display);font-weight:600;font-size:var(--fs-sub);line-height:1.15;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
+.pj-name{margin:1rem 0 0;font-family:var(--display);font-weight:600;font-size:var(--fs-body)!important;line-height:1.3!important;letter-spacing:-.01em;color:var(--ink);text-wrap:balance}
 .pj-loc{display:flex;align-items:center;gap:.35rem;margin:.35rem 0 0;font-size:var(--fs-body);color:var(--mute)}
 .pj-loc svg{flex:none;width:.95rem;height:.95rem}
 .pj-lead{margin:.8rem 0 1.2rem;font-size:var(--fs-body);line-height:1.55;color:var(--ink2);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
