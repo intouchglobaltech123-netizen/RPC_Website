@@ -259,8 +259,8 @@ export function rootedAboutMarkup(d: HomeData, o: HomeOptions = {}) {
   <div class="hm-wrap hm-agrid">
     <div class="hm-acopy">
       ${mark(o.n ?? "03", "About RPC")}
-      <h2 class="hm-statement" id="about-title" data-rv>Rooted in Erode since&nbsp;2012.</h2>
-      <p class="hm-lead" data-rv>We keep buildings dry, from homes to factories.</p>
+      <h2 class="hm-statement" id="about-title" data-rv>Waterproofing contractors in Erode since&nbsp;2012.</h2>
+      <p class="hm-lead" data-rv>RPC Constructions keeps buildings dry with terrace, bathroom, sump and basement waterproofing, leak repair and construction chemicals, for homes, offices and factories in Erode, Coimbatore, Tiruppur, Salem and Chennai.</p>
       <ul class="hm-values">${values}</ul>
       <a class="hm-btn hm-btn--ink" href="/about" data-internal data-rv>About RPC Constructions${arrow}</a>
     </div>
@@ -274,7 +274,7 @@ export const ROOTED_ABOUT_CSS = `
 .hm-agrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:stretch;gap:clamp(2rem,5vw,6rem);flex:1 1 auto;max-height:52rem}
 .hm-acopy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0}
 .hm-acopy .hm-mark{align-self:stretch}
-.hm-statement{margin:min(1.4rem,2.6svh) 0 0;max-width:20ch;font-family:var(--serif);font-weight:600;font-size:var(--fs-title);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+.hm-statement{margin:min(1.4rem,2.6svh) 0 0;max-width:26ch;font-family:var(--serif);font-weight:600;font-size:var(--fs-title);line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
 .hm-lead{margin:min(1.6rem,3svh) 0 0;max-width:42rem;font-size:var(--fs-body);line-height:1.7;color:rgba(18,34,59,.8);text-wrap:pretty}
 .hm-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(1rem,2vw,2rem);align-self:stretch;margin:min(1.8rem,3.4svh) 0 min(1.8rem,3.4svh);padding:0;list-style:none}
 .hm-values li{display:grid;grid-template-columns:1.9rem 1fr;align-content:start;column-gap:.1rem;padding:min(.85rem,1.5svh) 0 min(.95rem,1.6svh);border-top:1px solid var(--line)}
