@@ -299,9 +299,9 @@ export const KIT_CSS = `
 .pg-head .pg-btn--ink{background:#f5f0e6;color:var(--navy)}
 .pg-head .pg-btn--ink:hover{background:#fff;color:var(--navy)}
 .pg-head .pg-btn--line{border-color:rgba(245,240,230,.5);color:#fff}
-/* every page's opening the same height, its title set at the same place near the foot (it only grows if a long title needs the room) */
-.pg-head,.pjs-head{--head-h:27rem;--head-pb:clamp(2rem,4.5vh,3rem)}
-@media (max-width:1023px){.pg-head,.pjs-head{--head-h:28rem}}
+/* every page's opening the same height (80px shorter than before on wide screens and tablets), its title set at the same place near the foot (it only grows if a long title needs the room) */
+.pg-head,.pjs-head{--head-h:22rem;--head-pb:clamp(2rem,4.5vh,3rem)}
+@media (max-width:1023px){.pg-head,.pjs-head{--head-h:23rem}}
 @media (max-width:599px){.pg-head,.pjs-head{--head-h:30rem;--head-pb:1.8rem}}
 /* phones: a shorter opening, so the page's own content starts higher up the screen (it still grows if a long title needs the room) */
 @media (max-width:767px){

@@ -46,7 +46,7 @@ function products(d: HookData) {
       <span class="hk-pic">${g.lead.pic}</span>
       <span class="hk-kind"><i aria-hidden="true"></i>${esc(g.group)}</span>
       <span class="hk-name">${esc(g.lead.name)}</span>
-      <span class="hk-foot"><span class="hk-more">${g.more.length ? `+${g.more.length} more` : "View product"}</span><span class="hk-tgo" aria-hidden="true">${arrow}</span></span>
+      <span class="hk-foot"><span class="hk-more ${g.more.length ? "hk-more--n" : "hk-more--v"}">${g.more.length ? `+${g.more.length} more` : "View product"}</span><span class="hk-tgo" aria-hidden="true">${arrow}</span></span>
     </a></li>`,
     )
     .join("");
@@ -274,6 +274,26 @@ export const HOOKS_CSS =
 .hk-more{font-weight:600;color:var(--ink2)}
 .hk-tgo{width:2.2rem;height:2.2rem;background:var(--navy);color:#fff;box-shadow:none}
 .hk-tile:hover .hk-tgo{background:var(--accent)}
+/* tile polish 2: a warmer card, a bigger picture standing on a soft shadow, a navy name, a pill for the extra products and an arrow that moves on hover */
+.hk-tile{background:linear-gradient(180deg,#fff 0%,#fffdf9 100%);overflow:hidden}
+.hk-tile::before{content:"";position:absolute;left:1.2rem;right:1.2rem;top:0;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,var(--water),var(--accent));opacity:0;transform:scaleX(.4);transform-origin:left;transition:opacity .35s,transform .45s cubic-bezier(.2,.7,.2,1)}
+.hk-tile:hover::before{opacity:1;transform:none}
+.hk-tile:hover{box-shadow:0 0 0 1px rgba(18,34,59,.14),0 30px 46px -28px rgba(18,34,59,.5)}
+.hk-pic{background:radial-gradient(90% 70% at 50% 38%,#fff 0%,#fcf9f3 52%,#f0e9db 100%)}
+.hk-pic::after{content:"";position:absolute;left:24%;right:24%;bottom:10%;height:8%;border-radius:50%;background:radial-gradient(closest-side,rgba(18,34,59,.2),rgba(18,34,59,0));filter:blur(3px);z-index:0}
+.hk-pic img{z-index:1}
+.hk-pic svg{position:relative;z-index:1}
+.hk-pic img{left:6%;top:9%;width:88%;height:82%;filter:drop-shadow(0 10px 12px rgba(18,34,59,.18))}
+.hk-pic svg{width:76%}
+.hk-name{color:var(--navy);font-weight:700;letter-spacing:-.015em;margin-top:1.1rem}
+.hk-foot{border-top:1px solid rgba(18,34,59,.08)}
+.hk-more{display:inline-flex;align-items:center;font-weight:600;color:var(--navy)}
+.hk-more--n{padding:.22rem .7rem;border-radius:999px;background:rgba(18,34,59,.06);font-size:.92em}
+.hk-more--v{position:relative}
+.hk-tgo{transition:background-color .3s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.hk-tile:hover .hk-tgo{transform:translateX(3px)}
+.hk-tgo svg{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.hk-tile:hover .hk-tgo svg{transform:rotate(45deg)}
 .hk-after{display:flex;justify-content:center;margin-top:clamp(1.4rem,3vh,2rem)}
 .hk-after--end{justify-content:flex-end}
 .hk-brands{margin-top:clamp(2.2rem,5vh,3.4rem)}
@@ -376,7 +396,9 @@ export const HOOKS_CSS =
   .hk-tile{padding:.45rem .45rem .7rem;border-radius:16px}
   .hk-pic{aspect-ratio:16/10}
   .hk-foot{display:none}
-  .hk-kind{font-size:var(--fs-body,1rem)}
+  .hk-kind{font-size:.74rem;white-space:nowrap;align-items:center;top:.55rem;left:.55rem;max-width:calc(100% - 1.1rem);padding:.2rem .55rem .2rem .45rem}
+  .hk-kind i{margin-top:0;width:.4rem;height:.4rem}
+  .hk-pic img{top:22%;height:74%;left:12%;width:76%}
   .hk-name{font-size:var(--fs-body,1rem)}
   .hk-prod .hk-after{margin-top:.9rem}
   /* brands: one quiet strip of small logo cards under a line of words */
