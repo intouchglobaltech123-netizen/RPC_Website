@@ -96,7 +96,7 @@ export function contactPageMarkup(d: ContactPageData) {
         <li><a class="ct-tile" href="mailto:${esc(c.email)}">${icon("email")}<span class="ct-tk">Email</span><span class="ct-tv ct-tv--mail">${esc(c.email)}</span><span class="ct-tn">Drawings and documents</span>${go}</a></li>
         <li><a class="ct-tile" href="${esc(mapsLink(c.mapQuery))}" target="_blank" rel="noopener noreferrer">${icon("visit")}<span class="ct-tk">Office</span><span class="ct-tv">${esc(street)}</span><span class="ct-tn">${esc(hoursText)}</span>${go}</a></li>
       </ul>
-      <p class="ct-alt" data-rv>More numbers: ${c.morePhones.map((n) => `<a href="${tel(n)}">${esc(n)}</a>`).join(" · ")}</p>`;
+      <p class="ct-alt" data-rv>More numbers: ${(c.morePhones ?? []).map((n) => `<a href="${tel(n)}">${esc(n)}</a>`).join(" · ")}</p>`;
   return `<section class="pg-dark ct-page" aria-labelledby="ct-title">
   <div class="pg-wrap ct-grid">
     <div class="ct-info">

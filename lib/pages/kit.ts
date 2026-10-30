@@ -24,6 +24,7 @@ export interface ContactInfo {
   whatsapp: string;
   mapQuery: string;
   regions: readonly string[];
+  morePhones?: readonly string[];
 }
 
 export const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
