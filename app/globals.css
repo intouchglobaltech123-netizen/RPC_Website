@@ -464,3 +464,8 @@ main .ab-vmno, main .ab-vcbig { display: none !important; }
 
 /* project status pills stay on one line */
 main .pj-stat { white-space: nowrap; }
+
+/* project cards: just the picture, status, name and place */
+main .pj-row .pj-lead, main .pj-row .pj-wp { display: none; }
+main .pj-row { padding-bottom: 1rem; }
+main .pj-row .pj-pic img { aspect-ratio: 16 / 10; object-fit: cover; }
