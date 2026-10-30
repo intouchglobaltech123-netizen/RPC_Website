@@ -39,9 +39,12 @@
   :root {
     color-scheme: light;
     --gutter: 20px;
-    /* the whole site uses three type sizes */
-    --fs-title: clamp(1.9rem, 1.3rem + 1.9vw, 3rem);
-    --fs-sub: clamp(1.2rem, 1.08rem + 0.4vw, 1.5rem);
+    /* the site's type scale: h1, h2, h3 and body, the same on every page */
+    --fs-h1: clamp(2rem, 1.35rem + 2.6vw, 3.5rem);
+    --fs-h2: clamp(1.625rem, 1.2rem + 1.6vw, 2.5rem);
+    --fs-h3: clamp(1.2rem, 1.05rem + 0.6vw, 1.5rem);
+    --fs-title: var(--fs-h2);
+    --fs-sub: var(--fs-h3);
     --fs-body: 1rem;
     /* room at the top for the big logo (on the page) and the small floating bar of pages: 60px on phones and tablets, 64px from 1024px */
     --nav-h: 60px;
@@ -412,4 +415,12 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
+}
+
+
+/* every heading on every page takes its size from the scale above (the screen-reader-only ones are hidden anyway) */
+@layer base {
+  main h1:not(.sr-only):not(.mh-sr):not(.hm-sr) { font-size: var(--fs-h1) !important; line-height: 1.08 !important; }
+  main h2:not(.sr-only):not(.mh-sr):not(.hm-sr) { font-size: var(--fs-h2) !important; line-height: 1.12 !important; }
+  main h3:not(.sr-only):not(.mh-sr):not(.hm-sr) { font-size: var(--fs-h3) !important; line-height: 1.2 !important; }
 }
