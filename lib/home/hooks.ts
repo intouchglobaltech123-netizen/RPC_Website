@@ -265,6 +265,15 @@ export const HOOKS_CSS =
 .hk-more{min-width:0;font-size:var(--fs-body);line-height:1.35;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hk-tgo{flex:none;display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);transition:background-color .3s,color .3s,box-shadow .3s}
 .hk-tile:hover .hk-tgo{background:var(--navy);color:#fff;box-shadow:none}
+/* tile polish: the kind sits on the picture as a chip, the picture has a soft tint, the name and the foot line up across the row */
+.hk-tile{position:relative;padding:.6rem .6rem 1rem;border-radius:22px;box-shadow:0 0 0 1px var(--line),0 22px 40px -32px rgba(18,34,59,.5)}
+.hk-pic{border-radius:16px;background:radial-gradient(110% 85% at 50% 30%,#fff 0%,#fbf8f2 55%,#efe8da 100%);box-shadow:inset 0 0 0 1px rgba(18,34,59,.05)}
+.hk-kind{position:absolute;top:1.15rem;left:1.15rem;z-index:2;max-width:calc(100% - 2.3rem);margin:0;padding:.28rem .7rem .28rem .6rem;border-radius:999px;background:rgba(255,255,255,.92);box-shadow:0 0 0 1px rgba(18,34,59,.08),0 6px 14px -8px rgba(18,34,59,.35);font-size:var(--fs-body);font-weight:600;color:var(--ink);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hk-name{margin:1rem .45rem 0;font-size:var(--fs-h3);line-height:1.25;min-height:2.5em}
+.hk-foot{margin:auto .45rem 0;padding-top:.8rem}
+.hk-more{font-weight:600;color:var(--ink2)}
+.hk-tgo{width:2.2rem;height:2.2rem;background:var(--navy);color:#fff;box-shadow:none}
+.hk-tile:hover .hk-tgo{background:var(--accent)}
 .hk-after{display:flex;justify-content:center;margin-top:clamp(1.4rem,3vh,2rem)}
 .hk-after--end{justify-content:flex-end}
 .hk-brands{margin-top:clamp(2.2rem,5vh,3.4rem)}
