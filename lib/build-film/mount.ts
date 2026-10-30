@@ -187,10 +187,10 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
     hint?.classList.toggle("is-off", on);
     helper();
   }
-  /** the leak helper button stays away while the stages are on screen and not yet done */
+  /** the leak helper button stays away for the whole hero (the stages and the closing words) and comes back once the hero has scrolled clear of it */
   function helper() {
     const r = section.getBoundingClientRect();
-    const on = live && r.bottom > window.innerHeight * 0.5 && r.top < window.innerHeight * 0.5 && !section.classList.contains("is-ended");
+    const on = r.bottom > window.innerHeight - 120 && r.top < window.innerHeight * 0.5;
     document.documentElement.classList.toggle("mh-on", on);
   }
 
@@ -396,6 +396,7 @@ export function mountBuild(section: HTMLElement, opts: BuildOptions = {}): Build
   document.addEventListener("visibilitychange", onVisibility);
 
   update(true);
+  helper();
 
   function release() {
     if (live) return;

@@ -272,9 +272,12 @@ html.mh-on .lb-launch,html.mh-on .lb-hint{opacity:0 !important;visibility:hidden
     .mh-kicker,.mh-lede,.mh-points{display:none}
     /* the closing words sit above the round chat button at the bottom right */
     .mh-js.is-ended .mh-body{padding-bottom:8rem}
-    .mh-ctas{margin-top:1.2rem;flex-wrap:nowrap;justify-content:space-between;gap:.5rem}
-    .mh-ctas .mh-btn{height:2.9rem;padding:0 .85rem;gap:.4rem;font-size:.8rem}
-    .mh-ctas .mh-btn svg{width:16px;height:16px}
+    .mh-ctas{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:.6rem;margin-top:1.3rem}
+    .mh-ctas .mh-btn{justify-content:center;height:3.1rem;padding:0 .6rem;gap:.45rem;font-size:.84rem;font-weight:600;letter-spacing:.005em;box-shadow:0 10px 24px -12px rgba(0,0,0,.65)}
+    .mh-ctas .mh-btn--solid{background:#fff}
+    .mh-ctas .mh-btn--line{border-color:rgba(238,243,245,.55);background:rgba(8,20,30,.45)}
+    .mh-ctas .mh-btn svg{width:17px;height:17px;flex:none}
+    @media (max-width:350px){.mh-ctas .mh-btn{font-size:.74rem;padding:0 .4rem}.mh-ctas .mh-btn svg{display:none}}
     /* kept short: the stage, the product, one line on what it does; no 1 to 6 buttons */
     .mh-uses-k,.mh-why,.mh-more{display:none}
     .mh-chapters{display:none}
