@@ -476,7 +476,7 @@ export const HOME_CSS = `
 .hm-ar{width:14px;height:14px;flex:none;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
 
 /* shared: section marker, headline, lede, links and buttons */
-.hm-mark{display:flex;align-items:center;gap:.75rem;margin:0;font-size:var(--fs-body);font-weight:500;color:var(--mute)}
+.hm-mark{display:flex;align-items:center;gap:.75rem;margin:0;font-size:1.4rem;font-weight:500;color:var(--mute)}
 .hm-idx{font-variant-numeric:tabular-nums;font-weight:600;color:var(--accent)}
 .hm-rule{width:2rem;height:1px;background:currentColor;opacity:.35}
 .hm-h2{margin:min(1.1rem,2svh) 0 0;font-family:var(--serif);font-weight:600;font-size:var(--fs-title);line-height:1.12;letter-spacing:-.02em;text-wrap:balance;max-width:20ch}

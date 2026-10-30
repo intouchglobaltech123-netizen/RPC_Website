@@ -12,7 +12,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
 export function SectionMarker({ index, label, className }: { index: string; label: string; className?: string }) {
   const onDark = /text-paper|text-white/.test(className ?? "");
   return (
-    <div className={cn("flex items-center gap-3 text-body font-medium", className)}>
+    <div className={cn("flex items-center gap-3 text-[1.4rem] font-medium", className)}>
       <span className={cn("font-semibold tabular-nums", onDark ? "text-white/85" : "text-rpc")}>{index}</span>
       <span className="h-px w-8 bg-current opacity-35" />
       <span className={onDark ? "text-paper/85" : "text-mute"}>{label}</span>

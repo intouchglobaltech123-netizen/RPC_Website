@@ -214,7 +214,7 @@ export const KIT_CSS = `
 .pg a:focus-visible,.pg button:focus-visible,.pg select:focus-visible,.pg input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* section heads: a small label, the heading, an optional line */
-.pg-mark{display:flex;align-items:center;gap:.75rem;margin:0;font-size:var(--fs-body);font-weight:500;color:var(--mute)}
+.pg-mark{display:flex;align-items:center;gap:.75rem;margin:0;font-size:1.4rem;font-weight:500;color:var(--mute)}
 .pg-idx{font-variant-numeric:tabular-nums;font-weight:600;color:var(--accent)}
 .pg-rule{width:2rem;height:1px;background:currentColor;opacity:.35}
 .pg-shead{display:flex;flex-direction:column;align-items:flex-start;gap:.7rem;margin-bottom:clamp(2rem,5vh,3.2rem);padding-top:1.25rem;border-top:1px solid rgba(18,34,59,.28)}

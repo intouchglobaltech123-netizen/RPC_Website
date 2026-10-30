@@ -209,47 +209,76 @@ function blog(root: HTMLElement): Off {
   const status = root.querySelector<HTMLElement>("[data-topic-status]");
   const empty = root.querySelector<HTMLElement>(".bl-empty");
   const more = root.querySelector<HTMLElement>(".bl-morehead h2");
+  const grid = root.querySelector<HTMLElement>(".bl-grid--rows");
+  const gridItems = grid ? Array.from(grid.children).filter((x): x is HTMLElement => x instanceof HTMLElement) : [];
+  const pagination = root.querySelector<HTMLElement>("[data-bl-pagination]");
   if (!bar || !items.length) return () => {};
   const offs: Off[] = [];
-  // the list shows the latest article and three more; "Read more articles" opens the rest (a search or a method shows every match)
-  const btn = root.querySelector<HTMLButtonElement>("[data-bl-more]");
-  const extras = new Set(Array.from(root.querySelectorAll<HTMLElement>(".bl-grid--rows > li")).slice(3));
-  let open = false;
+  const pageSize = 3;
+  let page = 1;
+  const changePage = (next: number) => {
+    page = Math.min(Math.max(1, Math.ceil(gridItems.length / pageSize)), Math.max(1, next));
+    apply();
+    if (grid) {
+      grid.classList.remove("bl-grid--changing");
+      void grid.offsetWidth;
+      grid.classList.add("bl-grid--changing");
+    }
+    gridItems.find((it) => !it.hidden)?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+  };
   const apply = () => {
     const m = s.value("method");
     const narrowed = m !== "all" || !!s.typed();
     let n = 0;
-    let held = 0;
     for (const it of items) {
       const on = (m === "all" || (it.dataset.methods ?? "").split(" ").includes(m)) && s.matches(it.dataset.text ?? "");
-      const folded = on && !narrowed && !open && extras.has(it);
-      it.hidden = !on || folded;
-      if (folded) held++;
       if (on) n++;
     }
-    if (btn) {
-      btn.parentElement!.hidden = held === 0;
-      btn.setAttribute("aria-expanded", String(open));
+    const matchingGridItems = gridItems.filter((it) => (m === "all" || (it.dataset.methods ?? "").split(" ").includes(m)) && s.matches(it.dataset.text ?? ""));
+    const pageCount = Math.max(1, Math.ceil(matchingGridItems.length / pageSize));
+    if (page > pageCount) page = 1;
+    gridItems.forEach((it) => {
+      const index = matchingGridItems.indexOf(it);
+      it.hidden = index < 0 || Math.floor(index / pageSize) + 1 !== page;
+    });
+    if (pagination) {
+      pagination.hidden = matchingGridItems.length <= pageSize;
+      pagination.querySelectorAll<HTMLButtonElement>("[data-bl-page]").forEach((button) => {
+        const value = button.dataset.blPage;
+        const active = value === String(page);
+        if (value === "prev") {
+          button.disabled = page === 1;
+          button.hidden = false;
+        } else if (value === "next") {
+          button.disabled = page === pageCount;
+          button.hidden = false;
+        }
+        else {
+          button.hidden = Number(value) > pageCount;
+          if (active) button.setAttribute("aria-current", "page");
+          else button.removeAttribute("aria-current");
+          button.classList.toggle("is-current", active);
+        }
+      });
     }
     if (empty) empty.hidden = n > 0;
     if (more) more.textContent = narrowed ? "Articles found" : "More articles";
     if (status) {
       const bits = [m !== "all" ? `about ${s.label("method").toLowerCase()}` : "", s.typed() ? `matching “${s.typed()}”` : ""].filter(Boolean);
-      status.textContent = bits.length ? `Showing ${n} ${n === 1 ? "article" : "articles"} ${bits.join(", ")}` : held ? `Showing ${n - held} of ${n} articles` : `Showing all ${n} articles`;
+      status.textContent = bits.length ? `Showing ${n} ${n === 1 ? "article" : "articles"} ${bits.join(", ")}` : `Showing ${n} ${n === 1 ? "article" : "articles"}`;
     }
   };
   const s = mountSearch(bar, offs, apply);
   offs.push(listen(root, "click", (e) => (e.target as HTMLElement).closest("[data-reset]") && s.reset()));
-  if (btn) {
+  if (pagination)
     offs.push(
-      listen(btn, "click", () => {
-        open = true;
-        apply();
-        const first = Array.from(extras).find((x) => !x.hidden);
-        first?.querySelector<HTMLElement>("a")?.focus({ preventScroll: true });
+      listen(pagination, "click", (e) => {
+        const button = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-bl-page]");
+        if (!button || button.disabled) return;
+        const value = button.dataset.blPage;
+        changePage(value === "prev" ? page - 1 : value === "next" ? page + 1 : Number(value));
       }),
     );
-  }
   apply();
   return () => offs.forEach((f) => f());
 }

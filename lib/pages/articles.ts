@@ -141,7 +141,11 @@ export function blogIndexMarkup(d: { posts: readonly PostData[]; contact: Contac
     <ul class="bl-grid bl-grid--rows" data-rv-stagger="80">${rest.map((p) => postCard(p, o, true)).join("")}</ul>${
       rest.length > 3
         ? `
-    <div class="bl-morebtn"><button type="button" class="pg-btn pg-btn--ink" data-bl-more aria-expanded="false">Read more articles</button></div>`
+    <nav class="bl-pagination" aria-label="Blog pages" data-bl-pagination>
+      <button type="button" class="bl-page-arrow" data-bl-page="prev" aria-label="Previous blog page" disabled>←</button>
+      <span class="bl-page-numbers">${Array.from({ length: Math.ceil(rest.length / 3) }, (_, i) => `<button type="button" class="bl-page-number" data-bl-page="${i + 1}" aria-label="Blog page ${i + 1}"${i === 0 ? ` aria-current="page"` : ""}>${i + 1}</button>`).join("")}</span>
+      <button type="button" class="bl-page-arrow" data-bl-page="next" aria-label="Next blog page">→</button>
+    </nav>`
         : ""
     }`
         : `<p class="bl-status" data-topic-status aria-live="polite">Showing all ${d.posts.length} articles</p>`
@@ -249,8 +253,16 @@ export const BLOG_CSS = SEARCH_BAR_CSS + `
 
 /* the rest, as cards */
 .bl-morehead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.6rem 2rem;margin:clamp(2.6rem,7vh,4rem) 0 clamp(1.2rem,3vh,1.6rem);padding-top:1.2rem;border-top:1px solid var(--line)}
-.bl-morebtn{display:flex;justify-content:center;margin-top:clamp(1.4rem,3vh,2rem)}
-.bl-morebtn[hidden]{display:none}
+.bl-pagination{display:flex;align-items:center;justify-content:center;gap:.45rem;margin-top:clamp(1.4rem,3vh,2rem)}
+.bl-page-numbers{display:flex;align-items:center;gap:.35rem}
+.bl-page-arrow,.bl-page-number{display:grid;place-items:center;min-width:2.4rem;height:2.4rem;border:1px solid var(--line);border-radius:999px;background:var(--card);font:600 var(--fs-body) var(--sans);color:var(--ink);cursor:pointer;transition:background-color .25s,color .25s,border-color .25s,transform .25s}
+.bl-page-arrow:hover:not(:disabled),.bl-page-number:hover{border-color:var(--navy);transform:translateY(-2px)}
+.bl-page-number[aria-current=page]{border-color:var(--navy);background:var(--navy);color:#fff}
+.bl-page-arrow:disabled{cursor:not-allowed;opacity:.35}
+.bl-page-number:focus-visible,.bl-page-arrow:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.bl-grid--changing{animation:bl-page-in .38s cubic-bezier(.22,1,.36,1)}
+@keyframes bl-page-in{from{opacity:.35;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.bl-grid--changing{animation:none}}
 .bl-status{margin:0;font-size:var(--fs-body);color:var(--mute)}
 .bl-empty{margin:0;padding:3rem 0;text-align:center;font-size:var(--fs-body);color:var(--mute)}
 .bl-empty button{border:0;border-bottom:1px solid currentColor;background:none;padding:0 0 2px;font:600 var(--fs-body) var(--sans);color:var(--ink);cursor:pointer}
