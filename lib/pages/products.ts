@@ -182,9 +182,6 @@ export function productsPageMarkup(d: ProductsData) {
         ${mark("01", "Products")}
         <h1 class="pg-h1">Waterproofing products and construction chemicals, by&nbsp;brand.</h1>
       </div>
-      <div class="pr-headside">
-        <div class="pg-actions"><a class="pg-btn pg-btn--ink" href="#by-job">Compare brands${arrow}</a></div>
-      </div>
     </div>
   </div>
 </header>`;
