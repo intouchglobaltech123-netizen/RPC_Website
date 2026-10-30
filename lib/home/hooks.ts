@@ -301,7 +301,7 @@ export const HOOKS_CSS =
 .hk-proj{display:flex;flex-direction:column;justify-content:center;min-height:calc(100svh - var(--nav-room));padding:calc(var(--nav-room) + clamp(.5rem,2vh,1.2rem)) 0 clamp(1rem,3vh,2rem)}
 .hk-pgrid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);align-items:center;gap:2rem clamp(2rem,6vw,6rem)}
 .hk-pinfo .hm-h2{margin-top:.8rem}
-.hk-pinfo{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(.9rem,2.4vh,1.4rem);min-width:0;padding-left:50px}
+.hk-pinfo{display:flex;flex-direction:column;align-items:flex-start;gap:clamp(.9rem,2.4vh,1.4rem);min-width:0}
 .hk-pi{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;animation:hk-in .45s ease both}
 .hk-pi[hidden]{display:none}
 @keyframes hk-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}

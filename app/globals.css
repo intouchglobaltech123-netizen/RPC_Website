@@ -38,6 +38,7 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* side space: 20px on phones, 48px on tablets, 100px on laptops and desktops */
     --gutter: 20px;
     /* the site's type scale: h1, h2, h3 and body, the same on every page */
     --fs-h1: clamp(2rem, 1.35rem + 2.6vw, 3.5rem);
@@ -424,3 +425,6 @@
   main h2:not(.sr-only):not(.mh-sr):not(.hm-sr) { font-size: var(--fs-h2) !important; line-height: 1.12 !important; }
   main h3:not(.sr-only):not(.mh-sr):not(.hm-sr) { font-size: var(--fs-h3) !important; line-height: 1.2 !important; }
 }
+
+@media (min-width: 768px) { :root { --gutter: 48px; } }
+@media (min-width: 1100px) { :root { --gutter: 100px; } }
