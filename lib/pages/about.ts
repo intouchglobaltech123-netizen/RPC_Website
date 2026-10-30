@@ -153,6 +153,15 @@ export const ABOUT_CSS = `
 .ab-ptrole{margin:0;font-size:var(--fs-body);font-weight:600;color:var(--accent)}
 .ab-ptname{margin:.4rem 0 0;font-family:var(--display);font-size:var(--fs-sub);font-weight:600;line-height:1.25;letter-spacing:-.015em;color:var(--ink)}
 .ab-ptq{margin:.3rem 0 0;font-size:var(--fs-body);color:var(--mute)}
+@media (min-width:1024px){
+  .ab-pts{gap:1.6rem}
+  .ab-pt,.ab-pt--flip{grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:0;align-items:stretch;overflow:hidden;border-radius:22px;background:#fff;box-shadow:0 0 0 1px var(--line),0 28px 56px -40px rgba(11,35,80,.5)}
+  .ab-pt--flip{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+  .ab-pt .ab-ptph,.ab-pt--flip .ab-ptph{max-width:none;justify-self:stretch;height:100%;min-height:26rem}
+  .ab-ptph img,.ab-ptph .pg-ph{height:100%;aspect-ratio:auto;border-radius:0;box-shadow:none}
+  .ab-pt .ab-ptcopy,.ab-pt--flip .ab-ptcopy{max-width:none;justify-self:stretch;align-self:center;margin:clamp(2rem,4vw,4rem);padding-left:1.8rem}
+  .ab-ptname{font-size:var(--fs-h2)}
+}
 .ab-ptcopy .ab-p{margin-top:.85rem}
 
 /* vision and mission: an architectural two-panel diptych — deep navy for the long-term vision, crisp ivory for our single mission on site */
